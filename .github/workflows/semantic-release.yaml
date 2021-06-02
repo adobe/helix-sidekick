@@ -31,6 +31,7 @@ jobs:
           token: ${{ secrets.PAT }}
           base: sandbox
           path: dist
+          branch: sidekick-release
           delete-branch: true
           title: Helix Sidekick Release
           body: New version of [Helix Sidekick](https://github.com/adobe/helix-sidekick/)
