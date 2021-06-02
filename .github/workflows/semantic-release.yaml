@@ -30,5 +30,5 @@ jobs:
           path: dist/src/sidekick
           branch: sidekick-release
           branch-suffix: short-commit-hash
-          title: Helix Sidekick Release ${{ }}
+          title: Helix Sidekick Release
           body: New version of [Helix Sidekick](https://github.com/adobe/helix-sidekick/)
