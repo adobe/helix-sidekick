@@ -13,25 +13,22 @@ jobs:
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.SSH-KEY }}
-          ref: main
       - name: Checkout dist repo
         uses: actions/checkout@v2
         with:
-          repository: rofe/helix-sidekick
-          ref: sandbox
+          repository: adobe/helix-pages
           path: dist
       - name: Create commit in dist repo
         run: |
-          cp src/sidekick/app.* dist/src/sidekick/
-          cd dist/src/sidekick
+          cp src/sidekick/app.* dist/tools/sidekick/
+          cd dist/tools/sidekick
       - name: Create pull request in dist repo
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "chore(sidekick): new release [skip-ci]"
           token: ${{ secrets.PAT }}
-          base: sandbox
           path: dist
           branch: sidekick-release
           delete-branch: true
           title: Helix Sidekick Release
-          body: Automatic pull request to update [Helix Sidekick](https://github.com/adobe/helix-sidekick/)
+          body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/ to update Helix Sidekick.
