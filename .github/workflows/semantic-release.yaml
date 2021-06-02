@@ -24,7 +24,7 @@ jobs:
           git add -A
           git commit -m "chore: sidekick release"
       - name: Create pull request in dist repo
-      - uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GH_TOKEN }}
           path: dist/src/sidekick
