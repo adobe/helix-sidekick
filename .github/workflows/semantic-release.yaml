@@ -29,6 +29,7 @@ jobs:
         with:
           commit-message: "chore(release): new sidekick version"
           token: ${{ secrets.PAT }}
+          author: rofe <rofe@users.noreply.github.com>
           path: dist
           delete-branch: true
           title: Helix Sidekick Release
