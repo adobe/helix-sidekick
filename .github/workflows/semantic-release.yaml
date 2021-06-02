@@ -34,7 +34,7 @@ jobs:
         with:
           committer: Semantic Release <rofe@users.noreply.github.com>
           commit-message: "chore(release): new sidekick version"
-          token: ${{ secrets.PAT} }}
+          token: ${{ secrets.PAT }}
           path: dist
           delete-branch: true
           title: Helix Sidekick Release
