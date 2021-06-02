@@ -21,6 +21,8 @@ jobs:
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist/src/sidekick
+          git config --global user.email "noreply@github.com"
+          git config --global user.name "GitHub"
           git add -A
           git commit -m "chore: sidekick release"
       - name: Create pull request in dist repo
