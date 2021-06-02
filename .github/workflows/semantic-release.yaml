@@ -30,7 +30,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           author: Semantic Release <rofe@users.noreply.github.com>
-          # token: ${{ secrets.GH_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           path: dist
           delete-branch: true
           title: Helix Sidekick Release
