@@ -25,14 +25,11 @@ jobs:
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist/src/sidekick
-          # git config --global user.email "rofe@adobe.com"
-          # git config --global user.name "rofe"
-          # git add -A
-          # git commit -m "chore: sidekick release"
+          git config --global user.email "rofe@adobe.com"
+          git config --global user.name "rofe"
       - name: Create pull request in dist repo
         uses: peter-evans/create-pull-request@v3
         with:
-          committer: Semantic Release <rofe@adobe.com>
           commit-message: "chore(release): new sidekick version"
           token: ${{ secrets.PAT }}
           path: dist
