@@ -22,14 +22,14 @@ jobs:
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist/src/sidekick
-          git config --global user.email "rofe@users.noreply.github.com"
+          git config --global user.email "rofe@adobe.com"
           git config --global user.name "Semantic Release"
           git add -A
           git commit -m "chore: sidekick release"
       - name: Create pull request in dist repo
         uses: peter-evans/create-pull-request@v3
         with:
-          author: Semantic Release <rofe@users.noreply.github.com>
+          author: Semantic Release <rofe@adobe.com>
           token: ${{ secrets.GH_TOKEN }}
           path: dist
           delete-branch: true
