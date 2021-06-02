@@ -32,8 +32,6 @@ jobs:
           author: Semantic Release <rofe@users.noreply.github.com>
           # token: ${{ secrets.GH_TOKEN }}
           path: dist
-          branch: sidekick-release
-          branch-suffix: short-commit-hash
           delete-branch: true
           title: Helix Sidekick Release
           body: New version of [Helix Sidekick](https://github.com/adobe/helix-sidekick/)
