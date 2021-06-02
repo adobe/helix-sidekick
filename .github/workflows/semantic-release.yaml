@@ -18,15 +18,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: rofe/helix-sidekick
-          ssh-key: ${{ secrets.SSH-KEY }}
           ref: sandbox
           path: dist
       - name: Create commit in dist repo
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist/src/sidekick
-          git config --global user.email "rofe@adobe.com"
-          git config --global user.name "rofe"
       - name: Create pull request in dist repo
         uses: peter-evans/create-pull-request@v3
         with:
