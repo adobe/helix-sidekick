@@ -16,7 +16,6 @@ jobs:
         with:
           repository: rofe/helix-sidekick
           ref: sandbox
-          ssh-key: ${{ secrets.GH_TOKEN }}
           path: dist
       - name: Create commit in dist repo
         run: |
@@ -30,6 +29,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           author: Semantic Release <rofe@users.noreply.github.com>
+          token: ${{ secrets.GH_TOKEN }}
           path: dist
           branch: sidekick-release
           branch-suffix: short-commit-hash
