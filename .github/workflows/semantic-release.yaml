@@ -32,7 +32,7 @@ jobs:
       - name: Create pull request in dist repo
         uses: peter-evans/create-pull-request@v3
         with:
-          committer: Semantic Release <rofe@users.noreply.github.com>
+          committer: Semantic Release <rofe@adobe.com>
           commit-message: "chore(release): new sidekick version"
           token: ${{ secrets.PAT }}
           path: dist
