@@ -34,7 +34,7 @@ jobs:
             # push changes to dist branch
             git config user.name ${{ github.actor }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
-            git config user.token ${{ github.token }}
+            git config token ${{ github.token }}
             git add src/sidekick/*
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
