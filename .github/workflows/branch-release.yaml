@@ -26,7 +26,7 @@ jobs:
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
           # create and/or switch to dist branch
-          echo ***${GITHUB_TOKEN}***
+          export GITHUB_TOKEN=${{ github.token }}
           git switch ${distbranch} || git checkout -b ${distbranch}
           echo `git status`
           if [ "`git status -s`" != "" ]; then
