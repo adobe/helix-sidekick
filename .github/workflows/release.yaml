@@ -17,10 +17,11 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: rofe/helix-sidekick
+          branch: sandbox
           path: dist
       - name: Copy files from source to target repo
         run: |
-          cp src/sidekick/app.* dist/tools/sidekick/
+          cp src/sidekick/app.* dist/src/sidekick/
       - name: Create pull request in target repo
         uses: peter-evans/create-pull-request@v3
         with:
