@@ -6,31 +6,26 @@ jobs:
     runs-on: ubuntu-latest
     if: "${{ !endsWith(github.ref, '/main') && !contains(github.event.head_commit.message, '[skip ci]') }}"
     steps:
-      - name: Checkout sidekick repo
+      - name: Checkout source repo
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.SSH-KEY }}
-      - name: Checkout dist repo
+      - name: Checkout target repo
         uses: actions/checkout@v2
         with:
           repository: rofe/helix-sidekick
-          ref: sandbox
           path: dist
-      - name: Copy changes to dist repo and create branch commit
+      - name: Copy files from source to target repo
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
-          cd dist
-          # generate dist branch name
-          IFS='/' read -ra temp <<< "${{ github.ref }}"
-          distbranch=sidekick-${temp[2]}
-          # create and/or switch to dist branch and apply changes
-          git switch ${distbranch} || git checkout -b ${distbranch}
-          git add src/sidekick/*
-          if [ "`git status -s`" != "" ]; then
-            # push changes to dist branch
-            git remote set-url origin "https://${{ github.token }}@github.com/rofe/helix-sidekick.git"
-            git config user.name ${{ github.actor }}
-            git config user.email ${{ github.actor }}@users.noreply.github.com
-            git commit -m"chore(sidekick): branch release [skip ci]"
-            git push origin ${distbranch}
-          fi
+      - name: Create draft pull request in target repo
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: "chore(sidekick): new release [skip ci]"
+          token: ${{ secrets.PAT }}
+          path: dist
+          branch: sidekick-experimental
+          delete-branch: true
+          draft: true
+          title: Experimental Sidekick
+          body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/.

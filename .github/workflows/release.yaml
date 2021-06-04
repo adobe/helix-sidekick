@@ -5,34 +5,29 @@ on:
       - main
 
 jobs:
-  checkout:
+  release:
     runs-on: ubuntu-latest
+    if: "${{ !contains(github.event.head_commit.message, '[skip ci]') }}"
     steps:
-      - name: Checkout
+      - name: Checkout source repo
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.SSH-KEY }}
-  release:
-    runs-on: ubuntu-latest
-    needs: checkout
-    if: "${{ !contains(github.event.head_commit.message, '[skip ci]') }}"
-    steps:
-      - name: Checkout dist repo
+      - name: Checkout target repo
         uses: actions/checkout@v2
         with:
-          repository: adobe/helix-pages
+          repository: rofe/helix-sidekick
           path: dist
-      - name: Copy files to dist repo
+      - name: Copy files from source to target repo
         run: |
           cp src/sidekick/app.* dist/tools/sidekick/
-      - name: Create pull request in dist repo
+      - name: Create pull request in target repo
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "chore(sidekick): new release [skip ci]"
           token: ${{ secrets.PAT }}
           path: dist
-          branch: sidekick
-          branch-suffix: short-commit-hash
+          branch: sidekick-release
           delete-branch: true
-          title: Helix Sidekick Release
-          body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/ to update Helix Sidekick.
+          title: Sidekick Release
+          body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/.
