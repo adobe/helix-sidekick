@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: rofe/helix-sidekick
-          branch: sandbox
+          ref: sandbox
           path: dist
       - name: Copy files from source to target repo
         run: |
