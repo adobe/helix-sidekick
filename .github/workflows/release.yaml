@@ -2,7 +2,7 @@ name: Release
 on:
   push
     branches:
-      - branch-release
+      - 'branch-release'
 
 jobs:
   checkout:
