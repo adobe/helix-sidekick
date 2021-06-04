@@ -20,9 +20,6 @@ jobs:
         run: |
           # generate dist branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
-          echo github.ref: ---${temp[2]}--- ${{ github.ref }}
-          echo `pwd`
-          echo `ls dist/src`
           distbranch=sidekick-${temp[2]}
           # copy sidekick resources to dist repo
           cp src/sidekick/app.* dist/src/sidekick/
@@ -31,6 +28,8 @@ jobs:
           git switch ${distbranch} || git checkout -b ${distbranch}
           if [ "`git status -s`" != "" ]; then
             # push changes to dist branch
+            git config user.name ${{ github.actor }}
+            git config user.email ${{ github.actor }}@users.noreply.github.com
             git add src/sidekick/*
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
