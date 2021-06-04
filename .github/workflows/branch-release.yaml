@@ -21,8 +21,8 @@ jobs:
           # generate dist branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           echo github.ref: ---${temp[2]}--- ${{ github.ref }}
-          echo `cwd`
-          echo `ls dist`
+          echo `pwd`
+          echo `ls dist/src`
           distbranch=sidekick-${temp[2]}
           # copy sidekick resources to dist repo
           cp src/sidekick/app.* dist/src/sidekick/
