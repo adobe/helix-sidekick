@@ -28,7 +28,7 @@ jobs:
           git add src/sidekick/*
           if [ "`git status -s`" != "" ]; then
             # push changes to dist branch
-            git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/rofe/helix-sidekick.git
+            git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/rofe/helix-sidekick.git
             git config user.name ${{ github.actor }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
             git commit -m"chore(sidekick): branch release [skip ci]"
