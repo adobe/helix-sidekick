@@ -16,16 +16,17 @@ jobs:
           repository: rofe/helix-sidekick
           ref: sandbox
           path: dist
-      - name: Copy files to dist repo
+      - name: Copy changes to dist repo and create branch commit
+        env: GITHUB_TOKEN: ${{ github.token }}
         run: |
+          cp src/sidekick/app.* dist/src/sidekick/
+          cd dist
           # generate dist branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
-          # copy sidekick resources to dist repo
-          cp src/sidekick/app.* dist/src/sidekick/
-          cd dist
           # create and/or switch to dist branch
           git switch ${distbranch} || git checkout -b ${distbranch}
+          echo `git status`
           if [ "`git status -s`" != "" ]; then
             # push changes to dist branch
             git config user.name ${{ github.actor }}
