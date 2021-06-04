@@ -17,25 +17,20 @@ jobs:
           ref: sandbox
           path: dist
       - name: Copy changes to dist repo and create branch commit
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist
           # generate dist branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
-          # create and/or switch to dist branch
-          export GITHUB_TOKEN=${{ github.token }}
-          echo ***${GITHUB_TOKEN}###
+          # create and/or switch to dist branch and apply changes
           git switch ${distbranch} || git checkout -b ${distbranch}
-          echo `git status`
+          git add src/sidekick/*
           if [ "`git status -s`" != "" ]; then
             # push changes to dist branch
             git config user.name ${{ github.actor }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
-            git config token ${{ github.token }}
-            git add src/sidekick/*
+            git config ssh-key ${{ secrets.SSH_KEY }}
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
           fi
