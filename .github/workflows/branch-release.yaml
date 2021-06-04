@@ -1,0 +1,41 @@
+name: Branch Release
+on: push
+
+jobs:
+  checkout:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ssh-key: ${{ secrets.SSH-KEY }}
+  branch-release:
+    runs-on: ubuntu-latest
+    needs: checkout
+    if: "${{ !endsWith(github.ref, '/main') && !contains(github.event.head_commit.message, '[skip ci]') }}"
+    steps:
+      - name: Switch to branch
+        run: |
+          IFS=';' read -ra temp <<< "${{ github.ref }}"
+          echo github.ref: ---${temp[2]}---
+          echo `git branch --show-current`
+          git checkout $GH_BRANCH
+      - name: Checkout dist repo
+        uses: actions/checkout@v2
+        with:
+          repository: rofe/helix-sidekick
+          path: dist
+      - name: Copy files to dist repo
+        run: |
+          # create dist branch name
+          IFS=';' read -ra temp <<< "${{ github.ref }}"
+          echo github.ref: ---${temp[2]}---
+          distbranch=sidekick-${temp[2]}
+          # create and/or switch to dist branch
+          git switch ${distbranch} || git checkout -b sidekick-${temp[2]}
+          cp src/sidekick/app.* dist/src/sidekick/
+          if [ "`git status -s`" != "" ]; then
+            # push changes to dist branch
+            git add dist/src/sidekick/*
+            git commit -m"chore(sidekick): branch release [skip ci]"
+            git push origin ${distbranch}
+          fi
