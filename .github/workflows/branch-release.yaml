@@ -27,11 +27,8 @@ jobs:
           git switch ${distbranch} || git checkout -b ${distbranch}
           git add src/sidekick/*
           if [ "`git status -s`" != "" ]; then
-            # push changes to dist branch
-            git config user.name ${{ github.actor }}
-            git config user.password ${{ secrets.PAT }}
-            git config user.email ${{ github.actor }}@users.noreply.github.com
-            git commit -m"chore(sidekick): branch release [skip ci]"
+            # remove existing authorization header
             git config -l | grep 'http\..*\.extraheader' | cut -d= -f1 | xargs -L1 git config --unset-all
-            git push origin ${distbranch}
+            git commit -m"chore(sidekick): branch release [skip ci]"
+            git push https://${{ github.actor }}:${{ secrets.PAT }}@github.com/rofe/helix-sidekick.git
           fi
