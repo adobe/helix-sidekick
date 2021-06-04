@@ -17,7 +17,8 @@ jobs:
           ref: sandbox
           path: dist
       - name: Copy changes to dist repo and create branch commit
-        env: GITHUB_TOKEN: ${{ github.token }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist
