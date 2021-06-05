@@ -13,32 +13,29 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v2
         with:
-          repository: rofe/helix-sidekick
-          ref: sandbox
+          repository: adobe/helix-pages
           token: ${{ secrets.PAT }}
           fetch-depth: 0
           clean: true
-          path: dist
+          path: _target
       - name: Copy changes from source to target repo and create branch commit
         run: |
-          echo Source repo branch: `git branch --show-current`
-          cd dist
+          cd _target
           # generate target branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
-          distbranch=sidekick-${temp[2]}
+          targetbranch=sidekick-${temp[2]}
           # create and/or switch to target branch and apply changes
-          git switch ${distbranch} || git checkout -b ${distbranch} sandbox
-          cp ../src/sidekick/* src/sidekick/
-          git add src/sidekick/*
+          git switch ${targetbranch} || git checkout -b ${targetbranch}
+          cp ../src/sidekick/* tools/sidekick/
+          git add tools/sidekick/*
           if [ "`git status -s`" != "" ]; then
             echo Changes: `git status -s`
             # push changes to target branch
-            # git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
             git config user.name ${{ github.actor }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
             git config user.password ${{ secrets.PAT }}
             git commit -m"chore(sidekick): branch release [skip ci]"
-            git push origin ${distbranch}
+            git push origin ${targetbranch}
           else
             echo No changes to commit
           fi
