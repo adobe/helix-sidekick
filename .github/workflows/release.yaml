@@ -16,11 +16,11 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v2
         with:
-          repository: adobe/helix-sidekick
+          repository: adobe/helix-pages
           path: _target
       - name: Copy files from source to target repo
         run: |
-          cp src/sidekick/app.* _target/src/sidekick/
+          cp src/sidekick/app.* _target/tools/sidekick/
       - name: Create branch commit and pull request in target repo
         uses: peter-evans/create-pull-request@v3
         with:
