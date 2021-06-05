@@ -21,16 +21,17 @@ jobs:
           path: dist
       - name: Copy changes from source to target repo and create branch commit
         run: |
+          echo Source repo branch: `git branch --show-current`
           cd dist
           # generate target branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
           # create and/or switch to target branch and apply changes
           git switch ${distbranch} || git checkout -b ${distbranch} sandbox
-          cp ../src/sidekick/app.* src/sidekick/
+          cp ../src/sidekick/* src/sidekick/
           git add src/sidekick/*
-          echo Changes: `git status -s`
           if [ "`git status -s`" != "" ]; then
+            echo Changes: `git status -s`
             # push changes to target branch
             # git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
             git config user.name ${{ github.actor }}
