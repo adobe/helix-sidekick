@@ -25,7 +25,7 @@ jobs:
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
           # create and/or switch to target branch and apply changes
-          git switch ${distbranch} || git checkout -b ${distbranch}
+          git switch ${distbranch} || git checkout -b ${distbranch} sandbox
           git add src/sidekick/*
           echo Changes: `git status -s`
           if [ "`git status -s`" != "" ]; then
