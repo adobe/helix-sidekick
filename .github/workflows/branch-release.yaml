@@ -6,32 +6,35 @@ jobs:
     runs-on: ubuntu-latest
     if: "${{ !endsWith(github.ref, '/main') && !contains(github.event.head_commit.message, '[skip ci]') }}"
     steps:
-      - name: Checkout sidekick repo
+      - name: Checkout source repo
         uses: actions/checkout@v2
         with:
           ssh-key: ${{ secrets.SSH-KEY }}
-      - name: Checkout dist repo
+      - name: Checkout target repo
         uses: actions/checkout@v2
         with:
           repository: rofe/helix-sidekick
           ref: sandbox
+          fetch-depth: 0
           path: dist
-      - name: Copy changes to dist repo and create branch commit
+      - name: Copy changes from source to target repo and create branch commit
         run: |
           cp src/sidekick/app.* dist/src/sidekick/
           cd dist
-          # generate dist branch name
+          # generate target branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
-          # create and/or switch to dist branch and apply changes
+          # create and/or switch to target branch and apply changes
           git switch ${distbranch} || git checkout -b ${distbranch}
           git add src/sidekick/*
           if [ "`git status -s`" != "" ]; then
-            # push changes to dist branch
+            # push changes to target branch
             git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
             git config user.name ${{ github.actor }}
             git config user.password ${{ secrets.PAT }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
+          elif
+            echo No changes to commit
           fi
