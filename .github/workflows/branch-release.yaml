@@ -15,6 +15,7 @@ jobs:
         with:
           repository: rofe/helix-sidekick
           ref: sandbox
+          token: ${{ secrets.PAT }}
           fetch-depth: 0
           path: dist
       - name: Copy changes from source to target repo and create branch commit
@@ -30,7 +31,7 @@ jobs:
           echo Changes: `git status -s`
           if [ "`git status -s`" != "" ]; then
             # push changes to target branch
-            git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+            # git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
             git config user.name ${{ github.actor }}
             git config user.email ${{ github.actor }}@users.noreply.github.com
             git config user.password ${{ secrets.PAT }}
