@@ -17,16 +17,17 @@ jobs:
           ref: sandbox
           token: ${{ secrets.PAT }}
           fetch-depth: 0
+          clean: true
           path: dist
       - name: Copy changes from source to target repo and create branch commit
         run: |
-          cp src/sidekick/app.* dist/src/sidekick/
           cd dist
           # generate target branch name
           IFS='/' read -ra temp <<< "${{ github.ref }}"
           distbranch=sidekick-${temp[2]}
           # create and/or switch to target branch and apply changes
           git switch ${distbranch} || git checkout -b ${distbranch} sandbox
+          cp ../src/sidekick/app.* src/sidekick/
           git add src/sidekick/*
           echo Changes: `git status -s`
           if [ "`git status -s`" != "" ]; then
