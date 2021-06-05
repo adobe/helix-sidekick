@@ -16,19 +16,19 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v2
         with:
-          repository: rofe/helix-sidekick
-          ref: sandbox
-          path: dist
+          repository: adobe/helix-sidekick
+          path: _target
       - name: Copy files from source to target repo
         run: |
-          cp src/sidekick/app.* dist/src/sidekick/
-      - name: Create pull request in target repo
+          cp src/sidekick/app.* _target/src/sidekick/
+      - name: Create branch commit and pull request in target repo
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: "chore(sidekick): new release [skip ci]"
+          commit-message: "chore(sidekick): new release candidate [skip ci]"
           token: ${{ secrets.PAT }}
-          path: dist
-          branch: sidekick-release
+          path: _target
+          branch: sidekick-rc
+          branch-suffix: short-commit-hash
           delete-branch: true
-          title: Sidekick Release
+          title: Sidekick Release Candidate
           body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/.
