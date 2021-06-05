@@ -35,6 +35,6 @@ jobs:
             git config user.email ${{ github.actor }}@users.noreply.github.com
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
-          elif
+          else
             echo No changes to commit
           fi
