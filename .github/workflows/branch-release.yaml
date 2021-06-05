@@ -27,6 +27,7 @@ jobs:
           # create and/or switch to target branch and apply changes
           git switch ${distbranch} || git checkout -b ${distbranch}
           git add src/sidekick/*
+          echo Changes: `git status -s`
           if [ "`git status -s`" != "" ]; then
             # push changes to target branch
             git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
