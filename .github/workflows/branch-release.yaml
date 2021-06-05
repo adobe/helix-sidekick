@@ -28,9 +28,10 @@ jobs:
           git add src/sidekick/*
           if [ "`git status -s`" != "" ]; then
             # push changes to dist branch
-            git config user.name rofe
+            git remote set-url origin https://${{ github.actor }}:${{ secrets.PAT }}@github.com/${{ github.repository }}.git
+            git config user.name ${{ github.actor }}
             git config user.password ${{ secrets.PAT }}
-            git config user.email rofe@users.noreply.github.com
+            git config user.email ${{ github.actor }}@users.noreply.github.com
             git commit -m"chore(sidekick): branch release [skip ci]"
             git push origin ${distbranch}
           fi
