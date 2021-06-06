@@ -134,9 +134,10 @@
             .reverse()
             .join('.');
         }
+      } else {
+        // fall back to hlx.page
+        innerHost = 'hlx.page';
       }
-      // fall back to hlx.page
-      innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
     const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
