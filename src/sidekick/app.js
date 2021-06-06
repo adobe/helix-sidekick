@@ -118,26 +118,21 @@
     const script = document.querySelector('script[src$="/sidekick/app.js"]');
     const scriptUrl = script && script.src;
     let innerHost;
-    if (hlx3) {
-      // force hlx3.page
-      innerHost = 'hlx3.page';
-    }
-    if (!innerHost || innerHost.startsWith('localhost')) {
+    if (scriptUrl) {
       // get hlx domain from script src (used for branch deployment testing)
-      if (scriptUrl) {
-        const scriptHost = new URL(scriptUrl).host;
-        if (scriptHost && scriptHost !== 'www.hlx.live') {
-          // keep only 1st and 2nd level domain
-          innerHost = scriptHost.split('.')
-            .reverse()
-            .splice(0, 2)
-            .reverse()
-            .join('.');
-        }
-      } else {
-        // fall back to hlx.page
-        innerHost = 'hlx.page';
+      const scriptHost = new URL(scriptUrl).host;
+      if (scriptHost && scriptHost !== 'www.hlx.live' && !scriptHost.startsWith('localhost')) {
+        // keep only 1st and 2nd level domain
+        innerHost = scriptHost.split('.')
+          .reverse()
+          .splice(0, 2)
+          .reverse()
+          .join('.');
       }
+    }
+    if (!innerHost) {
+      // fall back to hlx(3).page
+      innerHost = hlx3 ? 'hlx3.page' : 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
     const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
@@ -527,7 +522,7 @@
         action: async (evt) => {
           const { location } = sk;
           sk.showModal('Please wait …', true);
-          const resp = sk.reload(location.pathname);
+          const resp = await sk.reload(location.pathname);
           if (!resp.ok) {
             // eslint-disable-next-line no-console
             console.error(resp);
@@ -987,7 +982,7 @@
           `/${config.repo}`,
           `/${config.ref}`,
           path,
-          '?action=update',
+          '?action=preview',
         ].join('');
         resp = await fetch(adminURL, { method: 'POST' });
       } else {
