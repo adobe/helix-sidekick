@@ -522,21 +522,27 @@
         action: async (evt) => {
           const { location } = sk;
           sk.showModal('Please wait …', true);
-          const resp = await sk.reload(location.pathname);
-          if (!resp.ok) {
+          try {
+            const resp = await sk.reload(location.pathname);
+            if (!resp.ok) {
+              const msg = await resp.text();
+              // eslint-disable-next-line no-console
+              console.error(msg);
+              throw new Error(msg);
+            }
             // eslint-disable-next-line no-console
-            console.error(resp);
+            console.log(`reloading ${location.href}`);
+            if (newTab(evt)) {
+              window.open(window.location.href);
+              sk.hideModal();
+            } else {
+              window.location.reload();
+            }
+          } catch (e) {
             sk.showModal([
               `Failed to reload ${location.pathname}. Please try again later.`,
+              e,
             ], true, 0);
-          }
-          // eslint-disable-next-line no-console
-          console.log(`reloading ${location.href}`);
-          if (newTab(evt)) {
-            window.open(window.location.href);
-            sk.hideModal();
-          } else {
-            window.location.reload();
           }
         },
       },
