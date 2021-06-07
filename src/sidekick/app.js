@@ -121,7 +121,7 @@
     if (hlx3) {
       innerHost = 'hlx3.page';
     }
-    if (scriptUrl) {
+    if (!innerHost && scriptUrl) {
       // get hlx domain from script src (used for branch deployment testing)
       const scriptHost = new URL(scriptUrl).host;
       if (scriptHost && scriptHost !== 'www.hlx.live' && !scriptHost.startsWith('localhost')) {
