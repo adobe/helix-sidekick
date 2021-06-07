@@ -118,6 +118,9 @@
     const script = document.querySelector('script[src$="/sidekick/app.js"]');
     const scriptUrl = script && script.src;
     let innerHost;
+    if (hlx3) {
+      innerHost = 'hlx3.page';
+    }
     if (scriptUrl) {
       // get hlx domain from script src (used for branch deployment testing)
       const scriptHost = new URL(scriptUrl).host;
@@ -131,8 +134,8 @@
       }
     }
     if (!innerHost) {
-      // fall back to hlx(3).page
-      innerHost = hlx3 ? 'hlx3.page' : 'hlx.page';
+      // fall back to hlx.page
+      innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
     const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
