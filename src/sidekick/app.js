@@ -468,7 +468,7 @@
     if (!sk.config.hlx3 && sk.location.hostname.endsWith('hlx3.page')) {
       window.setTimeout(() => {
         // eslint-disable-next-line no-alert
-        if (window.confirm('This Helix Sidekick Bookmarklet is not able to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now.')) {
+        if (window.confirm('This Helix Sidekick Bookmarklet is unable to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now.')) {
           sk.showModal('Please wait …', true);
           // set hlx3 flag
           sk.config.hlx3 = true;
