@@ -121,10 +121,9 @@
   /**
    * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
    * @private
-   * @param {Object} location The sidekick location object
    * @returns {Object} The sidekick configuration
    */
-  function initConfig(location = {}) {
+  function initConfig() {
     const cfg = (window.hlx && window.hlx.sidekickConfig
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
@@ -134,7 +133,8 @@
       ref = 'main',
       host,
       project,
-      hlx3 = [974752171, -1149574338].includes(hashCode(location.host)),
+      // if hlx3 flag unset, check for known hlx3 repos
+      hlx3 = [974752171, -1149574338].includes(hashCode(repo)),
     } = cfg;
     const ghDetails = owner && repo
       ? `${repo}--${owner}`
@@ -175,6 +175,7 @@
       scriptUrl,
       host: publicHost,
       project: project || 'your Helix Pages project',
+      hlx3,
     };
   }
 
@@ -708,8 +709,8 @@
      * @returns {Sidekick} The sidekick
      */
     loadContext() {
+      this.config = initConfig();
       this.location = getLocation();
-      this.config = initConfig(this.location);
       return this;
     }
 
