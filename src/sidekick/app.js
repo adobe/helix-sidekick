@@ -471,14 +471,16 @@
         // eslint-disable-next-line no-alert
         if (window.confirm('This Helix Sidekick Bookmarklet is unable to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now.')) {
           sk.showModal('Please wait …', true);
-          // set hlx3 flag
+          // set hlx3 flag temporarily
           sk.config.hlx3 = true;
           window.location.href = getShareUrl(sk.config, sk.location.href);
         }
       }, 1000);
     }
-    // check if current url is hlx3 url
-    if (sk.config.hlx3 && !sk.location.hostname.endsWith('hlx3.page')) {
+    // check if current inner cdn url is hlx3 url
+    if (sk.config.hlx3
+      && sk.location.hostname.endsWith('.page')
+      && !sk.location.hostname.endsWith('hlx3.page')) {
       // eslint-disable-next-line no-alert
       if (window.confirm('This Helix Sidekick Bookmarklet can only work on a Helix 3 site.\n\nPress OK to be taken to the Helix 3 version of this page now.')) {
         sk.showModal('Please wait …', true);
