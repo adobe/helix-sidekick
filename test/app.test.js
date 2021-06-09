@@ -115,6 +115,52 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(zIndex, '9999999', 'Did not apply default CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Checks for missing Helix 3 flag in config', async () => {
+    await mockCustomPlugins(page);
+    await new Promise((resolve, reject) => {
+      // wait for dialog
+      page.on('dialog', async (dialog) => {
+        if (dialog.type() === 'confirm') {
+          try {
+            assert.ok(
+              dialog.message().includes('unable to deal with a Helix 3 site'),
+              `Unexpected dialog message: "${dialog.message()}"`,
+            );
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/config-hlx3-missing-flag.html`, { waitUntil: 'load' });
+    });
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Checks for Helix 3 config/URL mismatch', async () => {
+    await mockCustomPlugins(page);
+    await new Promise((resolve, reject) => {
+      // wait for dialog
+      page.on('dialog', async (dialog) => {
+        if (dialog.type() === 'confirm') {
+          try {
+            assert.ok(
+              dialog.message().includes('can only work on a Helix 3 site'),
+              `Unexpected dialog message: "${dialog.message()}"`,
+            );
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }
+      });
+      // open test page and click preview button
+      page
+        .goto(`${fixturesPrefix}/config-hlx3-wrong-url.html`, { waitUntil: 'load' });
+    });
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Uses main branch by default', async () => {
     await page.goto(`${fixturesPrefix}/config-no-ref.html`, { waitUntil: 'load' });
     const ref = await page.evaluate(() => window.hlx.sidekick.config.ref);
