@@ -98,16 +98,43 @@
   };
 
   /**
+   * Returns a hash code for the specified string.
+   * Source: http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+   * @param {*} str The source string
+   * @returns {number} The hash code
+   */
+  function hashCode(str = '') {
+    let hash = 0;
+    let i;
+    let chr;
+    if (str.length === 0) return hash;
+    for (i = 0; i < str.length; i += 1) {
+      chr = str.charCodeAt(i);
+      /* eslint-disable no-bitwise */
+      hash = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+      /* eslint-enable no-bitwise */
+    }
+    return hash;
+  }
+
+  /**
    * Returns the sidekick configuration based on {@link window.hlx.sidekickConfig}.
    * @private
+   * @param {Object} location The sidekick location object
    * @returns {Object} The sidekick configuration
    */
-  function initConfig() {
+  function initConfig(location = {}) {
     const cfg = (window.hlx && window.hlx.sidekickConfig
       ? window.hlx.sidekickConfig
       : window.hlxSidekickConfig) || {};
     const {
-      owner, repo, ref = 'main', host, project, hlx3,
+      owner,
+      repo,
+      ref = 'main',
+      host,
+      project,
+      hlx3 = [974752171, -1149574338].includes(hashCode(location.host)),
     } = cfg;
     const ghDetails = owner && repo
       ? `${repo}--${owner}`
@@ -354,22 +381,11 @@
         }
       }, 1000);
     }
-    // hlx3 cmpatibility check
-    if (sk.location.hostname.endsWith('hlx3.page') && !sk.config.hlx3) {
-      window.setTimeout(() => {
-        // eslint-disable-next-line no-alert
-        if (window.confirm('Your Helix Sidekick Bookmarklet is not able to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now!')) {
-          sk.showModal('Please wait …', true);
-          // set hlx3 flag
-          sk.config.hlx3 = true;
-          window.location.href = getShareUrl(sk.config, sk.location.href);
-        }
-      }, 1000);
-    }
   }
 
   /**
    * Determines whether to open a new tab or reuse the existing window.
+   * @private
    * @param {Event} evt The event
    * @returns {@code true} if a new tab should be opened, else {@code false}
    */
@@ -379,6 +395,7 @@
 
   /**
    * Switches to or opens a given environment.
+   * @private
    * @param {Sidekick} sidekick The sidekick
    * @param {string} targetEnv One of the following environments:
    *        {@code edit}, {@code preview}, {@code live} or {@code production}
@@ -412,7 +429,7 @@
       url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
       // fetch report, extract url and patch host
       try {
-        const resp = await fetch(`${url}&hlx_report=true`);
+        const resp = await fetch(`${url}?hlx_report=true`);
         if (resp.ok) {
           const { webUrl } = await resp.json();
           if (webUrl) {
@@ -438,6 +455,34 @@
       window.open(url);
     } else {
       window.location.href = url;
+    }
+  }
+
+  /**
+   * Check for Helix 3 related issues.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function checkForHelix3(sk) {
+    // check if sidekick config needs to be updated to hlx3
+    if (!sk.config.hlx3 && sk.location.hostname.endsWith('hlx3.page')) {
+      window.setTimeout(() => {
+        // eslint-disable-next-line no-alert
+        if (window.confirm('This Helix Sidekick Bookmarklet is not able to deal with a Helix 3 site.\n\nPress OK to install one for Helix 3 now.')) {
+          sk.showModal('Please wait …', true);
+          // set hlx3 flag
+          sk.config.hlx3 = true;
+          window.location.href = getShareUrl(sk.config, sk.location.href);
+        }
+      }, 1000);
+    }
+    // check if current url is hlx3 url
+    if (sk.config.hlx3 && !sk.location.hostname.endsWith('hlx3.page')) {
+      // eslint-disable-next-line no-alert
+      if (window.confirm('This Helix Sidekick Bookmarklet can only work on a Helix 3 site.\n\nPress OK to be taken to the Helix 3 version of this page now.')) {
+        sk.showModal('Please wait …', true);
+        gotoEnv(sk, 'preview');
+      }
     }
   }
 
@@ -654,6 +699,7 @@
         });
       }
       checkForUpdates(this);
+      checkForHelix3(this);
     }
 
     /**
@@ -662,8 +708,8 @@
      * @returns {Sidekick} The sidekick
      */
     loadContext() {
-      this.config = initConfig();
       this.location = getLocation();
+      this.config = initConfig(this.location);
       return this;
     }
 
