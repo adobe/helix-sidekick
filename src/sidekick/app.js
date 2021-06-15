@@ -472,7 +472,7 @@
    * @private
    * @param {Sidekick} sk The sidekick
    */
-  function checkForHelix3(sk) {
+  async function checkForHelix3(sk) {
     // check if sidekick config needs to be updated to hlx3
     if (!sk.config.hlx3 && sk.location.hostname.endsWith('hlx3.page')) {
       window.setTimeout(() => {
@@ -492,7 +492,7 @@
       // eslint-disable-next-line no-alert
       if (window.confirm('This Helix Sidekick Bookmarklet can only work on a Helix 3 site.\n\nPress OK to be taken to the Helix 3 version of this page now.')) {
         sk.showModal('Please wait …', true);
-        gotoEnv(sk, 'preview');
+        await gotoEnv(sk, 'preview');
       }
     }
   }
