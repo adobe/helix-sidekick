@@ -580,8 +580,8 @@
             const resp = await sk.reload(location.pathname);
             if (!resp.ok) {
               // eslint-disable-next-line no-console
-              console.error(resp.body);
-              throw new Error(resp.body);
+              console.error(resp);
+              throw new Error(resp);
             }
             // eslint-disable-next-line no-console
             console.log(`reloading ${location.href}`);
@@ -592,10 +592,11 @@
               window.location.reload();
             }
           } catch (e) {
-            sk.showModal([
+            sk.showModal(
               `Failed to reload ${location.pathname}. Please try again later.`,
-              e,
-            ], true, 0);
+              true,
+              0,
+            );
           }
         },
       },
@@ -1044,7 +1045,6 @@
         ok: resp.ok,
         status: resp.status,
         path,
-        body: await resp.text(),
       };
     }
 
