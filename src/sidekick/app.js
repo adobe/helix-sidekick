@@ -440,8 +440,10 @@
         // TODO: use POST for preview
         // method: targetEnv === 'preview' ? 'POST' : 'GET',
       });
-      const { path } = await resp.json();
-      if (path) {
+      const { editUrl, path } = await resp.json();
+      if (targetEnv === 'editor' && editUrl) {
+        envUrl = editUrl;
+      } else if (path) {
         envUrl = `https://${config[hostType]}${path === '/index' ? '/' : path}`;
       }
     } catch (e) {
