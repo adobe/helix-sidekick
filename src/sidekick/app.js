@@ -578,7 +578,7 @@
           sk.showModal('Please wait …', true);
           try {
             const resp = await sk.reload(location.pathname);
-            if (!resp.ok) {
+            if (!resp.ok && resp.status >= 400) {
               // eslint-disable-next-line no-console
               console.error(resp);
               throw new Error(resp);
