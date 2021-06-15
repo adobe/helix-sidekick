@@ -437,7 +437,8 @@
     let envUrl;
     try {
       const resp = await fetch(previewStatusUrl, {
-        method: targetEnv === 'preview' ? 'POST' : 'GET',
+        // TODO: use POST for preview
+        // method: targetEnv === 'preview' ? 'POST' : 'GET',
       });
       const { path } = await resp.json();
       if (path) {
