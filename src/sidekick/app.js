@@ -397,8 +397,8 @@
    * Creates an Admin URL for an API and path.
    * @private
    * @param {Object} config The sidekick configuration
-   * @param {*} api The API endpoint to call
-   * @param {*} path The current path
+   * @param {string} api The API endpoint to call
+   * @param {string} path The current path
    * @returns {string} The admin URL
    */
   function getAdminUrl({ owner, repo, ref }, api, path) {
@@ -428,7 +428,7 @@
     if (!hostType) {
       return;
     }
-    const previewStatusUrl = getAdminUrl(config, 'preview', location.pathname);
+    const previewStatusUrl = getAdminUrl(config, 'preview', sidekick.isEditor() ? '' : location.pathname);
     if (sidekick.isEditor()) {
       previewStatusUrl.search = new URLSearchParams([
         ['editUrl', location.href],
