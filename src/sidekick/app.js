@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-/* global window, document, navigator, fetch, btoa */
+/* global window, document, navigator, fetch */
 
 'use strict';
 
@@ -140,7 +140,6 @@
       ? `${repo}--${owner}`
       : null;
     const innerPrefix = ghDetails ? `${ref}--${ghDetails}` : null;
-    // host param for purge request must include ref
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     const script = document.querySelector('script[src$="/sidekick/app.js"]');
     const scriptUrl = script && script.src;
@@ -395,6 +394,27 @@
   }
 
   /**
+   * Creates an Admin URL for an API and path.
+   * @private
+   * @param {Object} config The sidekick configuration
+   * @param {*} api The API endpoint to call
+   * @param {*} path The current path
+   * @returns {string} The admin URL
+   */
+  function getAdminUrl({ owner, repo, ref }, api, path) {
+    return new URL([
+      // TODO: switch to admin.hlx3.page before merging to main!
+      // 'https://admin.hlx3.page/',
+      'https://admin2.hlx3.page/',
+      api,
+      `/${owner}`,
+      `/${repo}`,
+      `/${ref}`,
+      path,
+    ].join(''));
+  }
+
+  /**
    * Switches to or opens a given environment.
    * @private
    * @param {Sidekick} sidekick The sidekick
@@ -404,58 +424,46 @@
    */
   async function gotoEnv(sidekick, targetEnv, open) {
     const { config, location } = sidekick;
-    const {
-      owner,
-      repo,
-      ref,
-    } = config;
     const hostType = ENVS[targetEnv];
     if (!hostType) {
       return;
     }
-    let url = `https://admin.hlx3.page/${owner}/${repo}/${ref}`;
-    if (targetEnv === 'edit') {
-      // resolve editor url
-      const path = location.pathname;
-      const file = path.split('/').pop() || 'index'; // use 'index' if no filename
-      let editPath;
-      if (file.endsWith('.html')) {
-        editPath = path.replace(/\.html$/, '.lnk');
-      } else if (!file.includes('.')) {
-        editPath = `${path.endsWith(file) ? path : `${path}${file}`}.lnk`;
-      }
-      url += new URL(editPath, location.href).pathname;
-    } else if (sidekick.isEditor()) {
-      // resolve target env from editor url
-      url += `/hlx_${btoa(location.href).replace(/\+/, '-').replace(/\//, '_')}.lnk`;
-      // fetch report, extract url and patch host
-      try {
-        const resp = await fetch(`${url}?hlx_report=true`);
-        if (resp.ok) {
-          const { webUrl } = await resp.json();
-          if (webUrl) {
-            const u = new URL(webUrl);
-            u.hostname = config[hostType];
-            u.pathname = u.pathname === '/index' ? '/' : u.pathname;
-            url = u.toString();
-          }
-        }
-      } catch (e) {
-        // something went wrong
-      }
-    } else {
-      // resolve target env from any env
-      url = `https://${config[hostType]}${location.pathname}`;
+    const { pathname } = location;
+    const file = pathname.split('/').pop() || 'index'; // use 'index' if no filename
+    let editPath;
+    if (file.endsWith('.html')) {
+      editPath = pathname.replace(/\.html$/, '');
+    } else if (!file.includes('.')) {
+      editPath = `${pathname.endsWith(file) ? pathname : `${pathname}${file}`}`;
     }
-
-    // switch or open env
-    if (!url) {
+    const previewStatusUrl = getAdminUrl(config, 'preview', editPath);
+    if (sidekick.isEditor()) {
+      previewStatusUrl.search = new URLSearchParams([
+        ['editUrl', location.href],
+      ]).toString();
+    }
+    let envUrl;
+    try {
+      const resp = await fetch(previewStatusUrl, {
+        method: targetEnv === 'preview' ? 'POST' : 'GET',
+      });
+      const { path } = await resp.json();
+      if (path) {
+        envUrl = `https://${config[hostType]}${path === '/index' ? '/' : path}`;
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+    if (!envUrl) {
+      sidekick.showModal('Failed to switch environment. Please try again later.', true, 0);
       return;
     }
+    // switch or open env
     if (open) {
-      window.open(url);
+      window.open(envUrl);
     } else {
-      window.location.href = url;
+      window.location.href = envUrl;
     }
   }
 
@@ -1034,15 +1042,7 @@
       const { config } = this;
       let resp;
       if (config.hlx3) {
-        const adminURL = [
-          'https://admin.hlx3.page',
-          `/${config.owner}`,
-          `/${config.repo}`,
-          `/${config.ref}`,
-          path,
-          '?action=preview',
-        ].join('');
-        resp = await fetch(adminURL, { method: 'POST' });
+        resp = await fetch(getAdminUrl(config, 'preview', path), { method: 'POST' });
       } else {
         resp = await this.publish(path, true);
       }
@@ -1074,16 +1074,8 @@
       let json;
 
       if (config.hlx3) {
-        const adminURL = [
-          'https://admin.hlx3.page',
-          `/${config.owner}`,
-          `/${config.repo}`,
-          `/${config.ref}`,
-          purgeURL.pathname,
-          '?action=publish',
-        ].join('');
-        console.log(`publishing ${adminURL}`);
-        const resp = await fetch(adminURL, { method: 'POST' });
+        console.log(`publishing ${purgeURL.pathname}`);
+        const resp = await fetch(getAdminUrl(config, 'live', purgeURL.pathname), { method: 'POST' });
         ok = resp.ok;
         status = resp.status;
       } else {
@@ -1097,7 +1089,7 @@
             xfh.push(config.host);
           }
         }
-        const resp = await fetch(purgeURL.href, {
+        const resp = await fetch(purgeURL, {
           method: 'POST',
           headers: {
             'X-Method-Override': 'HLXPURGE',
