@@ -428,15 +428,7 @@
     if (!hostType) {
       return;
     }
-    const { pathname } = location;
-    const file = pathname.split('/').pop() || 'index'; // use 'index' if no filename
-    let editPath;
-    if (file.endsWith('.html')) {
-      editPath = pathname.replace(/\.html$/, '');
-    } else if (!file.includes('.')) {
-      editPath = `${pathname.endsWith(file) ? pathname : `${pathname}${file}`}`;
-    }
-    const previewStatusUrl = getAdminUrl(config, 'preview', editPath);
+    const previewStatusUrl = getAdminUrl(config, 'preview', location.pathname);
     if (sidekick.isEditor()) {
       previewStatusUrl.search = new URLSearchParams([
         ['editUrl', location.href],
