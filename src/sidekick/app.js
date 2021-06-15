@@ -579,10 +579,9 @@
           try {
             const resp = await sk.reload(location.pathname);
             if (!resp.ok) {
-              const msg = await resp.text();
               // eslint-disable-next-line no-console
-              console.error(msg);
-              throw new Error(msg);
+              console.error(resp.body);
+              throw new Error(resp.body);
             }
             // eslint-disable-next-line no-console
             console.log(`reloading ${location.href}`);
@@ -1045,6 +1044,7 @@
         ok: resp.ok,
         status: resp.status,
         path,
+        body: await resp.text(),
       };
     }
 
