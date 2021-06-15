@@ -444,7 +444,7 @@
       if (targetEnv === 'edit' && editUrl) {
         envUrl = editUrl;
       } else if (path) {
-        envUrl = `https://${config[hostType]}${path === '/index' ? '/' : path}`;
+        envUrl = `https://${config[hostType]}${path}`;
       }
     } catch (e) {
       // eslint-disable-next-line no-console
