@@ -136,10 +136,7 @@
       // if hlx3 flag unset, check for known hlx3 repos
       hlx3 = [974752171, -1149574338].includes(hashCode(repo)),
     } = cfg;
-    const ghDetails = owner && repo
-      ? `${repo}--${owner}`
-      : null;
-    const innerPrefix = ghDetails ? `${ref}--${ghDetails}` : null;
+    const innerPrefix = owner && repo ? `${ref}--${repo}--${owner}` : null;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
     const script = document.querySelector('script[src$="/sidekick/app.js"]');
     const scriptUrl = script && script.src;
@@ -164,7 +161,7 @@
       innerHost = 'hlx.page';
     }
     innerHost = innerPrefix ? `${innerPrefix}.${innerHost}` : null;
-    const outerHost = publicHost && ghDetails ? `${ghDetails}.hlx.live` : null;
+    const outerHost = publicHost && owner && repo ? `${repo}--${owner}.hlx.live` : null;
     return {
       ...cfg,
       ref,
