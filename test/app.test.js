@@ -72,10 +72,10 @@ describe('Test sidekick bookmarklet', () => {
     plugin,
     prep = () => {},
     check = () => true,
-    checkResponse = (respond) => respond({
+    checkResponse = {
       status: 200,
       body: JSON.stringify([{ status: 'ok' }]),
-    }),
+    },
     checkCondition = (req) => req.url().startsWith('https://'),
     timeout = 0,
     timeoutSuccess = true,
@@ -86,7 +86,7 @@ describe('Test sidekick bookmarklet', () => {
       page.on('request', async (req) => {
         if (req.url().endsWith('/tools/sidekick/plugins.js')) {
           // send plugins response
-          req.respond({
+          return req.respond({
             status: 200,
             body: '',
           });
@@ -96,14 +96,19 @@ describe('Test sidekick bookmarklet', () => {
               // check successful
               resolve();
             }
-            // send check response
-            checkResponse(req.respond);
+            if (req.url().startsWith('file://')) {
+              // let file:// requests through
+              req.continue();
+            } else {
+              // send check response
+              return req.respond(checkResponse);
+            }
           } catch (e) {
             reject(e);
           }
         }
         // let request continue
-        req.continue();
+        return req.continue();
       });
       // open url and optionally click plugin button
       page
