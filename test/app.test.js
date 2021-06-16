@@ -17,6 +17,21 @@
 const assert = require('assert');
 const puppeteer = require('puppeteer');
 
+const apiTests = {
+  blog: {
+    webPath: '/en/topics/bla.html',
+    edit: {
+      url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
+    },
+  },
+  pages: {
+    webPath: '/creativecloud/en/test',
+    edit: {
+      url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
+    },
+  },
+};
+
 describe('Test sidekick bookmarklet', () => {
   const IT_DEFAULT_TIMEOUT = 60000;
   const fixturesPrefix = `file://${__dirname}/fixtures`;
@@ -443,141 +458,212 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Edit plugin calls preview API from staging URL', async () => {
+  it('Edit plugin uses preview API from staging URL', async () => {
+    const apiTest = apiTests.blog;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/edit-staging.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/theblog/master/en/topics/bla.html'),
+            req.url().endsWith(`/preview/adobe/theblog/master${apiTest.webPath}`),
             'Preview API not called',
           );
+        } else if (req.url().startsWith('https://adobe.sharepoint.com/')) {
+          // check request to edit url
+          assert.ok(req.url() === apiTest.edit.url, 'Edit URL not called');
           return true;
         }
         // ignore otherwise
         return false;
       },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
+      },
       plugin: 'edit',
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Edit plugin calls preview API from production URL', async () => {
+  it('Edit plugin uses preview API from production URL', async () => {
+    const apiTest = apiTests.blog;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/edit-production.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/theblog/master/en/topics/bla.html'),
+            req.url().endsWith(`/preview/adobe/theblog/master${apiTest.webPath}`),
             'Preview API not called',
+          );
+        } else if (req.url().startsWith('https://adobe.sharepoint.com/')) {
+          // check request to edit url
+          assert.ok(req.url() === apiTest.edit.url, 'Edit URL not called');
+          return true;
+        }
+        // ignore otherwise
+        return false;
+      },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
+      },
+      plugin: 'edit',
+    });
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Preview plugin uses preview API with editURL parameter from gdrive URL', async () => {
+    const apiTest = apiTests.pages;
+    await testPageRequests({
+      page,
+      url: `${fixturesPrefix}/preview-gdrive.html`,
+      check: (req) => {
+        if (req.url().includes('/preview/')) {
+          // check request to preview API
+          assert.ok(
+            req.url().endsWith(`/preview/adobe/pages/master?editUrl=${encodeURIComponent(apiTest.edit.url)}`),
+            'Preview API not called',
+          );
+        } else if (req.url().includes('.hlx.page/')) {
+          // check request to preview url
+          assert.ok(
+            req.url() === `https://master--pages--adobe.hlx.page${apiTest.webPath}`,
+            'Preview URL not called',
           );
           return true;
         }
         // ignore otherwise
         return false;
       },
-      plugin: 'edit',
-    });
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Preview plugin calls preview API with editURL parameter from gdrive URL', async () => {
-    await testPageRequests({
-      page,
-      url: `${fixturesPrefix}/preview-gdrive.html`,
-      check: (req) => {
-        // check if request to preview API
-        if (req.url().includes('/preview/')) {
-          assert.ok(
-            req.url().endsWith('/preview/adobe/pages/master?editUrl=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit'),
-            `Preview API not called ${req.url()}`,
-          );
-          return true;
-        }
-        // ignore otherwise
-        return false;
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
       },
       plugin: 'preview',
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Preview plugin calls preview API with editURL parameter from onedrive URL', async () => {
+  it('Preview plugin uses preview API with editURL parameter from onedrive URL', async () => {
+    const apiTest = apiTests.blog;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/preview-onedrive.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/theblog/master?editUrl=https%3A%2F%2Fadobe.sharepoint.com%2F%3Aw%3A%2Fr%2Fsites%2FTheBlog%2F_layouts%2F15%2FDoc.aspx%3Fsourcedoc%3D%257BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%257D%26file%3Dcafebabe.docx%26action%3Ddefault%26mobileredirect%3Dtrue'),
+            req.url().endsWith(`/preview/adobe/theblog/master?editUrl=${encodeURIComponent(apiTest.edit.url)}`),
             'Preview API not called',
+          );
+        } else if (req.url().includes('.hlx.page/')) {
+          // check request to preview url
+          assert.ok(
+            req.url() === `https://master--theblog--adobe.hlx.page${apiTest.webPath}`,
+            'Preview URL not called',
           );
           return true;
         }
         // ignore otherwise
         return false;
       },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
+      },
       plugin: 'preview',
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Preview plugin calls preview API from production URL', async () => {
+  it('Preview plugin uses preview API from production URL', async () => {
+    const apiTest = apiTests.blog;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/edit-production.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/theblog/master/en/topics/bla.html'),
+            req.url().endsWith(`/preview/adobe/theblog/master${apiTest.webPath}`),
             'Preview API not called',
+          );
+        } else if (req.url().includes('.hlx.page/')) {
+          // check request to preview url
+          assert.ok(
+            req.url() === `https://master--theblog--adobe.hlx.page${apiTest.webPath}`,
+            'Preview URL not called',
           );
           return true;
         }
         // ignore otherwise
         return false;
       },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
+      },
       plugin: 'preview',
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Live plugin calls preview API from gdrive URL', async () => {
+  it('Live plugin uses preview API from gdrive URL', async () => {
+    const apiTest = apiTests.pages;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/preview-gdrive.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/pages/master?editUrl=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit'),
+            req.url().endsWith(`/preview/adobe/pages/master?editUrl=${encodeURIComponent(apiTest.edit.url)}`),
             'Preview API not called',
+          );
+        } else if (req.url().includes('.hlx.live/')) {
+          // check request to live url
+          assert.ok(
+            req.url() === `https://pages--adobe.hlx.live${apiTest.webPath}`,
+            'Live URL not called',
           );
           return true;
         }
         // ignore otherwise
         return false;
+      },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
       },
       plugin: 'live',
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Production plugin calls preview API from gdrive URL', async () => {
+  it('Production plugin uses preview API from gdrive URL', async () => {
+    const apiTest = apiTests.pages;
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/preview-gdrive.html`,
       check: (req) => {
-        // check if request to preview API
         if (req.url().includes('/preview/')) {
+          // check request to preview API
           assert.ok(
-            req.url().endsWith('/preview/adobe/pages/master?editUrl=https%3A%2F%2Fdocs.google.com%2Fdocument%2Fd%2F2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU%2Fedit'),
+            req.url().endsWith(`/preview/adobe/pages/master?editUrl=${encodeURIComponent(apiTest.edit.url)}`),
             'Preview API not called',
+          );
+        } else if (req.url().includes('.adobe.com/')) {
+          // check request to production url
+          assert.ok(
+            req.url() === `https://pages.adobe.com${apiTest.webPath}`,
+            'Production URL not called',
           );
           return true;
         }
         // ignore otherwise
         return false;
+      },
+      checkResponse: {
+        status: 200,
+        body: JSON.stringify(apiTest),
       },
       plugin: 'prod',
     });
@@ -623,7 +709,7 @@ describe('Test sidekick bookmarklet', () => {
       url: `${fixturesPrefix}/reload-staging-hlx3.html`,
       check: (req) => {
         if (!apiCalled && req.method() === 'POST') {
-          // intercept purge request
+          // intercept api request
           apiCalled = req.url().endsWith('/preview/adobe/theblog/master/en/topics/bla.html');
           req.respond({
             status: 200,
