@@ -31,11 +31,11 @@
 }
 
 .hlx-sk .edit button::before {
-  content: "Aperçu";
+  content: "Edition";
 }
 
 .hlx-sk .preview button::before {
-  content: "Edition";
+  content: "Aperçu";
 }
 
 .hlx-sk .live button::before {
