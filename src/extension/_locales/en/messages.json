@@ -32,6 +32,9 @@
   "config_project_host": {
     "message": "Production"
   },
+  "config_project_token": {
+    "message": "Shared Key"
+  },
   "config_project_innerhost": {
     "message": "Preview"
   },
@@ -73,6 +76,9 @@
   },
   "config_manual_project_placeholder": {
     "message": "Project Name (optional)"
+  },
+  "config_manual_token_placeholder": {
+    "message": "Shared Key (optional)"
   },
   "config_add_success": {
     "message": "Project added to Helix Sidekick"

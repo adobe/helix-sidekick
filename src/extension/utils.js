@@ -132,6 +132,7 @@ export function getShareSettings(shareurl) {
       const params = new URL(shareurl).searchParams;
       const giturl = params.get('giturl');
       const hlx3 = params.get('hlx3') !== 'false';
+      const token = params.get('token');
       // check gh url
       if (Object.keys(getGitHubSettings(giturl)).length !== 3) {
         throw new Error();
@@ -140,6 +141,7 @@ export function getShareSettings(shareurl) {
         giturl,
         project: params.get('project'),
         hlx3,
+        token,
       };
     } catch (e) {
       log.error('error getting sidekick settings from share url', e);
@@ -149,7 +151,7 @@ export function getShareSettings(shareurl) {
 }
 
 export function isValidShareURL(shareurl) {
-  return Object.keys(getShareSettings(shareurl)).length === 3;
+  return Object.keys(getShareSettings(shareurl)).length >= 3;
 }
 
 async function getProjectConfig(owner, repo, ref) {
@@ -166,7 +168,9 @@ async function getProjectConfig(owner, repo, ref) {
   return cfg;
 }
 
-export async function addConfig({ giturl, project, hlx3 }, cb) {
+export async function addConfig({
+  giturl, project, hlx3, token,
+}, cb) {
   const { owner, repo, ref } = getGitHubSettings(giturl);
   const projectConfig = await getProjectConfig(owner, repo, ref);
   const mountpoints = await getMountpoints(owner, repo, ref);
@@ -183,6 +187,7 @@ export async function addConfig({ giturl, project, hlx3 }, cb) {
         project,
         hlx3,
         ...projectConfig,
+        token,
       };
       configs.push(config);
       browser.storage.sync

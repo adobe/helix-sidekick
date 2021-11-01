@@ -46,7 +46,7 @@ function drawConfigs() {
     const container = document.getElementById('configs');
     container.innerHTML = '';
     configs.forEach(({
-      owner, repo, ref, mountpoints, project, host, hlx3,
+      owner, repo, ref, mountpoints, project, host, hlx3, token,
     }, i) => {
       const innerHost = getInnerHost(owner, repo, ref, hlx3);
       const section = document.createElement('section');
@@ -61,6 +61,9 @@ function drawConfigs() {
     : ''}
     ${host
     ? `<p>${i18n('config_project_host')}: ${drawLink(host)}</p>`
+    : ''}
+    ${token
+    ? `<p>${i18n('config_project_token')}: ****************</p>`
     : ''}
     </div>
   <div>
@@ -94,6 +97,8 @@ function shareConfig(i, evt) {
       shareUrl.search = new URLSearchParams([
         ['project', config.project || ''],
         ['giturl', `https://github.com/${config.owner}/${config.repo}${config.ref ? `/tree/${config.ref}` : ''}`],
+        ['hlx3', config.hlx3],
+        ['token', config.token],
       ]).toString();
       if (navigator.share) {
         navigator.share({
@@ -249,6 +254,7 @@ window.addEventListener('DOMContentLoaded', () => {
       await addConfig({
         giturl,
         project: document.getElementById('project').value,
+        token: document.getElementById('token').value,
       }, (added) => {
         if (added) {
           drawConfigs();

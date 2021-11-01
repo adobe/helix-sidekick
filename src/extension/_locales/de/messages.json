@@ -32,6 +32,9 @@
   "config_project_host": {
     "message": "Produktion"
   },
+  "config_project_token": {
+    "message": "Geteilter Schlüssel"
+  },
   "config_project_innerhost": {
     "message": "Vorschau"
   },
@@ -76,6 +79,9 @@
   },
   "config_manual_project_placeholder": {
     "message": "Projektname (optional)"
+  },
+  "config_manual_token_placeholder": {
+    "message": "Geteilter Schlüssel (optional)"
   },
   "config_add_success": {
     "message": "Projekt zu Helix Sidekick hinzugefügt"

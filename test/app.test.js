@@ -127,7 +127,7 @@ describe('Test sidekick bookmarklet', () => {
     await new Promise((resolve, reject) => {
       page.on('dialog', (dialog) => {
         try {
-          assert.ok(dialog.message().startsWith('Apologies'), 'Did not show update dialog');
+          assert.ok(dialog.message().startsWith('Your sidekick bookmarklet'), 'Did not show update dialog');
           resolve();
         } catch (e) {
           reject(e);
@@ -143,7 +143,7 @@ describe('Test sidekick bookmarklet', () => {
     await new Promise((resolve, reject) => {
       page.on('dialog', (dialog) => {
         try {
-          assert.ok(dialog.message().startsWith('Apologies'), 'Did not show update dialog');
+          assert.ok(dialog.message().startsWith('Your sidekick bookmarklet'), 'Did not show update dialog');
           resolve();
         } catch (e) {
           reject(e);
@@ -562,6 +562,28 @@ describe('Test sidekick bookmarklet', () => {
       '',
       'Pushed down content',
     );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it.only('Uses shared secret', async () => {
+    let tokenSent = false;
+    const page = getPage();
+    await testPageRequests({
+      page,
+      url: `${fixturesPrefix}/config-token.html`,
+      check: (req) => {
+        if (req.url() === 'https://admin.hlx3.page/status/adobe/theblog/master/en/topics/bla.html') {
+          const headers = req.headers();
+          tokenSent = headers['x-token'] === '12345678';
+          return true;
+        }
+        return false;
+      },
+      mockResponses: [
+        {},
+      ],
+    });
+    // check result
+    assert.ok(tokenSent, 'Shared secret not used');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
 

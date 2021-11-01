@@ -68,6 +68,7 @@
    * @prop {string} host The production host name to publish content to (optional)
    * @prop {boolean} byocdn=false <pre>true</pre> if the production host is a 3rd party CDN
    * @prop {boolean} hlx3=false <pre>true</pre> if the project is running on Helix 3
+   * @prop {string} token A shared key for projects with access control enabled
    * @prop {boolean} devMode=false Loads configuration and plugins from the developmemt environment
    * @prop {boolean} pushDown=true <pre>false</pre> to have the sidekick overlay page content
    * @prop {string} pushDownSelector The CSS selector for absolute elements to also push down
@@ -417,7 +418,7 @@
   /**
    * Returns the share URL for the sidekick bookmarklet.
    * @private
-   * @param {Object} config The sidekick configuration
+   * @param {sidekickConfig} config The sidekick configuration
    * @param {string} from The URL of the referrer page
    * @returns {string} The share URL
    */
@@ -428,6 +429,7 @@
       ['from', from || ''],
       ['giturl', `https://github.com/${config.owner}/${config.repo}/tree/${config.ref}`],
       ['hlx3', config.hlx3],
+      ['token', config.token || ''],
     ]).toString();
     return shareUrl.toString();
   }
@@ -469,7 +471,7 @@
     ];
     if (indicators.includes(true)) {
       window.setTimeout(() => {
-        if (window.confirm('Apologies, but your Helix Sidekick Bookmarklet needs to be updated one more time …\n\nThis time we made sure we will never have to ask you again. Promised! :)')) {
+        if (window.confirm('Your Helix Sidekick Bookmarklet needs to be updated\n\nThis will only take a few seconds!')) {
           sk.showModal('Please wait …', true);
           window.location.href = getShareUrl(sk.config, sk.location.href);
         }
@@ -520,15 +522,28 @@
   }
 
   /**
-   * Creates an Admin URL for an API and path.
+   * Makes an Admin API call.
    * @private
-   * @param {Object} config The sidekick configuration
-   * @param {string} api The API endpoint to call
-   * @param {string} path The current path
-   * @returns {string} The admin URL
+   * @param {sidekickConfig} config The sidekick configuration
+   * @param {Object} options The request options
+   * @param {string} options.api The API endpoint
+   * @param {string} options.path The resource path
+   * @param {string} options.method The method (optional)
+   * @param {string} options.editUrl The edit URL (optional)
+   * @returns {Response} The response object
    */
-  function getAdminUrl({ owner, repo, ref }, api, path) {
-    return new URL([
+  async function callAdmin({
+    owner,
+    repo,
+    ref,
+    token,
+  }, {
+    api,
+    path,
+    method = 'GET',
+    editUrl,
+  }) {
+    const apiUrl = new URL([
       'https://admin.hlx3.page/',
       api,
       `/${owner}`,
@@ -536,6 +551,20 @@
       `/${ref}`,
       path,
     ].join(''));
+    if (editUrl) {
+      apiUrl.search = new URLSearchParams([
+        ['editUrl', editUrl],
+      ]).toString();
+    }
+    const headers = {};
+    if (token) {
+      headers['x-token'] = token;
+    }
+    return fetch(apiUrl.toString(), {
+      method,
+      headers,
+      cache: 'no-store',
+    });
   }
 
   /**
@@ -945,19 +974,12 @@
       if (!owner || !repo || !ref) {
         return this;
       }
-      if (!this.status.apiUrl) {
-        const { href, pathname } = this.location;
-        const apiUrl = getAdminUrl(
-          this.config, this.isContent() ? 'preview' : 'code', this.isEditor() ? '/' : pathname,
-        );
-        if (this.isEditor()) {
-          apiUrl.search = new URLSearchParams([
-            ['editUrl', href],
-          ]).toString();
-        }
-        this.status.apiUrl = apiUrl.toString();
-      }
-      fetch(this.status.apiUrl, { cache: 'no-store' })
+      const { href, pathname } = this.location;
+      callAdmin(this.config, {
+        api: 'status',
+        path: this.isEditor() ? '/' : pathname,
+        editUrl: this.isEditor() ? href : null,
+      })
         .then((resp) => resp.json())
         .then((json) => Object.assign(this.status, json))
         .then((json) => fireEvent(this, 'statusfetched', json))
@@ -982,6 +1004,7 @@
      */
     loadContext(cfg) {
       this.config = initConfig(cfg);
+      console.log(this.config);
       this.location = getLocation();
       fireEvent(this, 'contextloaded', {
         config: this.config,
@@ -1405,8 +1428,11 @@
       try {
         if (config.hlx3) {
           // update preview
-          resp = await fetch(getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
-            { method: 'POST' });
+          resp = await callAdmin(config, {
+            api: this.isContent() ? 'preview' : 'code',
+            path,
+            method: 'POST',
+          });
         } else {
           resp = await this.publish(path, true);
         }
@@ -1437,8 +1463,11 @@
       try {
         if (config.hlx3) {
           // delete preview
-          resp = await fetch(getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
-            { method: 'DELETE' });
+          resp = await callAdmin(config, {
+            api: this.isContent() ? 'preview' : 'code',
+            path,
+            method: 'DELETE',
+          });
           if (status.live && status.live.lastModified) {
             await this.unpublish(path);
           }
@@ -1488,7 +1517,11 @@
 
       if (config.hlx3) {
         console.log(`publishing ${purgeURL.pathname}`);
-        const resp = await fetch(getAdminUrl(config, 'live', purgeURL.pathname), { method: 'POST' });
+        const resp = await callAdmin(config, {
+          api: 'live',
+          path: purgeURL.pathname,
+          method: 'POST',
+        });
         ok = resp.ok;
         status = resp.status;
       } else {
@@ -1538,7 +1571,11 @@
       try {
         if (config.hlx3) {
           // delete live
-          resp = await fetch(getAdminUrl(config, 'live', path), { method: 'DELETE' });
+          resp = await callAdmin(config, {
+            api: 'live',
+            path,
+            method: 'DELETE',
+          });
           fireEvent(this, 'unpublished', path);
         }
       } catch (e) {
