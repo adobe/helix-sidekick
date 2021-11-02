@@ -558,7 +558,7 @@
     }
     const headers = {};
     if (token) {
-      headers['x-token'] = token;
+      headers['x-preauth-token'] = token;
     }
     return fetch(apiUrl.toString(), {
       method,
@@ -1004,7 +1004,6 @@
      */
     loadContext(cfg) {
       this.config = initConfig(cfg);
-      console.log(this.config);
       this.location = getLocation();
       fireEvent(this, 'contextloaded', {
         config: this.config,

@@ -564,7 +564,7 @@ describe('Test sidekick bookmarklet', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it.only('Uses shared secret', async () => {
+  it('Uses shared secret', async () => {
     let tokenSent = false;
     const page = getPage();
     await testPageRequests({
@@ -573,7 +573,7 @@ describe('Test sidekick bookmarklet', () => {
       check: (req) => {
         if (req.url() === 'https://admin.hlx3.page/status/adobe/theblog/master/en/topics/bla.html') {
           const headers = req.headers();
-          tokenSent = headers['x-token'] === '12345678';
+          tokenSent = headers['x-preauth-token'] === '12345678';
           return true;
         }
         return false;
