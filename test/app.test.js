@@ -127,7 +127,7 @@ describe('Test sidekick bookmarklet', () => {
     await new Promise((resolve, reject) => {
       page.on('dialog', (dialog) => {
         try {
-          assert.ok(dialog.message().startsWith('Your sidekick bookmarklet'), 'Did not show update dialog');
+          assert.ok(dialog.message().startsWith('Your Helix Sidekick'), 'Did not show update dialog');
           resolve();
         } catch (e) {
           reject(e);
@@ -143,7 +143,7 @@ describe('Test sidekick bookmarklet', () => {
     await new Promise((resolve, reject) => {
       page.on('dialog', (dialog) => {
         try {
-          assert.ok(dialog.message().startsWith('Your sidekick bookmarklet'), 'Did not show update dialog');
+          assert.ok(dialog.message().startsWith('Your Helix Sidekick'), 'Did not show update dialog');
           resolve();
         } catch (e) {
           reject(e);
