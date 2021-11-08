@@ -70,7 +70,9 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Checks for hlx3 config/URL mismatch', async () => {
     const page = getPage();
-    await mockStandardResponses(page);
+    await mockStandardResponses(page, {
+      dismissDialogs: false,
+    });
     await new Promise((resolve, reject) => {
       // wait for dialog
       page.on('dialog', async (dialog) => {
@@ -80,6 +82,7 @@ describe('Test sidekick bookmarklet', () => {
               dialog.message().includes('can only work on a Helix 3 site'),
               `Unexpected dialog message: "${dialog.message()}"`,
             );
+            dialog.accept();
             resolve();
           } catch (e) {
             reject(e);
@@ -561,6 +564,22 @@ describe('Test sidekick bookmarklet', () => {
       await page.evaluate(() => document.documentElement.style.marginTop),
       '',
       'Pushed down content',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Bookmarklet hides sidekick when loaded again', async () => {
+    const page = getPage();
+    await mockStandardResponses(page);
+    await page.goto(`${fixturesPrefix}/config-default.html`, { waitUntil: 'load' });
+    await sleep();
+    await page.addScriptTag({
+      path: './test/fixtures/bookmarklet.js',
+      // content: `${fixturesPrefix}/bookmarklet.js`,
+    });
+    await sleep();    
+    assert.ok(
+      await page.evaluate(() => window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk.hlx-sk-hidden')),
+      'Sidekick not hidden',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

@@ -39,10 +39,10 @@ describe('Test edit plugin', () => {
     await testPageRequests({
       page,
       url: `${fixturesPrefix}/edit-staging.html`,
-      popupCheck: (req) => {
+      popupCheck: (target) => {
         try {
           // check request to edit url
-          assert.ok(req.url() === apiMock.edit.url, 'Edit URL not called');
+          assert.ok(target.url() === apiMock.edit.url, 'Edit URL not called');
           return true;
         } catch (e) {
           // ignore otherwise

@@ -25,6 +25,7 @@ const {
   getPage,
   startBrowser,
   stopBrowser,
+  writeCoverage,
 } = require('./utils');
 
 const fixturesPrefix = `file://${__dirname}/fixtures`;
@@ -32,6 +33,7 @@ const fixturesPrefix = `file://${__dirname}/fixtures`;
 describe('Test unpublish plugin', () => {
   beforeEach(startBrowser);
   afterEach(stopBrowser);
+  after(writeCoverage);
 
   it('Unpublish plugin uses live API in hlx3 mode', async () => {
     const page = getPage();

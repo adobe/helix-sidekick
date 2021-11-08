@@ -17,9 +17,11 @@
 const assert = require('assert');
 const fs = require('fs-extra');
 const puppeteer = require('puppeteer');
+const pti = require('puppeteer-to-istanbul');
 
 // set debug to true to see browser window and debug output
 const DEBUG = false;
+const allCoverage = [];
 const IT_DEFAULT_TIMEOUT = 60000;
 const MOCKS = {
   api: {
@@ -119,18 +121,18 @@ const checkEventFired = async (p, type) => p.evaluate(async (evtType) => {
   return results.every((res) => res === true);
 }, type);
 
-const execPlugin = async (p, id) => {
+const execPlugin = async (p, id, metaKeyDown = false) => {
   await waitForEvent(p, 'pluginused');
-  await p.evaluate((pluginId) => {
+  await p.evaluate((pluginId, metaKey) => {
     const click = (el) => {
-      const evt = document.createEvent('Events');
-      evt.initEvent('click', true, false);
-      el.dispatchEvent(evt);
+      el.dispatchEvent(new MouseEvent('click', {
+        metaKey,
+      }));
     };
     if (pluginId) {
       click(window.hlx.sidekick.shadowRoot.querySelector(`.hlx-sk .${pluginId} button`));
     }
-  }, id);
+  }, id, metaKeyDown);
   assert.ok(await checkEventFired(p, 'pluginused'), 'Event pluginused not fired');
 };
 
@@ -149,8 +151,12 @@ const mockStandardResponses = async (p, opts = {}) => {
     configJs = '',
     check = () => true,
     mockResponses = [MOCKS.api.dummy],
+    dismissDialogs = true,
   } = opts;
   await p.setRequestInterception(true);
+  if (dismissDialogs) {
+    p.on('dialog', async (dialog) => dialog.dismiss());
+  }
   p.on('request', async (req) => {
     if (DEBUG) {
       // eslint-disable-next-line no-console
@@ -182,20 +188,23 @@ const testPageRequests = async ({
   page,
   url,
   plugin,
+  metaKeyDown,
   events,
   prep = () => {},
   check = () => true,
-  browserCheck: popupCheck,
+  popupCheck,
   mockResponses = MOCKS.purge,
   checkCondition = (req) => req.url().startsWith('https://'),
   timeout = 0,
   timeoutSuccess = true,
+  resetPage,
 }) => {
   await page.setRequestInterception(true);
   return new Promise((resolve, reject) => {
     if (typeof popupCheck === 'function') {
-      page.browser().on('request', (req) => {
-        if (popupCheck(req)) {
+      page.browser().on('targetcreated', (target) => {
+        console.log('targetcreated', target.url());
+        if (popupCheck(target)) {
           resolve();
         }
       });
@@ -214,6 +223,9 @@ const testPageRequests = async ({
         try {
           if (check(req)) {
             // check successful
+            if (resetPage) {
+              await page.goto('about:blank');
+            }
             resolve();
           }
           if (req.url().startsWith('file://')) {
@@ -239,7 +251,7 @@ const testPageRequests = async ({
       .goto(url, { waitUntil: 'load' })
       .then(() => prep(page))
       .then(() => waitForEvent(page, events))
-      .then(() => execPlugin(page, plugin))
+      .then(() => execPlugin(page, plugin, metaKeyDown))
       .then(() => checkEventFired(page, events))
       .catch((e) => reject(e));
     if (timeout) {
@@ -264,6 +276,7 @@ const getBrowser = () => browser;
 const getPage = () => page;
 
 async function startBrowser() {
+  // needs to be named function so it can use 'this'
   this.timeout(10000);
   browser = await puppeteer.launch({
     devtools: DEBUG,
@@ -275,15 +288,29 @@ async function startBrowser() {
     ],
   });
   page = await browser.newPage();
+  await page.coverage.startJSCoverage({
+    resetOnNavigation: false,
+  });
 }
 
-const stopBrowser = async () => {
+async function stopBrowser() {
+  // needs to be named function so it can use 'this'
+  this.timeout(10000);
   if (!DEBUG) {
-    await browser.close();
+    const jsCoverage = await page.coverage.stopJSCoverage();
+    allCoverage.push(...jsCoverage.values());
+      await browser.close();
     browser = null;
     page = null;
   }
 };
+
+const writeCoverage = function() {
+  pti.write([...allCoverage], {
+    includeHostname: true,
+    storagePath: './.nyc_output',
+  });
+}
 
 module.exports = {
   IT_DEFAULT_TIMEOUT,
@@ -300,4 +327,5 @@ module.exports = {
   getPage,
   startBrowser,
   stopBrowser,
+  writeCoverage,
 };

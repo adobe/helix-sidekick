@@ -52,6 +52,7 @@ describe('Test production plugin', () => {
         apiMock,
       ],
       plugin: 'prod',
+      resetPage: true,
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -77,6 +78,7 @@ describe('Test production plugin', () => {
         apiMock,
       ],
       plugin: 'prod',
+      resetPage: true,
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -102,6 +104,7 @@ describe('Test production plugin', () => {
         apiMock,
       ],
       plugin: 'prod',
+      resetPage: true,
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

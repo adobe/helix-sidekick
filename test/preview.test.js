@@ -127,6 +127,7 @@ describe('Test preview plugin', () => {
         apiMock,
       ],
       plugin: 'preview',
+      resetPage: true,
     });
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

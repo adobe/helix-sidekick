@@ -40,6 +40,7 @@
     "mocha": "9.1.3",
     "nyc": "15.1.0",
     "puppeteer": "10.4.0",
+    "puppeteer-to-istanbul": "1.4.0",
     "semantic-release": "18.0.0"
   },
   "lint-staged": {
@@ -52,5 +53,10 @@
     "ghooks": {
       "pre-commit": "npx lint-staged"
     }
+  },
+  "nyc": {
+    "include": [
+      "**/src/sidekick/*.js"
+    ]
   }
 }

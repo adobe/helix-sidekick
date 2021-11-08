@@ -69,11 +69,7 @@
             window.hlx.initSidekick();
           });
           // init sidekick via project config
-          if (document.getElementById(configScript.id)) {
-            document.getElementById(configScript.id).replaceWith(configScript);
-          } else {
-            document.head.append(configScript);
-          }
+          document.head.append(configScript);
         }
       }
     });

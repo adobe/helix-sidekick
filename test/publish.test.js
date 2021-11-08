@@ -15,17 +15,20 @@
 'use strict';
 
 const assert = require('assert');
+const { Browser } = require('puppeteer');
 
 const {
   IT_DEFAULT_TIMEOUT,
   MOCKS,
   getPlugins,
+  execPlugin,
   mockStandardResponses,
   testPageRequests,
   sleep,
   getPage,
   startBrowser,
   stopBrowser,
+  writeCoverage,
 } = require('./utils');
 
 const fixturesPrefix = `file://${__dirname}/fixtures`;
@@ -60,6 +63,7 @@ describe('Test publish plugin', () => {
         MOCKS.purge,
       ],
       plugin: 'publish',
+      resetPage: true,
     });
     // check result
     assert.ok(purged, 'Purge request not sent');
@@ -98,6 +102,7 @@ describe('Test publish plugin', () => {
         MOCKS.purge,
       ],
       plugin: 'publish',
+      resetPage: true,
     });
     assert.deepStrictEqual(purged, [
       '/en/topics/bla.html',
@@ -168,6 +173,29 @@ describe('Test publish plugin', () => {
     assert.ok(redirected, 'Redirect not sent');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Publish plugin opens new tab if meta key is pressed', async () => {
+    const page = getPage();
+    const apiMock = MOCKS.api.blog;
+    let newTab = false;
+    await mockStandardResponses(page, {
+      mockResponses: [
+        apiMock,
+        apiMock,
+        MOCKS.html,
+        MOCKS.html,
+      ],
+    });
+    page.browser().on('targetcreated', (target) => {
+      newTab = target.url().startsWith('https://blog.adobe.com'); 
+    });
+    await page.goto(`${fixturesPrefix}/publish-staging-hlx3.html`, { waitUntil: 'load' });
+    // click publish plugin with meta key
+    await execPlugin(page, 'publish', true);
+    await sleep();
+    // check result
+    assert.ok(newTab, 'No new tab opened');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Publish plugin redirects to live instead of bring-your-own-CDN production host', async () => {
     const page = getPage();
     const apiMock = MOCKS.api.blog;
@@ -194,6 +222,7 @@ describe('Test publish plugin', () => {
         MOCKS.purge,
       ],
       plugin: 'publish',
+      resetPage: true,
     });
     // check result
     assert.ok(redirected, 'Redirect to live not sent');

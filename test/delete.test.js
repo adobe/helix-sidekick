@@ -71,6 +71,7 @@ describe('Test delete plugin', () => {
         MOCKS.purge,
       ],
       plugin: 'delete',
+      resetPage: true,
     });
     // check result
     assert.ok(purged, 'Purge request not sent');
@@ -115,6 +116,7 @@ describe('Test delete plugin', () => {
         'deleted',
       ],
       plugin: 'delete',
+      resetPage: true,
     });
     // check result
     assert.ok(apiCalled, 'Preview API not called');
@@ -166,6 +168,7 @@ describe('Test delete plugin', () => {
         MOCKS.json,
       ],
       plugin: 'delete',
+      resetPage: true,
     });
     // check result
     assert.ok(previewDeleted, 'Preview API not called');
@@ -210,6 +213,7 @@ describe('Test delete plugin', () => {
         'deleted',
       ],
       plugin: 'delete',
+      resetPage: true,
     });
     // check result
     assert.ok(apiCalled, 'Code API not called');
