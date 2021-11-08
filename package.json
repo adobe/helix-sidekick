@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-sidekick",
-  "version": "3.18.0",
+  "version": "3.18.1",
   "description": "Helix Sidekick",
   "main": "src/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "codecov": "3.8.3",
     "commitizen": "4.2.4",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "8.1.0",
+    "eslint": "8.2.0",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.25.2",
     "fs-extra": "10.0.0",
