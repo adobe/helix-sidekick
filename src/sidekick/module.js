@@ -1276,6 +1276,7 @@
      * @fires Sidekick#modalshown
      * @returns {Sidekick} The sidekick
      */
+    // eslint-disable-next-line default-param-last
     showModal(msg, sticky = false, level = 2, callback) {
       if (!this._modal) {
         const $spinnerWrap = appendTag(this.shadowRoot, {
@@ -1467,6 +1468,10 @@
             path,
             method: 'DELETE',
           });
+          resp = await fetch(
+            getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
+            { method: 'DELETE' },
+          );
           if (status.live && status.live.lastModified) {
             await this.unpublish(path);
           }

@@ -50,12 +50,13 @@
         if (owner && repo) {
           // merge base config with potential pre-existing config
           window.hlx.sidekickConfig = Object.assign(
-            window.hlx.sidekickConfig || {}, baseConfig,
+            window.hlx.sidekickConfig || {},
+            baseConfig,
           );
           // look for extended config in project
           let configOrigin = '';
           if (devMode) {
-            configOrigin = 'https://localhost:3000';
+            configOrigin = 'http://localhost:3000';
           } else if (!new RegExp(`${repo}\\-\\-${owner}\\.hlx(\\-\\d|3)?\\.page$`).test(window.location.hostname)) {
             // load config from inner CDN
             configOrigin = `https://${ref}--${repo}--${owner}.hlx.page`;
