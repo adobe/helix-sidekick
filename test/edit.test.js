@@ -25,6 +25,7 @@ const {
   getPage,
   startBrowser,
   stopBrowser,
+  execPlugin,
 } = require('./utils');
 
 const fixturesPrefix = `file://${__dirname}/fixtures`;
@@ -33,31 +34,20 @@ describe('Test edit plugin', () => {
   beforeEach(startBrowser);
   afterEach(stopBrowser);
 
-  it('Edit plugin switches to editor from preview URL', async () => {
-    const page = getPage();
+  it('Edit plugin opens new window with editor from preview URL', async () => {
     const apiMock = MOCKS.api.blog;
-    await testPageRequests({
-      page,
-      url: `${fixturesPrefix}/edit-staging.html`,
-      popupCheck: (target) => {
-        try {
-          // check request to edit url
-          assert.ok(target.url() === apiMock.edit.url, 'Edit URL not called');
-          return true;
-        } catch (e) {
-          // ignore otherwise
-          return false;
-        }
-      },
-      mockResponses: [
-        apiMock,
-      ],
-      plugin: 'edit',
-      events: [
-        'statusfetched',
-        'contextloaded',
-      ],
+    const page = getPage();
+    let editorOpened = false;
+    mockStandardResponses(page, {
+      mockResponses: [apiMock],
+    })
+    page.browser().on('targetcreated',  (target) => {
+      editorOpened = target.url().startsWith('https://login.microsoftonline.com/');
     });
+    await page.goto(`${fixturesPrefix}/edit-staging.html`, { waitUntil: 'load' });
+    await execPlugin(page, 'edit');
+    await sleep(3000);
+    assert.ok(editorOpened, 'Editor window not opened');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Edit plugin switches to editor from production URL', async () => {
