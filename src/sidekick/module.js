@@ -1468,10 +1468,6 @@
             path,
             method: 'DELETE',
           });
-          resp = await fetch(
-            getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
-            { method: 'DELETE' },
-          );
           if (status.live && status.live.lastModified) {
             await this.unpublish(path);
           }
