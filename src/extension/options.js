@@ -21,6 +21,7 @@ import {
   getShareSettings,
   i18n,
   addConfig,
+  assembleConfig,
 } from './utils.js';
 
 function getInnerHost(owner, repo, ref, hlx3) {
@@ -142,17 +143,19 @@ function editConfig(i) {
       buttons[0].textContent = i18n('save');
       buttons[0].title = i18n('save');
       buttons[0].addEventListener('click', async () => {
-        document.querySelectorAll('#configEditor input').forEach((field) => {
-          const key = field.id.split('-')[1];
-          if (typeof config[key] === 'object') {
-            config[key][0] = field.value;
-          } else if (field.type === 'checkbox') {
-            config[key] = field.checked;
-          } else {
-            config[key] = field.value;
-          }
-        });
-        hlxSidekickConfigs[i] = config;
+        const input = {
+          giturl: document.querySelector('#edit-giturl').value,
+          mountpoints: [
+            document.querySelector('#edit-mountpoints').value,
+          ],
+          project: document.querySelector('#edit-project').value,
+          host: document.querySelector('#edit-host').value,
+          hlx3: document.querySelector('#edit-hlx3').checked,
+        };
+        hlxSidekickConfigs[i] = {
+          ...config,
+          ...await assembleConfig(input),
+        };
         browser.storage.sync
           .set({ hlxSidekickConfigs })
           .then(() => {
@@ -255,6 +258,7 @@ window.addEventListener('DOMContentLoaded', () => {
         giturl,
         project: document.getElementById('project').value,
         token: document.getElementById('token').value,
+        hlx3: true,
       }, (added) => {
         if (added) {
           drawConfigs();

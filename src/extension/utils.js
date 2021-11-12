@@ -172,12 +172,35 @@ async function getProjectConfig(owner, repo, ref) {
   return cfg;
 }
 
-export async function addConfig({
-  giturl, project, hlx3, token,
-}, cb) {
+export async function assembleConfig({
+  giturl,
+  mountpoints,
+  hlx3,
+  project,
+  host,
+  token,
+}) {
   const { owner, repo, ref } = getGitHubSettings(giturl);
   const projectConfig = await getProjectConfig(owner, repo, ref);
-  const mountpoints = await getMountpoints(owner, repo, ref);
+  return {
+    id: `${owner}/${repo}/${ref}`,
+    ...projectConfig,
+    project,
+    host,
+    hlx3,
+    giturl,
+    owner,
+    repo,
+    ref,
+    mountpoints: mountpoints || await getMountpoints(owner, repo, ref),
+  };
+}
+
+export async function addConfig(input, cb) {
+  const config = await assembleConfig(input);
+  const {
+    owner, repo, ref, mountpoints,
+  } = config;
   getState(({ configs }) => {
     /* eslint-disable no-alert */
     if (!configs.find((cfg) => owner === cfg.owner && repo === cfg.repo && ref === cfg.ref)) {
