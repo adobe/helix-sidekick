@@ -188,6 +188,7 @@ export async function assembleConfig({
     project,
     host,
     hlx3,
+    token,
     giturl,
     owner,
     repo,
@@ -204,18 +205,6 @@ export async function addConfig(input, cb) {
   getState(({ configs }) => {
     /* eslint-disable no-alert */
     if (!configs.find((cfg) => owner === cfg.owner && repo === cfg.repo && ref === cfg.ref)) {
-      const config = {
-        id: `${owner}/${repo}/${ref}`,
-        giturl,
-        owner,
-        repo,
-        ref,
-        mountpoints,
-        project,
-        hlx3,
-        ...projectConfig,
-        token,
-      };
       configs.push(config);
       browser.storage.sync
         .set({ hlxSidekickConfigs: configs })
