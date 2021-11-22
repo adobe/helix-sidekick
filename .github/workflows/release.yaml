@@ -22,20 +22,19 @@ jobs:
       - name: Checkout target repo
         uses: actions/checkout@v2
         with:
-          repository: adobe/helix-pages
-          ref: master
+          repository: adobe/helix-website
+          ref: main
           path: _target
       - name: Copy files from source to target repo
         run: |
           cp src/sidekick/* _target/tools/sidekick/
-          cp docs/API.md _target/tools/sidekick/
       - name: Create branch commit and pull request in target repo
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "chore(sidekick): new release candidate [skip ci]"
           token: ${{ secrets.PAT }}
           path: _target
-          base: master
+          base: main
           branch: sidekick-rc
           branch-suffix: short-commit-hash
           delete-branch: true
