@@ -62,6 +62,7 @@ describe('Test sidekick bookmarklet', () => {
         MOCKS.error404,
         MOCKS.error500,
         MOCKS.error504,
+        MOCKS.unknownDoc,
       ],
     });
     await page.goto(`${fixturesPrefix}/config-default.html`, { waitUntil: 'load' });
@@ -69,13 +70,16 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(msg.startsWith('401'), `Expected 401 message, but got ${msg}`);
     await page.reload({ waitUntil: 'load' });
     msg = await getNotification(page);
-    assert.ok((await getNotification(page)).startsWith('404'), `Expected 404 message, but got ${msg}`);
+    assert.ok(msg.startsWith('404'), `Expected 404 message, but got ${msg}`);
     await page.reload({ waitUntil: 'load' });
     msg = await getNotification(page);
-    assert.ok((await getNotification(page)).startsWith('500'), `Expected 500 message, but got ${msg}`);
+    assert.ok(msg.startsWith('500'), `Expected 500 message, but got ${msg}`);
     await page.reload({ waitUntil: 'load' });
     msg = await getNotification(page);
-    assert.ok((await getNotification(page)).startsWith('504'), `Expected 504 message, but got ${msg}`);
+    assert.ok(msg.startsWith('504'), `Expected 504 message, but got ${msg}`);
+    await page.goto(`${fixturesPrefix}/preview-onedrive-hlx3.html`, { waitUntil: 'load' });
+    msg = await getNotification(page);
+    assert.ok(msg.startsWith('404'), `Expected 404 message, but got ${msg}`);
     // click overlay and check if sidekick gets deleted
     await page.evaluate(() => window.hlx.sidekick.shadowRoot
       .querySelector('.hlx-sk-overlay')

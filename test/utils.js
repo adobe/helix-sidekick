@@ -80,22 +80,27 @@ const MOCKS = {
   purge: [{ status: 'ok' }],
   html: '<html></html>',
   json: '{}',
+  unknownDoc: {
+    edit: { status: 404 },
+    preview: { status: 404 },
+    status: { status: 404 },
+  },
   error401: {
     status: 401,
     body: 'Unauthorized',
-  }, 
+  },
   error404: {
     status: 404,
     body: 'Not found',
-  }, 
+  },
   error500: {
     status: 500,
     body: 'Server error',
-  }, 
+  },
   error504: {
     status: 504,
     body: 'Gateway timeout',
-  }, 
+  },
 };
 
 const toResp = (resp) => {
@@ -165,7 +170,7 @@ const clickButton = async (p, id) => p.evaluate((buttonId) => {
 }, id);
 
 const getNotification = async (p) => await p.evaluate(() => window.hlx.sidekick.shadowRoot
-  .querySelector('.hlx-sk-overlay .modal')?.textContent || '');
+  .querySelector('.hlx-sk-overlay .modal')?.textContent || '<empty>');
 
 const mockStandardResponses = async (p, opts = {}) => {
   const {

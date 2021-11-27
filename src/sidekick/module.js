@@ -941,6 +941,7 @@
      * @returns {Sidekick} The sidekick
      */
     async fetchStatus() {
+      console.log('fetching status');
       const { owner, repo, ref } = this.config;
       if (!owner || !repo || !ref) {
         return this;
@@ -959,9 +960,11 @@
         }
         this.status.apiUrl = apiUrl.toString();
       }
+      console.log(this.status.apiUrl);
       fetch(this.status.apiUrl, { cache: 'no-store' })
         .then((resp) => {
           // check for error status
+          console.log(resp.ok);
           if (!resp.ok) {
             let msg = '';
             switch (resp.status) {
@@ -987,7 +990,14 @@
             throw new Error('Invalid server response. Check your Sidekick configuration or URL.');
           }
         })
-        .then((json) => Object.assign(this.status, json))
+        .then((json) => {
+          console.log(this.status.apiUrl, json);
+          // make sure current document belongs to project
+          if (this.isEditor() && json.edit && json.edit.status === 404) {
+            throw new Error('404: Page not found. Check your Sidekick configuration and make sure Helix has access to this document.');
+          }
+          return Object.assign(this.status, json);
+        })
         .then((json) => fireEvent(this, 'statusfetched', json))
         .catch((e) => {
           this.status.error = e.message;
