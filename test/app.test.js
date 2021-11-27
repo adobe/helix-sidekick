@@ -416,7 +416,7 @@ describe('Test sidekick bookmarklet', () => {
 
     // hides sticky modal
     await page.evaluate(() => window.hlx.sidekick.hideModal());
-    assert.strictEqual(await getNotification(page), '', 'Did not hide sticky modal');
+    assert.strictEqual(await getNotification(page), '<empty>', 'Did not hide sticky modal');
 
     // shows multi-line notification
     assert.strictEqual(await page.evaluate(() => {
