@@ -10,7 +10,6 @@
 .renovaterc.json
 .snyk
 .tidelift.yml
-build
 coverage
 debug
 junit
