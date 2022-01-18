@@ -3,7 +3,6 @@
 .hlx
 .nyc_output/
 coverage
-dist
 node_modules/
 junit
 logs
