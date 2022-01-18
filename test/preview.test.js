@@ -117,4 +117,16 @@ describe('Test preview plugin', () => {
       'Unexpected editor query parameters forwarded',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Preview plugin handles /.helix/config.json special case', async () => {
+    const test = new SidekickTest({
+      url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=config.xlsx&action=default&mobileredirect=true',
+      type: 'json',
+      plugin: 'preview',
+    });
+    test.apiResponses[0].webPath = '/.helix/config.json';
+    const { popupOpened, notification } = await test.run();
+    assert.ok(!popupOpened, 'Unexpected popup opened');
+    assert.strictEqual(notification, 'Helix configuration successfully activated', `Unexpected notification: ${notification}`);
+  }).timeout(IT_DEFAULT_TIMEOUT);
 });
