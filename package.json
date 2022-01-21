@@ -4,7 +4,10 @@
   "description": "Helix Sidekick",
   "main": "src/index.js",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=lcov --check-coverage --branches 100 --statements 100 --lines 100 mocha",
+    "test:mocha": "nyc --reporter=text --reporter=lcov --check-coverage --branches 100 --statements 100 --lines 100 mocha",
+    "test:wtr": "wtr \"./test/unit/*.test.js\" --node-resolve --port=2000 --coverage",
+    "test:wtr:watch": "npm run test:wtr -- --watch",
+    "test": "npm run test:mocha && npm run test:wtr",
     "lint": "./node_modules/.bin/eslint .",
     "start": "node ./debug/debug.js",
     "docs": "npx jsdoc2md -c .jsdoc.json --files 'src/**/*.js'  > docs/API.md",
@@ -28,8 +31,11 @@
   "devDependencies": {
     "@adobe/eslint-config-helix": "1.3.2",
     "@babel/eslint-parser": "7.16.5",
+    "@esm-bundle/chai": "4.3.4-fix.0",
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
+    "@web/test-runner": "0.13.20",
+    "@web/test-runner-commands": "0.5.13",
     "ajv": "8.9.0",
     "archiver": "5.3.0",
     "codecov": "3.8.3",
