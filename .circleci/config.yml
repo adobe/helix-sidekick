@@ -41,11 +41,10 @@ jobs:
         command: npm run lint
     - puppeteer/install
     - run:
-        name: Set CHROME_PATH
-        command: export CHROME_PATH=`find /home/circleci/project/node_modules -name chrome`
-    - run:
         name: Test
-        command: npm run test
+        command: |
+          export CHROME_PATH=`find /home/circleci/project/node_modules -name chrome`
+          npm run test
     - store_test_results:
         path: junit
     - store_artifacts:
