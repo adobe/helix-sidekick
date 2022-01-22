@@ -495,6 +495,27 @@
   }
 
   /**
+   * Check for issues.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  async function checkForIssues(sk) {
+    // check if current inner cdn url is hlx3 url
+    if (sk.location.hostname.endsWith('.page')
+      && !sk.location.hostname.endsWith('hlx3.page')) {
+      sk.showModal([
+        'Unfortunately, your website is no longer compatible with Helix Sidekick. ',
+        'If you are the owner, you may find the following link useful:',
+        'https://www.hlx.live/docs/migrate-from-hlx2',
+      ], true, 1, () => {
+        window.hlx.sidekick.hide();
+        window.hlx.sidekick.replaceWith(''); // remove() doesn't work for custom element
+        delete window.hlx.sidekick;
+      });
+    }
+  }
+
+  /**
    * Compares source and preview last modified dates.
    * @private
    * @param {Sidekick} sidekick The sidekick
@@ -1123,6 +1144,7 @@
           click: () => this.hide(),
         },
       });
+      checkForIssues(this);
     }
 
     /**
@@ -1501,10 +1523,23 @@
       if (msg) {
         if (Array.isArray(msg)) {
           this._modal.textContent = '';
-          msg.forEach((line) => appendTag(this._modal, {
-            tag: 'p',
-            text: line,
-          }));
+          msg.forEach((line) => {
+            const isURL = line.startsWith('http');
+            const p = appendTag(this._modal, {
+              tag: 'p',
+              text: !isURL ? line : '',
+            });
+            if (isURL) {
+              appendTag(p, {
+                tag: 'a',
+                text: line,
+                attrs: {
+                  href: line,
+                  target: '_blank',
+                },
+              });
+            }
+          });
         } else {
           this._modal.textContent = msg;
         }
@@ -1515,8 +1550,6 @@
         window.setTimeout(() => {
           sk.hideModal();
         }, 3000);
-      } else {
-        this._modal.classList.add('wait');
       }
       fireEvent(this, 'modalshown', this._modal);
       return this;
