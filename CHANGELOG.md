@@ -1,3 +1,15 @@
+# [3.36.0](https://github.com/adobe/helix-sidekick/compare/v3.35.1...v3.36.0) (2022-01-24)
+
+
+### Bug Fixes
+
+* json view number bug ([21820f3](https://github.com/adobe/helix-sidekick/commit/21820f330f4bdac56f9c33aa496aee7b9e1d9d7b))
+
+
+### Features
+
+* special handling for /.helix/config.json ([a0697de](https://github.com/adobe/helix-sidekick/commit/a0697de36e78530a21279633260c97a761a2fbf2))
+
 ## [3.35.1](https://github.com/adobe/helix-sidekick/compare/v3.35.0...v3.35.1) (2022-01-13)
 
 
