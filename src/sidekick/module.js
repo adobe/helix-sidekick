@@ -86,6 +86,7 @@
    * @prop {boolean} pushDown=true <pre>false</pre> to have the sidekick overlay page content
    * @prop {string} pushDownSelector The CSS selector for absolute elements to also push down
    * @prop {viewConfig[]} specialViews An array of custom view configurations (optional)
+   * @prop {number} adminVersion The specific version of admin service to use (optional)
    */
 
   /**
@@ -584,8 +585,10 @@
    * @param {string} path The current path
    * @returns {string} The admin URL
    */
-  function getAdminUrl({ owner, repo, ref }, api, path) {
-    return new URL([
+  function getAdminUrl({
+    owner, repo, ref, adminVersion,
+  }, api, path) {
+    const adminUrl = new URL([
       'https://admin.hlx.page/',
       api,
       `/${owner}`,
@@ -593,6 +596,10 @@
       `/${ref}`,
       path,
     ].join(''));
+    if (adminVersion) {
+      adminUrl.search = new URLSearchParams([['hlx-admin-version', adminVersion]]).toString();
+    }
+    return adminUrl;
   }
 
   /**
@@ -1212,9 +1219,9 @@
           'status',
           this.isEditor() ? '' : pathname,
         );
-        apiUrl.search = new URLSearchParams([
-          ['editUrl', this.isEditor() ? href : 'auto'],
-        ]).toString();
+        const params = new URLSearchParams(apiUrl.search);
+        params.set('editUrl', this.isEditor() ? href : 'auto');
+        apiUrl.search = params.toString();
         this.status.apiUrl = apiUrl.toString();
       }
       fetch(this.status.apiUrl, { cache: 'no-store' })
