@@ -71,16 +71,6 @@ describe('Test sidekick bookmarklet', () => {
     }
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Checks for hlx3 config/URL mismatch', async () => {
-    const { dialog } = await new SidekickTest({
-      sleep: 2000,
-      setup: 'blog',
-      url: 'https://main--blog--adobe.hlx.page/en/topics/bla',
-    }).run();
-    assert.strictEqual(dialog?.type, 'confirm', `Unexpected dialog type: "${dialog?.type}"`);
-    assert.ok(dialog?.message.includes('can only work on a Helix 3 site'), `Unexpected dialog message: "${dialog?.message}"`);
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
   it('Uses main branch by default', async () => {
     const result = await new SidekickTest({
       setup: 'blog',
@@ -107,36 +97,6 @@ describe('Test sidekick bookmarklet', () => {
         });`,
     }).run();
     assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from config');
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Shows update dialog on legacy config', async () => {
-    const { dialog } = await new SidekickTest({
-      sleep: 2000,
-      pre: (p) => p.evaluate(() => {
-        window.hlxSidekickConfig = {
-          owner: 'adobe',
-          repo: 'theblog',
-          ref: 'foo',
-        };
-      }),
-    }).run();
-    assert.ok(dialog?.message.startsWith('Apologies'), 'Did not show update dialog');
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Shows update dialog in compatibility mode', async () => {
-    const { dialog } = await new SidekickTest({
-      sleep: 2000,
-      pre: (p) => p.evaluate(() => {
-        window.hlx = window.hlx || {};
-        window.hlx.sidekickConfig = {
-          owner: 'adobe',
-          repo: 'theblog',
-          ref: 'foo',
-          compatMode: true,
-        };
-      }),
-    }).run();
-    assert.ok(dialog?.message.startsWith('Apologies'), 'Did not show update dialog');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Detects innerHost and outerHost from config', async () => {
@@ -528,41 +488,4 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(text, 'External CSS', 'Did not show custom view for JSON file');
     assert.strictEqual(color, 'rgb(0, 255, 0)', 'Did not apply custom styling to special view');
   }).timeout(IT_DEFAULT_TIMEOUT);
-});
-
-describe('makeHostHelixCompliant', () => {
-  // TODO: move to proper unit test in order to use original funtion
-  // this is a copy of function in sidekick/app.js
-  const makeHostHelixCompliant = (ahost) => {
-    if (!/.*\.hlx.*\.(live|page)/.test(ahost) || ahost.match(/^.*?--.*?--.*?\./gm)) {
-      return ahost;
-    }
-    return ahost
-      .replace(/^([^-.]+)-([^-.]+)-([^-.]+)\./gm, '$1-$2--$3.')
-      .replace(/^([^-.]+)-([^-.]+)\./gm, '$1--$2.');
-  };
-
-  it('Test makeHostHelixCompliant', () => {
-    assert.strictEqual(makeHostHelixCompliant('abc-123.com'), 'abc-123.com');
-    assert.strictEqual(makeHostHelixCompliant('repo-owner.hlx.page'), 'repo--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('repo-owner.hlx-1.page'), 'repo--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('branch--repo--owner.hlx.page'), 'branch--repo--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('branch--repo--owner.hlx-1.page'), 'branch--repo--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('branch-dash--repo--owner.hlx.page'), 'branch-dash--repo--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('branch-dash--repo--owner.hlx-1.page'), 'branch-dash--repo--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('repo-dash--owner.hlx.page'), 'repo-dash--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('repo-dash--owner.hlx-1.page'), 'repo-dash--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('repo-dash-owner.hlx.page'), 'repo-dash--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('repo-dash-owner.hlx-1.page'), 'repo-dash--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('branch--repo-dash--owner.hlx.page'), 'branch--repo-dash--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('branch--repo-dash--owner.hlx-1.page'), 'branch--repo-dash--owner.hlx-1.page');
-
-    assert.strictEqual(makeHostHelixCompliant('branch-dash--repo-dash--owner.hlx.page'), 'branch-dash--repo-dash--owner.hlx.page');
-    assert.strictEqual(makeHostHelixCompliant('branch-dash--repo-dash--owner.hlx-1.page'), 'branch-dash--repo-dash--owner.hlx-1.page');
-  });
 });
