@@ -597,7 +597,7 @@
       path,
     ].join(''));
     if (adminVersion) {
-      adminUrl.search = new URLSearchParams([['hlx-admin-version', adminVersion]]).toString();
+      adminUrl.searchParams.append('hlx-admin-version', adminVersion);
     }
     return adminUrl;
   }
