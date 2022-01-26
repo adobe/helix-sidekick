@@ -534,7 +534,11 @@ describe('Test sidekick bookmarklet', () => {
     test.sidekickConfig.adminVersion = '0.7.7';
     const { requestsMade } = await test.run();
     const adminRequest = requestsMade.find((r) => r.url.startsWith('https://admin.hlx.page/'));
-    assert.ok(adminRequest.url.endsWith('0.7.7'), 'Did not use specific admin version');
+    assert.strictEqual(
+      new URL(adminRequest.url).searchParams.get('hlx-admin-version'),
+      '0.7.7',
+      'Did not use specific admin version',
+    );
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
 
