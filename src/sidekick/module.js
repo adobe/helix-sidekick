@@ -1219,9 +1219,7 @@
           'status',
           this.isEditor() ? '' : pathname,
         );
-        const params = new URLSearchParams(apiUrl.search);
-        params.set('editUrl', this.isEditor() ? href : 'auto');
-        apiUrl.search = params.toString();
+        apiUrl.searchParams.append('editUrl', this.isEditor() ? href : 'auto');
         this.status.apiUrl = apiUrl.toString();
       }
       fetch(this.status.apiUrl, { cache: 'no-store' })
