@@ -1,3 +1,21 @@
+# [4.0.0](https://github.com/adobe/helix-sidekick/compare/v3.36.0...v4.0.0) (2022-01-26)
+
+
+### chore
+
+* ensure major release [skip ci] ([3a7185d](https://github.com/adobe/helix-sidekick/commit/3a7185df6f5a445561d0f9a57f3559eadd2ec7c6))
+
+
+### Features
+
+* display legacy warning with migration link ([ccd89f3](https://github.com/adobe/helix-sidekick/commit/ccd89f35b16316f74c47630538b3119e4662d311))
+* remove hlx2 support ([a149e6c](https://github.com/adobe/helix-sidekick/commit/a149e6ce47f7515af8546defe86133fcbb9b251e))
+
+
+### BREAKING CHANGES
+
+* Older projects will no longer be able to use the sidekick
+
 # [3.36.0](https://github.com/adobe/helix-sidekick/compare/v3.35.1...v3.36.0) (2022-01-24)
 
 
