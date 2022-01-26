@@ -583,7 +583,7 @@
    * @param {Object} config The sidekick configuration
    * @param {string} api The API endpoint to call
    * @param {string} path The current path
-   * @returns {string} The admin URL
+   * @returns {URL} The admin URL
    */
   function getAdminUrl({
     owner, repo, ref, adminVersion,
