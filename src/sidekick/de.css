@@ -30,23 +30,26 @@
   content: "Bitte warten..."
 }
 
-.hlx-sk .env button.toggle::before {
-  content: "Umgebungen";
-}
-
 .hlx-sk .edit button::before {
   content: "Bearbeiten";
 }
 
-.hlx-sk .preview button::before {
+.hlx-sk .env button.dropdown-toggle::before {
+  content: "Ansicht";
+}
+
+.hlx-sk .env.preview .dropdown-toggle::before,
+.hlx-sk .env .preview button::before {
   content: "Vorschau";
 }
 
-.hlx-sk .live button::before {
+.hlx-sk .env.live .dropdown-toggle::before,
+.hlx-sk .env .live button::before {
   content: "Live";
 }
 
-.hlx-sk .prod button::before {
+.hlx-sk .env.prod .dropdown-toggle::before,
+.hlx-sk .env .prod button::before {
   content: "Produktion";
 }
 

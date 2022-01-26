@@ -17,13 +17,14 @@
   --hlx-sk-border: none;
   --hlx-sk-border-radius: 10px;
   --hlx-sk-font-family: arial, helvetica, sans-serif;
-  --hlx-sk-font-size: 1rem;
+  --hlx-sk-font-size: 16px;
   --hlx-sk-line-height: 1;
   --hlx-sk-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 10px 20px 0 rgba(0, 0, 0, 0.3);
   --hlx-sk-button-color: #707070;
   --hlx-sk-button-bg: transparent;
   --hlx-sk-button-border: solid 1px var(--hlx-sk-button-color);
-  --hlx-sk-button-font-size: 1rem;
+  --hlx-sk-button-font-size: var(--hlx-sk-font-size);
+  --hlx-sk-button-line-height: var(--hlx-sk-line-height);
   --hlx-sk-button-font-weight: 500;
   --hlx-sk-button-padding: 5px 8px;
   --hlx-sk-button-hover-bg: #707070;
@@ -35,6 +36,7 @@
   --hlx-sk-button-disabled-color: #909090;
   --hlx-sk-button-disabled-border: solid 1px var(--hlx-sk-button-disabled-color);
   --hlx-sk-button-disabled-hover-bg: transparent;
+  --hlx-sk-dropdown-container-bg: rgba(224, 224, 224, .9);
   --hlx-sk-modal-overlay-bg: rgba(0,0,0, 0.5);
   --hlx-sk-modal-bg-0: #e60016;
   --hlx-sk-modal-bg-1: #e67316;
@@ -48,7 +50,7 @@
 @media (prefers-color-scheme: dark) {
   :host,
   :root {
-    --hlx-sk-bg: #303030;
+    --hlx-sk-bg: rgb(48, 48, 48);
     --hlx-sk-color: #dedede;
     --hlx-sk-button-color: #dedede;
     --hlx-sk-button-hover-bg: #909090;
@@ -58,6 +60,7 @@
     --hlx-sk-button-pressed-color: white;
     --hlx-sk-button-disabled-color: #707070;
     --hlx-sk-button-disabled-border: solid 1px var(--hlx-sk-button-disabled-color);
+    --hlx-sk-dropdown-container-bg: rgba(48, 48, 48, .9);
     --hlx-sk-modal-overlay-bg: rgba(127, 127, 127, 0.8);
     --hlx-sk-special-view-button-color: rgba(127, 127, 127, 0.8);
     --hlx-sk-special-view-table-border: rgba(127, 127, 127, 0.8);
@@ -109,7 +112,7 @@
 
 .hlx-sk > .share .dots::before {
   content: "·";
-  font-size: 3rem;
+  font-size: 48px;
   position: absolute;
   top: -8px;
   left: -11px;
@@ -117,7 +120,7 @@
 
 .hlx-sk > .share .dots::after {
   content: ":";
-  font-size: 2rem;
+  font-size: 32px;
   position: absolute;
   top: -5px;
   right: -2px;
@@ -140,7 +143,7 @@
   border-radius: var(--hlx-sk-button-border-radius);
   color: var(--hlx-sk-button-color);
   font-size: var(--hlx-sk-button-font-size);
-  line-height: var(--hlx-sk-line-height);
+  line-height: var(--hlx-sk-button-line-height);
   font-weight: var(--hlx-sk-button-font-weight);
   text-align: center;
   text-decoration: none;
@@ -176,45 +179,90 @@
   content: "*";
 }
 
-.hlx-sk .env {
-  display: flex;
-  flex-direction: row;
-  margin-right: 8px;
-}
-
-.hlx-sk .env button.toggle {
+.hlx-sk .dropdown {
   display: none;
-  max-height: 28px;
-  font-size: 0;
-  line-height: 0;
-  margin-right: 0;
+  margin-top: 10px;
+  position: relative;
 }
 
-.hlx-sk .env button.toggle::after {
-  content: "...";
-  font-size: var(--hlx-sk-button-font-size);
-  line-height: 1;
-}
-
-
-.hlx-sk .env > div > button,
-.hlx-sk .env > div > button.pressed {
-  margin-right: 0;
-  border-right-width: 0;
-  border-radius: 0;
-}
-
-.hlx-sk .env > div:first-of-type button,
-.hlx-sk .env > div:first-of-type button.pressed {
-  border-top-left-radius: var(--hlx-sk-button-border-radius);
+.hlx-sk .dropdown-container {
+  display: none;
+  position: absolute;
+  width: 120px;
+  top: 40px;
+  background-color: var(--hlx-sk-dropdown-container-bg);
   border-bottom-left-radius: var(--hlx-sk-button-border-radius);
+  border-bottom-right-radius: var(--hlx-sk-button-border-radius);
+  box-shadow: var(--hlx-sk-shadow);
 }
 
-.hlx-sk .env > div:last-of-type button,
-.hlx-sk .env > div:last-of-type button.pressed {
+.hlx-sk .dropdown button:hover {
+  color: var(--hlx-sk-button-hover-color);
+  background-color: var(--hlx-sk-button-hover-bg);
+}
+
+.hlx-sk:not(.hlx-sk-loading) .dropdown {
+  display: block;
+  margin-top: 0;
+}
+
+.hlx-sk .dropdown .dropdown-toggle::after {
+  border-style: solid;
+  border-width: 1px 1px 0 0;
+  content: '';
+  display: inline-block;
+  height: 0.45em;
+  left: 0.15em;
+  position: relative;
+  top: 2px;
+  transform: rotate(135deg);
+  vertical-align: top;
+  width: 0.45em;
+  margin-left: 4px;
+}
+
+.hlx-sk .dropwdown .dropdown-toggle:focus {
+  background-color: var(--hlx-sk-button-bg);
+  color: var(--hlx-sk-button-color);
+}
+
+.hlx-sk .dropdown .dropdown-toggle:hover {
+  background-color: var(--hlx-sk-button-hover-bg);
+  color: var(--hlx-sk-button-hover-color);
+}
+
+.hlx-sk .dropdown.dropdown-expanded .dropdown-toggle::after {
+  top: 6px;
+  transform: rotate(-45deg);
+}
+
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container button,
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container button.pressed {
+  margin-top: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:first-of-type button,
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:first-of-type button.pressed {
+  border-radius: 0;
+  border-top-left-radius: var(--hlx-sk-button-border-radius);
   border-top-right-radius: var(--hlx-sk-button-border-radius);
+}
+
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:last-of-type button,
+.hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:last-of-type button.pressed {
+  border-radius: 0;
+  border-bottom-left-radius: var(--hlx-sk-button-border-radius);
   border-bottom-right-radius: var(--hlx-sk-button-border-radius);
-  border-right-width: 1px;
 }
 
 .hlx-sk-overlay {
@@ -283,21 +331,6 @@
   45% {
             transform: scale(1);
             animation-timing-function: ease-out;
-  }
-}
-
-@media(max-width:768px) {
-  .hlx-sk {
-    background-image: none;
-    padding-left: 10px;
-  }
-
-  .hlx-sk {
-    padding-right: 40px;
-  }
-
-  .hlx-sk > .share {
-    display: none;
   }
 }
 
@@ -401,16 +434,17 @@
   text-decoration: underline;
 }
 
-@media(max-width:650px) {
-  .hlx-sk .env button.toggle {
-    display: inline-block;
+@media(max-width:600px) {
+  .hlx-sk {
+    background-image: none;
+    padding-left: 10px;
   }
 
-  .hlx-sk .env.expanded button.toggle {
-    display: none;
+  .hlx-sk {
+    padding-right: 40px;
   }
 
-  .hlx-sk .env:not(.expanded):not(:empty) > div {
+  .hlx-sk > .share {
     display: none;
   }
 }
@@ -437,23 +471,26 @@
   content: "Please wait..."
 }
 
-.hlx-sk .env button.toggle::before {
-  content: "Environments";
-}
-
-.hlx-sk .preview button::before {
-  content: "Preview";
-}
-
 .hlx-sk .edit button::before {
   content: "Edit";
 }
 
-.hlx-sk .live button::before {
+.hlx-sk .env .dropdown-toggle::before {
+  content: "View";
+}
+
+.hlx-sk .env.preview .dropdown-toggle::before,
+.hlx-sk .env .preview button::before {
+  content: "Preview";
+}
+
+.hlx-sk .env.live .dropdown-toggle::before,
+.hlx-sk .env .live button::before {
   content: "Live";
 }
 
-.hlx-sk .prod button::before {
+.hlx-sk .env.prod .dropdown-toggle::before,
+.hlx-sk .env .prod button::before {
   content: "Production";
 }
 

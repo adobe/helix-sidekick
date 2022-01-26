@@ -1355,24 +1355,44 @@
         let $pluginContainer = this.root;
         if (ENVS[plugin.id]) {
           // find or create environment plugin container
-          $pluginContainer = this.root.querySelector(':scope .env');
+          $pluginContainer = this.root.querySelector(':scope .env .dropdown-container');
           if (!$pluginContainer) {
-            $pluginContainer = appendTag(this.root, {
+            const $envContainer = appendTag(this.root, {
               tag: 'div',
               attrs: {
-                class: 'env',
+                class: 'env dropdown',
               },
             });
-            appendTag($pluginContainer, {
+            if (this.isInner()) $envContainer.classList.add('preview');
+            if (this.isOuter()) $envContainer.classList.add('live');
+            if (this.isProd()) $envContainer.classList.add('prod');
+            appendTag($envContainer, {
               tag: 'button',
               attrs: {
-                class: 'toggle',
+                class: 'dropdown-toggle',
               },
               lstnrs: {
-                click: () => {
-                  $pluginContainer.classList.toggle('expanded');
+                click: (evt) => {
+                  // collapse env listener
+                  const collapseEnv = () => {
+                    $envContainer.classList.remove('dropdown-expanded');
+                    document.removeEventListener('click', collapseEnv);
+                  };
+                  $envContainer.classList.toggle('dropdown-expanded');
+                  if ($envContainer.classList.contains('dropdown-expanded')) {
+                    evt.stopPropagation();
+                    window.setTimeout(() => {
+                      document.addEventListener('click', collapseEnv);
+                    }, 100);
+                  }
                   this.checkPushDownContent();
                 },
+              },
+            });
+            $pluginContainer = appendTag($envContainer, {
+              tag: 'div',
+              attrs: {
+                class: 'dropdown-container',
               },
             });
           }
@@ -1451,7 +1471,7 @@
      * @returns {HTMLElement} The plugin
      */
     get(id) {
-      return this.root.querySelector(`:scope .${id}`);
+      return this.root.querySelector(`:scope div:not(.env).${id}`);
     }
 
     /**
