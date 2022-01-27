@@ -488,4 +488,16 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(text, 'External CSS', 'Did not show custom view for JSON file');
     assert.strictEqual(color, 'rgb(0, 255, 0)', 'Did not apply custom styling to special view');
   }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Calls admin API with a specific version', async () => {
+    const test = new SidekickTest();
+    test.sidekickConfig.adminVersion = '0.7.7';
+    const { requestsMade } = await test.run();
+    const adminRequest = requestsMade.find((r) => r.url.startsWith('https://admin.hlx.page/'));
+    assert.strictEqual(
+      new URL(adminRequest.url).searchParams.get('hlx-admin-version'),
+      '0.7.7',
+      'Did not use specific admin version',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
 });
