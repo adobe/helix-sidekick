@@ -105,7 +105,9 @@
   padding: var(--hlx-sk-button-padding);
   cursor: pointer;
   outline: none;
+  min-width: 28px;
   min-height: 28px;
+  max-height: 28px;
   margin: 10px 8px 0 0;
 }
 
@@ -152,34 +154,54 @@
   justify-content: end;
 }
 
-.hlx-sk .feature-container .share {
-  position: relative;
-  font-family: "Courier New";
+.hlx-sk .feature-container button {
   border-color: transparent;
+}
+
+.hlx-sk .feature-container .share {
+  padding-left: 5px;
 }
 
 .hlx-sk .feature-container .share::before {
   display: none;
 }
 
-.hlx-sk .feature-container .share .dots::before {
-  content: "·";
-  font-size: 48px;
-  position: absolute;
-  top: -8px;
-  left: -11px;
+.hlx-sk .feature-container .share i {
+  box-sizing: border-box;
+  position: relative;
+  display: block;
+  transform: scale(0.8);
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 100px;
+  box-shadow: 10px -6px 0, 10px 6px 0;
 }
 
-.hlx-sk .feature-container .share .dots::after {
-  content: ":";
-  font-size: 32px;
+.hlx-sk .feature-container .share i::after,
+.hlx-sk .feature-container .share i::before {
+  content: "";
+  display: block;
+  box-sizing: border-box;
   position: absolute;
-  top: -4px;
-  right: -2px;
+  border-radius: 3px;
+  width: 10px;
+  height: 2px;
+  background: currentColor;
+  left: 2px;
+}
+
+.hlx-sk .feature-container .share i::before {
+  top: 0;
+  transform: rotate(-35deg);
+}
+
+.hlx-sk .feature-container .share i::after {
+  bottom: 0;
+  transform: rotate(35deg);
 }
 
 .hlx-sk .feature-container .close {
-  border-color: transparent;
   margin-right: 0;
 }
 
@@ -279,10 +301,6 @@
   border-radius: 0;
   border-bottom-left-radius: var(--hlx-sk-button-border-radius);
   border-bottom-right-radius: var(--hlx-sk-button-border-radius);
-}
-
-.hlx-sk .env .dropdown-toggle:not(:hover, :focus) {
-  border-color: transparent;
 }
 
 .hlx-sk .env .dropdown-toggle {

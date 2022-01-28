@@ -1209,7 +1209,6 @@
       // share button
       const share = appendTag(this.featureContainer, {
         tag: 'button',
-        text: '<',
         attrs: {
           class: 'share',
         },
@@ -1217,12 +1216,7 @@
           click: () => shareSidekick(this),
         },
       });
-      appendTag(share, {
-        tag: 'span',
-        attrs: {
-          class: 'dots',
-        },
-      });
+      appendTag(share, { tag: 'i' });
       // close button
       appendTag(this.featureContainer, {
         tag: 'button',
