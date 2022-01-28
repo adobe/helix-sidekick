@@ -641,7 +641,8 @@
     // preview
     sk.add({
       id: 'preview',
-      condition: (sidekick) => sidekick.isEditor() || sidekick.isHelix(),
+      condition: (sidekick) => (sidekick.isEditor() || sidekick.isHelix())
+        && sidekick.status.preview && sidekick.status.preview.lastModified,
       button: {
         action: async (evt) => {
           if (evt.target.classList.contains('pressed')) {
@@ -685,6 +686,35 @@
           sk.switchEnv('prod', newTab(evt));
         },
         isPressed: (sidekick) => sidekick.isProd(),
+      },
+    });
+  }
+
+  /**
+   * Adds the preview plugin to the sidekick.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function addPreviewPlugin(sk) {
+    sk.add({
+      id: 'edit-preview',
+      condition: (sidekick) => sidekick.isEditor(),
+      button: {
+        action: async (evt) => {
+          const { status } = sk;
+          // update preview
+          const resp = await sk.update();
+          if (!resp.ok && resp.status >= 400) {
+            console.error(resp);
+            throw new Error(resp);
+          }
+          // handle special case /.helix/config.json
+          if (status.webPath === '/.helix/config.json') {
+            this.notify('Helix configuration successfully activated');
+            return;
+          }
+          sk.switchEnv('preview', newTab(evt));
+        },
       },
     });
   }
@@ -880,6 +910,7 @@
       // default plugins
       addEditPlugin(sk);
       addEnvPlugins(sk);
+      addPreviewPlugin(sk);
       addReloadPlugin(sk);
       addDeletePlugin(sk);
       addPublishPlugin(sk);
@@ -909,9 +940,9 @@
       }
       sk.checkPushDownContent();
       window.setTimeout(() => {
-        if (sk.root.querySelectorAll(':scope > div > *').length === 0) {
+        if (sk.pluginContainer.querySelectorAll(':scope > div > *').length === 0) {
           // add empty text
-          sk.root.classList.replace('hlx-sk-loading', 'hlx-sk-empty');
+          sk.$pluginContainer.classList.replace('loading', 'empty');
           sk.checkPushDownContent();
         }
       }, 5000);
@@ -1141,7 +1172,7 @@
       this.root = appendTag(this.shadowRoot, {
         tag: 'div',
         attrs: {
-          class: 'hlx-sk hlx-sk-hidden hlx-sk-loading',
+          class: 'hlx-sk hlx-sk-hidden',
         },
         lstnrs: {
           statusfetched: () => {
@@ -1163,8 +1194,20 @@
       this.loadContext(cfg);
       this.fetchStatus();
       this.loadCSS();
+      this.pluginContainer = appendTag(this.root, {
+        tag: 'div',
+        attrs: {
+          class: 'plugin-container loading',
+        },
+      });
+      this.featureContainer = appendTag(this.root, {
+        tag: 'div',
+        attrs: {
+          class: 'feature-container',
+        },
+      });
       // share button
-      const share = appendTag(this.root, {
+      const share = appendTag(this.featureContainer, {
         tag: 'button',
         text: '<',
         attrs: {
@@ -1181,7 +1224,7 @@
         },
       });
       // close button
-      appendTag(this.root, {
+      appendTag(this.featureContainer, {
         tag: 'button',
         text: '✕',
         attrs: {
@@ -1352,12 +1395,12 @@
           || (typeof plugin.condition === 'function' && plugin.condition(this));
         // find existing plugin
         let $plugin = this.get(plugin.id);
-        let $pluginContainer = this.root;
+        let $pluginContainer = this.pluginContainer;
         if (ENVS[plugin.id]) {
           // find or create environment plugin container
           $pluginContainer = this.root.querySelector(':scope .env .dropdown-container');
           if (!$pluginContainer) {
-            const $envContainer = appendTag(this.root, {
+            const $envContainer = appendTag(this.featureContainer, {
               tag: 'div',
               attrs: {
                 class: 'env dropdown',
@@ -1407,8 +1450,8 @@
           // add new plugin
           $plugin = appendTag($pluginContainer, pluginCfg);
           // remove loading text
-          if (this.root.classList.contains('hlx-sk-loading')) {
-            this.root.classList.remove('hlx-sk-loading');
+          if (this.pluginContainer.classList.contains('loading')) {
+            this.pluginContainer.classList.remove('loading');
           }
         } else if ($plugin) {
           if (!plugin.enabled) {
@@ -1697,14 +1740,6 @@
       let envUrl = `https://${config[hostType]}${status.webPath}`;
       if (!this.isEditor()) {
         envUrl += `${search}${hash}`;
-      }
-      if (config.hlx3 && targetEnv === 'preview' && this.isEditor()) {
-        await this.update();
-      }
-      // handle special case /.helix/config.json
-      if (status.webPath === '/.helix/config.json') {
-        this.notify('Helix configuration successfully activated');
-        return this;
       }
       fireEvent(this, 'envswitched', {
         sourceUrl: href,

@@ -10,16 +10,16 @@
  * governing permissions and limitations under the License.
  */
 
-.hlx-sk.hlx-sk-empty::before {
+.hlx-sk .plugin-container.empty::before {
   content: "Keine Funktionen für diese Seite gefunden";
  }
 
-.hlx-sk.hlx-sk-loading::before {
+.hlx-sk .plugin-container.loading::before {
   content: 'Funktionen werden geladen...';
 }
 
-.hlx-sk > .share::before {
-  content: "Teile deinen Sidekick";
+.hlx-sk .share::before {
+  content: "Sidekick teilen";
 }
 
 .hlx-sk .close::before {
@@ -39,7 +39,8 @@
 }
 
 .hlx-sk .env.preview .dropdown-toggle::before,
-.hlx-sk .env .preview button::before {
+.hlx-sk .env .preview button::before,
+.hlx-sk .edit-preview button::before {
   content: "Vorschau";
 }
 

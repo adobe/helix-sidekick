@@ -10,15 +10,15 @@
  * governing permissions and limitations under the License.
  */
 
-.hlx-sk.hlx-sk-empty::before {
+.hlx-sk .plugin-container.empty::before {
   content: "Aucune action disponible pour cette page";
 }
 
-.hlx-sk.hlx-sk-loading::before {
+.hlx-sk .plugin-container.loading::before {
   content: 'Chargement...';
 }
 
-.hlx-sk > .share::before {
+.hlx-sk .share::before {
   content: "Partager le Sidekick";
 }
 
@@ -38,18 +38,19 @@
   content: "Avis";
 }
 
-.hlx-sk .env.preview button.toggle::before,
-.hlx-sk .env-container .preview button::before {
+.hlx-sk .env.preview .dropdown-toggle::before,
+.hlx-sk .env .preview button::before,
+.hlx-sk .edit-preview button::before {
   content: "Aperçu";
 }
 
-.hlx-sk .env.live button.toggle::before,
-.hlx-sk .env-container .live button::before {
+.hlx-sk .env.live .dropdown-toggle::before,
+.hlx-sk .env .live button::before {
   content: "Live";
 }
 
-.hlx-sk .env.prod button.toggle::before,
-.hlx-sk .env-container .prod button::before {
+.hlx-sk .env.prod .dropdown-toggle::before,
+.hlx-sk .env .prod button::before {
   content: "Production";
 }
 
