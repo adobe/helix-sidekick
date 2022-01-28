@@ -105,7 +105,7 @@
   padding: var(--hlx-sk-button-padding);
   cursor: pointer;
   outline: none;
-  max-height: 28px;
+  min-height: 28px;
   margin: 10px 8px 0 0;
 }
 
