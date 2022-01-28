@@ -710,7 +710,7 @@
           }
           // handle special case /.helix/config.json
           if (status.webPath === '/.helix/config.json') {
-            this.notify('Helix configuration successfully activated');
+            sk.notify('Helix configuration successfully activated');
             return;
           }
           sk.switchEnv('preview', newTab(evt));
