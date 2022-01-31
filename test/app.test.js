@@ -84,7 +84,7 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Adds plugin from config', async () => {
-    const { plugins } = await new SidekickTest({
+    const { configLoaded, plugins } = await new SidekickTest({
       configJs: `
         window.hlx.initSidekick({
           plugins: [{
@@ -96,6 +96,7 @@ describe('Test sidekick bookmarklet', () => {
           }],
         });`,
     }).run();
+    assert.strictEqual(new URL(configLoaded).host, 'main--blog--adobe.hlx.live', 'Did not load config from outer CDN');
     assert.ok(plugins.find((p) => p.id === 'foo'), 'Did not add plugin from config');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
