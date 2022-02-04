@@ -48,10 +48,10 @@ describe('Test publish plugin', () => {
         ];
       }),
     }).run();
-    const publishReqs = requestsMade.filter((r) => r.method === 'POST');
-    assert.strictEqual(publishReqs.length, 3, 'Unexpected number of publish requests');
+    const publishPaths = requestsMade.filter((r) => r.method === 'POST').map((r) => new URL(r.url).pathname);
+    assert.strictEqual(publishPaths.length, 3, 'Unexpected number of publish requests');
     assert.ok(
-      publishReqs[1].url.endsWith('/en/topics/foo') && publishReqs[2].url.endsWith('/en/topics/bar'),
+      publishPaths[1].endsWith('/en/topics/foo') && publishPaths[2].endsWith('/en/topics/bar'),
       'Dependencies not published in expected order',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
