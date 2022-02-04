@@ -41,6 +41,8 @@
   --hlx-sk-modal-bg-0: #e60016;
   --hlx-sk-modal-bg-1: #e67316;
   --hlx-sk-modal-color: white;
+  --hlx-sk-modal-help-bg: #1473e6;
+  --hlx-sk-modal-help-color: white;
   --hlx-sk-modal-font-size: 1.5rem;
   --hlx-sk-special-view-button-color: rgba(0,0,0, 0.5);
   --hlx-sk-special-view-table-border: rgba(0,0,0, 0.5);
@@ -91,7 +93,8 @@
   box-shadow: var(--hlx-sk-shadow);
 }
 
-.hlx-sk button {
+.hlx-sk button,
+.hlx-sk-overlay button {
   background-color: transparent;
   border: var(--hlx-sk-button-border);
   border-radius: var(--hlx-sk-button-border-radius);
@@ -112,23 +115,28 @@
 }
 
 .hlx-sk button:hover,
-.hlx-sk button:focus {
+.hlx-sk button:focus,
+.hlx-sk-overlay button:hover,
+.hlx-sk-overlay button:focus {
   background-color: var(--hlx-sk-button-hover-bg);
   border-color: var(--hlx-sk-button-hover-border);
   color: var(--hlx-sk-button-hover-color);
 }
 
-.hlx-sk button.pressed {
+.hlx-sk button.pressed,
+.hlx-sk-overlay button.pressed {
   background-color: var(--hlx-sk-button-pressed-bg);
   color: var(--hlx-sk-button-pressed-color);
 }
 
-.hlx-sk button:disabled {
+.hlx-sk button:disabled,
+.hlx-sk-overlay button:disabled {
   color: var(--hlx-sk-button-disabled-color);
   border: var(--hlx-sk-button-disabled-border);
 }
 
-.hlx-sk button:disabled:hover {
+.hlx-sk button:disabled:hover,
+.hlx-sk-overlay button:disabled:hover {
   background-color: var(--hlx-sk-button-disabled-hover-bg);
 }
 
@@ -203,22 +211,35 @@
 
 .hlx-sk .feature-container .close {
   margin-right: 0;
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
 }
 
+.hlx-sk .feature-container .close::after,
 .hlx-sk .feature-container .close::before {
-  display: none;
+  content: "";
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+  border-radius: 5px;
+  top: 12px;
+  left: 5px;
 }
 
-.hlx-sk .update button::after {
-  content: "*";
-}
-
-.hlx-sk .env {
-  order: -1;
+.hlx-sk .feature-container .close::after {
+  transform: rotate(-45deg);
 }
 
 .hlx-sk .dropdown {
   display: none;
+  min-height: 28px;
+  max-height: 28px;
   margin-top: 10px;
   position: relative;
 }
@@ -287,18 +308,17 @@
   border-radius: 0;
   width: 100%;
   text-align: left;
+  max-height: unset;
 }
 
 .hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:first-of-type button,
 .hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:first-of-type button.pressed {
-  border-radius: 0;
   border-top-left-radius: var(--hlx-sk-button-border-radius);
   border-top-right-radius: var(--hlx-sk-button-border-radius);
 }
 
 .hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:last-of-type button,
 .hlx-sk .dropdown.dropdown-expanded .dropdown-container > div:last-of-type button.pressed {
-  border-radius: 0;
   border-bottom-left-radius: var(--hlx-sk-button-border-radius);
   border-bottom-right-radius: var(--hlx-sk-button-border-radius);
 }
@@ -309,7 +329,7 @@
 }
 
 .hlx-sk-overlay {
-  z-index: 9999998;
+  z-index: 9999999;
   position: fixed;
   width: 100vw;
   height: 100vh;
@@ -347,6 +367,94 @@
 
 .hlx-sk-overlay .wait {
   animation: var(--wait-animation);
+}
+
+.hlx-sk-overlay .modal.help {
+  margin-top: 15px;
+  position: absolute;
+  padding: 12px 24px;
+  background-color: var(--hlx-sk-modal-help-bg);
+  color: var(--hlx-sk-modal-help-color);
+  max-width: 60vw;
+}
+
+.hlx-sk-overlay .modal.help * {
+  font-size: var(--hlx-sk-button-font-size);
+}
+
+.hlx-sk-overlay .modal.help:after {
+	content: '';
+	position: absolute;
+  top: -10px;
+  left: 40px;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: var(--hlx-sk-modal-help-bg);
+  border-bottom: 0;
+  margin-left: -10px;
+  margin-bottom: -10px;
+  transform: rotate(180deg);
+}
+
+.hlx-sk-overlay .modal.help.bottom-right:after {
+  left: unset;
+  right: 40px;
+}
+
+.hlx-sk-overlay .modal.help p {
+  margin: 4px 0;
+}
+
+.hlx-sk-overlay .modal.help p.help-controls {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.hlx-sk-overlay .modal.help p.help-controls .help-steps {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: left;
+}
+
+.hlx-sk-overlay .modal.help button {
+  background-color: var(--hlx-sk-modal-help-bg);
+  border-color: var(--hlx-sk-modal-help-color);
+  color: var(--hlx-sk-modal-help-color);
+}
+
+.hlx-sk-overlay .modal.help button:hover,
+.hlx-sk-overlay .modal.help button:focus {
+  background-color: var(--hlx-sk-modal-help-color);
+  color: var(--hlx-sk-modal-help-bg);
+}
+
+.hlx-sk-overlay .modal.help button.help-acknowledge {
+  justify-self: left;
+}
+
+.hlx-sk-overlay .modal.help .help-step {
+  padding: 19px 12px 9px 12px;
+  cursor: pointer;    
+}
+
+.hlx-sk-overlay .modal.help .help-step .circle {
+  border: 5px solid var(--hlx-sk-modal-help-color);
+  border-radius: 50%;
+  width: 0;
+  height: 0;  
+  opacity: 0.5;
+}
+
+.hlx-sk-overlay .modal.help .help-step.help-current .circle {
+  opacity: 1;
+}
+
+.hlx-sk-overlay .modal.help .help-step::before {
+  display: none;
 }
 
 .hlx-sk-hidden {
@@ -510,6 +618,10 @@
     top: 7px;
     transform: rotate(-45deg) scale(1.4);
   }
+
+  .hlx-sk-overlay .modal.help {
+    text-align: center;
+  }
 }
 
 /* i18n */
@@ -584,4 +696,24 @@
 
 .hlx-sk-special-view h2.helix-default::before {
   content: "Default sheet";
+}
+
+.hlx-sk-overlay .modal.help .help-acknowledge::before {
+  content: "Got it!";
+}
+
+.hlx-sk-overlay .modal.help .help-dismiss::before {
+  content: "Not now";
+}
+
+.hlx-sk-overlay .modal.help .help-previous::before {
+  content: "Previous tip";
+}
+
+.hlx-sk-overlay .modal.help .help-current::before {
+  content: "This tip";
+}
+
+.hlx-sk-overlay .modal.help .help-next::before {
+  content: "Next tip";
 }

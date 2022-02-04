@@ -81,3 +81,23 @@
 .hlx-sk-special-view h2.helix-default::before {
   content: "Feuille par défaut";
 }
+
+.hlx-sk-overlay .modal.help .help-acknowledge::before {
+  content: "Got it!";
+}
+
+.hlx-sk-overlay .modal.help .help-dismiss::before {
+  content: "Not now";
+}
+
+.hlx-sk-overlay .modal.help .help-previous::before {
+  content: "Previous tip";
+}
+
+.hlx-sk-overlay .modal.help .help-current::before {
+  content: "This tip";
+}
+
+.hlx-sk-overlay .modal.help .help-next::before {
+  content: "Next tip";
+}

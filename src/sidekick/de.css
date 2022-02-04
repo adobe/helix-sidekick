@@ -81,3 +81,23 @@
 .hlx-sk-special-view h2.helix-default::before {
   content: "Standardtabelle";
 }
+
+.hlx-sk-overlay .modal.help .help-acknowledge::before {
+  content: "Alles klar!";
+}
+
+.hlx-sk-overlay .modal.help .help-dismiss::before {
+  content: "Nicht jetzt";
+}
+
+.hlx-sk-overlay .modal.help .help-previous::before {
+  content: "Vorheriger Tipp";
+}
+
+.hlx-sk-overlay .modal.help .help-current::before {
+  content: "Dieser Tipp";
+}
+
+.hlx-sk-overlay .modal.help .help-next::before {
+  content: "Nächster Tipp";
+}

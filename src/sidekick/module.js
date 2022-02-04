@@ -176,6 +176,18 @@
    */
 
   /**
+   * @event Sidekick#helpdismissed
+   * @type {string} The help topic
+   * @description This event is fired when a help dialog has been dismissed.
+   */
+
+  /**
+   * @event Sidekick#helpacknowledged
+   * @type {string} The help topic
+   * @description This event is fired when a help dialog has been acknowledged.
+   */
+
+  /**
    * Mapping between the plugin IDs that will be treated as environments
    * and their corresponding host properties in the config.
    * @private
@@ -465,6 +477,44 @@
   }
 
   /**
+   * Aligns an element with another and keeps it there.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   * @param {string} elemSelector The CSS selector for the element to align
+   * @param {string} targetSelector The CSS selector for the target element
+   */
+  function stickTo(sk, elemSelector, targetSelector) {
+    const listener = () => {
+      const elem = sk.shadowRoot.querySelector(elemSelector);
+      const target = sk.shadowRoot.querySelector(targetSelector);
+      if (elem && target) {
+        const elemRect = elem.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        // define alignment
+        let align = 'bottom-left';
+        if (targetRect.left + elemRect.width >= window.innerWidth) {
+          align = 'bottom-right';
+        }
+        elem.classList.add(align);
+        switch (align) {
+          case 'bottom-left':
+            elem.style.top = `${Math.round(targetRect.bottom) + 10}px`;
+            elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2) - 45}px`;
+            break;
+          case 'bottom-right':
+          default:
+            elem.style.top = `${Math.round(targetRect.bottom) + 10}px`;
+            elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2) - (elemRect.width - 45)}px`;
+        }
+      } else {
+        window.removeEventListener('resize', listener);
+      }
+    };
+    listener();
+    window.addEventListener('resize', listener);
+  }
+
+  /**
    * Returns the share URL for the sidekick bookmarklet.
    * @private
    * @param {Object} config The sidekick configuration
@@ -688,6 +738,11 @@
         isPressed: (sidekick) => sidekick.isProd(),
       },
     });
+
+    // keep empty env switcher hidden
+    if (sk.root.querySelectorAll(':scope .feature-container .env .dropdown-container > div').length === 0) {
+      sk.root.querySelector(':scope .feature-container .env').classList.add('hlx-sk-hidden');
+    }
   }
 
   /**
@@ -1220,7 +1275,6 @@
       // close button
       appendTag(this.featureContainer, {
         tag: 'button',
-        text: '✕',
         attrs: {
           class: 'close',
         },
@@ -1399,7 +1453,7 @@
               attrs: {
                 class: 'env dropdown',
               },
-            });
+            }, this.featureContainer.firstElementChild);
             if (this.isInner()) $envContainer.classList.add('preview');
             if (this.isOuter()) $envContainer.classList.add('live');
             if (this.isProd()) $envContainer.classList.add('prod');
@@ -1487,6 +1541,7 @@
           if ((typeof plugin.button.isPressed === 'boolean' && !!plugin.button.isPressed)
             || (typeof plugin.button.isPressed === 'function' && plugin.button.isPressed(this))) {
             $button.classList.add('pressed');
+            $button.removeAttribute('tabindex');
           }
           // fire event when plugin button is clicked
           $button.addEventListener('click', () => fireEvent(this, 'pluginused', {
@@ -1658,6 +1713,7 @@
       if (this._modal) {
         this._modal.innerHTML = '';
         this._modal.className = '';
+        this._modal.style = {};
         this._modal.parentNode.classList.add('hlx-sk-hidden');
         fireEvent(this, 'modalhidden');
       }
@@ -1666,6 +1722,103 @@
         delete this._modalCallback;
       }
       return this;
+    }
+
+    /**
+     * @typedef {Object} helpStep
+     * @description The definition of a help step inside a {@link helpTopic}.
+     * @prop {string} message The help message
+     * @prop {string} selector The CSS selector of the target element
+     */
+
+    /**
+     * @typedef {Object} helpTopic
+     * @description The definition of a help topic.
+     * @prop {string} id The ID of the help topic
+     * @prop {helpStep[]} steps An array of {@link helpStep}s
+     */
+
+    /**
+     * Displays a balloon with help content.
+     * @param {helpTopic} topic The topic
+     * @param {number} step The step number to display (starting with 0)
+     */
+    showHelp(topic, step = 0) {
+      const { id, steps } = topic;
+      // contextualize and consolidate help steps
+      const cSteps = steps.filter(({ selector }) => {
+        const target = this.shadowRoot.querySelector(selector);
+        return target && target.offsetParent;
+      });
+      const numSteps = cSteps.length;
+      if (!numSteps) return;
+      const { message, selector } = cSteps[step];
+      this.showModal([message], true);
+
+      // add controls
+      const controls = appendTag(this._modal, {
+        tag: 'p',
+        attrs: {
+          class: 'help-controls',
+        },
+      });
+      const stepControls = appendTag(controls, {
+        tag: 'div',
+        attrs: {
+          class: 'help-steps',
+        },
+      });
+      if (cSteps.length > 1) {
+        cSteps.forEach((_, num) => {
+          let type = 'current';
+          if (num < step) {
+            type = 'previous';
+          } else if (num > step) {
+            type = 'next';
+          }
+          const stepButton = appendTag(stepControls, {
+            tag: 'a',
+            attrs: {
+              class: `help-step help-${type}`,
+            },
+            lstnrs: {
+              click: (evt) => {
+                evt.stopPropagation();
+                this.showHelp(topic, num);
+              },
+            },
+          });
+          appendTag(stepButton, {
+            tag: 'div',
+            attrs: {
+              class: 'circle',
+            },
+          });
+        });
+      }
+      if (cSteps[step + 1]) {
+        appendTag(controls, {
+          tag: 'button',
+          attrs: {
+            class: 'help-dismiss',
+          },
+        });
+      } else {
+        appendTag(controls, {
+          tag: 'button',
+          attrs: {
+            class: 'help-acknowledge',
+          },
+          lstnrs: {
+            click: () => {
+              fireEvent(this, 'help-acknowledged', id);
+            },
+          },
+        });
+      }
+
+      this._modal.classList.replace('wait', 'help');
+      stickTo(this, '.modal.help', selector);
     }
 
     /**
