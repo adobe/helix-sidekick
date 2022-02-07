@@ -71,6 +71,20 @@
    */
 
   /**
+   * @typedef {Object} helpStep
+   * @description The definition of a help step inside a {@link helpTopic}.
+   * @prop {string} message The help message
+   * @prop {string} selector The CSS selector of the target element
+   */
+
+  /**
+   * @typedef {Object} helpTopic
+   * @description The definition of a help topic.
+   * @prop {string} id The ID of the help topic
+   * @prop {helpStep[]} steps An array of {@link helpStep}s
+   */
+
+  /**
    * @typedef {Object} sidekickConfig
    * @description The sidekick configuration.
    * @prop {string} owner The GitHub owner or organization (mandatory)
@@ -1693,20 +1707,6 @@
     }
 
     /**
-     * @typedef {Object} helpStep
-     * @description The definition of a help step inside a {@link helpTopic}.
-     * @prop {string} message The help message
-     * @prop {string} selector The CSS selector of the target element
-     */
-
-    /**
-     * @typedef {Object} helpTopic
-     * @description The definition of a help topic.
-     * @prop {string} id The ID of the help topic
-     * @prop {helpStep[]} steps An array of {@link helpStep}s
-     */
-
-    /**
      * Displays a balloon with help content.
      * @param {helpTopic} topic The topic
      * @param {number} step The step number to display (starting with 0)
@@ -1770,6 +1770,11 @@
           attrs: {
             class: 'help-dismiss',
           },
+          lstnrs: {
+            click: () => {
+              fireEvent(this, 'helpdismissed', id);
+            },
+          },
         });
       } else {
         appendTag(controls, {
@@ -1779,7 +1784,7 @@
           },
           lstnrs: {
             click: () => {
-              fireEvent(this, 'help-acknowledged', id);
+              fireEvent(this, 'helpacknowledged', id);
             },
           },
         });
