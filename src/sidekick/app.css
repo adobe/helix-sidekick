@@ -62,7 +62,7 @@
     --hlx-sk-button-disabled-color: #707070;
     --hlx-sk-button-disabled-border: solid 1px var(--hlx-sk-button-disabled-color);
     --hlx-sk-dropdown-container-bg: rgba(48, 48, 48, .9);
-    --hlx-sk-modal-overlay-bg: rgba(127, 127, 127, 0.8);
+    --hlx-sk-modal-overlay-bg: rgba(127, 127, 127, 0.5);
     --hlx-sk-special-view-button-color: rgba(127, 127, 127, 0.8);
     --hlx-sk-special-view-table-border: rgba(127, 127, 127, 0.8);
   }
@@ -138,6 +138,10 @@
 .hlx-sk button:disabled:hover,
 .hlx-sk-overlay button:disabled:hover {
   background-color: var(--hlx-sk-button-disabled-hover-bg);
+}
+
+.hlx-sk .update button::after {
+  content: "*";
 }
 
 .hlx-sk .plugin-container {
@@ -395,6 +399,11 @@
   transform: rotate(180deg);
 }
 
+
+.hlx-sk-overlay .modal.help.bottom-center:after {
+  display: none;
+}
+
 .hlx-sk-overlay .modal.help.bottom-right:after {
   left: unset;
   right: 40px;
@@ -416,6 +425,10 @@
   flex-grow: 1;
   align-items: center;
   justify-content: left;
+}
+
+.hlx-sk-overlay .modal.help p.help-controls .help-steps:empty {
+  flex-grow: 0;
 }
 
 .hlx-sk-overlay .modal.help button {
@@ -444,7 +457,7 @@
   border-radius: 50%;
   width: 0;
   height: 0;  
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 .hlx-sk-overlay .modal.help .help-step.help-current .circle {
@@ -595,6 +608,11 @@
 
   .hlx-sk-overlay .modal.help {
     text-align: center;
+  }
+
+  .hlx-sk-overlay .modal.help p.help-controls,
+  .hlx-sk-overlay .modal.help p.help-controls .help-steps {
+    justify-content: center;
   }
 }
 
