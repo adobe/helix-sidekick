@@ -472,6 +472,8 @@
    * @param {string} targetSelector The CSS selector for the target element
    */
   function stickTo(sk, elemSelector, targetSelector) {
+    // if no selector, stick to sidekick root
+    if (!targetSelector) targetSelector = `.${sk.root.className}`;
     const listener = () => {
       const elem = sk.shadowRoot.querySelector(elemSelector);
       const target = sk.shadowRoot.querySelector(targetSelector);
@@ -479,19 +481,27 @@
         const elemRect = elem.getBoundingClientRect();
         const targetRect = target.getBoundingClientRect();
         // define alignment
-        let align = 'bottom-left';
+        const alignments = [
+          'bottom-center',
+          'botttom-left',
+          'bottom-right',
+        ];
+        let align = target === sk.root ? alignments[0] : alignments[1];
         if (targetRect.left + elemRect.width >= window.innerWidth) {
-          align = 'bottom-right';
+          [, , align] = alignments;
         }
+        alignments.forEach((a) => elem.classList.remove(a));
         elem.classList.add(align);
+        elem.style.top = `${Math.round(targetRect.bottom)}px`;
         switch (align) {
-          case 'bottom-left':
-            elem.style.top = `${Math.round(targetRect.bottom) + 10}px`;
+          case alignments[0]:
+            elem.style.left = '';
+            break;
+          case alignments[1]:
             elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2) - 45}px`;
             break;
-          case 'bottom-right':
+          case alignments[2]:
           default:
-            elem.style.top = `${Math.round(targetRect.bottom) + 10}px`;
             elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2) - (elemRect.width - 45)}px`;
         }
       } else {
@@ -1715,8 +1725,9 @@
       const { id, steps } = topic;
       // contextualize and consolidate help steps
       const cSteps = steps.filter(({ selector }) => {
+        if (!selector) return true;
         const target = this.shadowRoot.querySelector(selector);
-        return target && target.offsetParent;
+        return target && window.getComputedStyle(target).display !== 'none';
       });
       const numSteps = cSteps.length;
       if (!numSteps) return;
@@ -1790,7 +1801,7 @@
         });
       }
 
-      this._modal.classList.replace('wait', 'help');
+      this._modal.classList.add('help');
       stickTo(this, '.modal.help', selector);
     }
 
