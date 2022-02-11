@@ -490,6 +490,38 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(color, 'rgb(0, 255, 0)', 'Did not apply custom styling to special view');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Shows help content', async () => {
+    const { checkPageResult: helpClasses, notification } = await new SidekickTest({
+      plugin: 'help',
+      pluginSleep: 2000,
+      configJs: `window.hlx.initSidekick({
+        plugins: [{
+          id: 'help',
+          button: {
+            text: 'Help',
+            action: (_, sk) => {
+              sk.showHelp({
+                id: 'test',
+                steps: [
+                  {
+                    message: 'Lorem ipsum dolor sit amet',
+                    selector: '.env',
+                    align: 'bottom-right',
+                  },
+                ],
+              });
+              console.log(sk._modal);
+            },
+          },
+        }],
+      });`,
+      // eslint-disable-next-line no-underscore-dangle
+      checkPage: (p) => p.evaluate(() => window.hlx.sidekick._modal.classList.toString()),
+    }).run();
+    assert.strictEqual(notification, 'Lorem ipsum dolor sit amet', `Did not show the expected message: ${notification}`);
+    assert.strictEqual(helpClasses, 'modal help bottom-right', `Did not have the expected CSS classes: ${helpClasses}`);
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Calls admin API with a specific version', async () => {
     const test = new SidekickTest();
     test.sidekickConfig.adminVersion = '0.7.7';

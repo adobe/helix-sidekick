@@ -293,7 +293,7 @@ const toResp = (resp) => {
 const getPlugins = async (p = getPage()) => p.evaluate(
   () => Array.from(window.hlx.sidekick
     .shadowRoot
-    .querySelectorAll('.hlx-sk > div.env > div:not(.toggle), .hlx-sk > div:not(.env)'))
+    .querySelectorAll('.hlx-sk > div.plugin-container > div, .hlx-sk > div.feature-container .env > .dropdown-container > div'))
     .map((plugin) => ({
       id: plugin.className.split(' ')[0],
       classes: plugin.className.split(' '),
