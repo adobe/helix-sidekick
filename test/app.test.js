@@ -66,7 +66,10 @@ describe('Test sidekick bookmarklet', () => {
       const error = errors.shift();
       // eslint-disable-next-line no-await-in-loop
       const { checkPageResult, notification } = await test.run();
-      assert.ok(notification.startsWith(error.status), `Expected ${error.status} message, but got ${notification}`);
+      assert.ok(
+        notification.startsWith(error.status),
+        `Expected ${error.status} message, but got ${notification}`,
+      );
       assert.strictEqual(checkPageResult, undefined, 'Did not delete sidekick');
     }
   }).timeout(IT_DEFAULT_TIMEOUT);

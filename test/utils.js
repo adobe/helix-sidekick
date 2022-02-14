@@ -331,7 +331,10 @@ const checkEventFired = async (p, type) => {
   if (!type) return true;
   const firedEvents = await getFiredEvents(p);
   const eventTypes = Array.isArray(type) ? type : [type];
-  assert.ok(eventTypes.every((et) => firedEvents[et] !== undefined), `Not all of events ${type} fired`);
+  assert.ok(
+    eventTypes.every((et) => firedEvents[et] !== undefined),
+    `Not all of events ${type} fired`,
+  );
   return true;
 };
 

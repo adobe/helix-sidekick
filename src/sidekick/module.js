@@ -502,7 +502,8 @@
             break;
           case alignments[2]:
           default:
-            elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2) - (elemRect.width - 45)}px`;
+            elem.style.left = `${Math.round(targetRect.left) + (targetRect.width / 2)
+              - (elemRect.width - 45)}px`;
         }
       } else {
         window.removeEventListener('resize', listener);
@@ -659,7 +660,10 @@
         action: async () => {
           const { config, status } = sk;
           const editUrl = status.edit && status.edit.url;
-          window.open(editUrl, `hlx-sk-edit--${config.owner}/${config.repo}/${config.ref}${status.webPath}`);
+          window.open(
+            editUrl,
+            `hlx-sk-edit--${config.owner}/${config.repo}/${config.ref}${status.webPath}`,
+          );
         },
       },
     });

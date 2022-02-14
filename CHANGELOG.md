@@ -1,3 +1,21 @@
+# [4.2.0](https://github.com/adobe/helix-sidekick/compare/v4.1.0...v4.2.0) (2022-02-14)
+
+
+### Bug Fixes
+
+* modal width regression ([d9c9de9](https://github.com/adobe/helix-sidekick/commit/d9c9de965770d12ee02d7f0f7dfa240ac66dd280))
+* regression ([51b5f94](https://github.com/adobe/helix-sidekick/commit/51b5f94be14998c996e7071ab691c680fd759d05))
+* special config handling ([a7b22ba](https://github.com/adobe/helix-sidekick/commit/a7b22ba7f312e1b8692c20ac37255382d8ad002d))
+
+
+### Features
+
+* better share icon ([9af799e](https://github.com/adobe/helix-sidekick/commit/9af799e6353678780fc0b783dc267dd527011ee9))
+* help dialog and more ([3bf60b0](https://github.com/adobe/helix-sidekick/commit/3bf60b08e6214c247930d2fe9cafd54dd164b3ce))
+* load config from outer cdn ([070b3fe](https://github.com/adobe/helix-sidekick/commit/070b3fe4d0669da47f501cc3feb564957d7854c6))
+* redesign env switcher (wip) ([b080e4c](https://github.com/adobe/helix-sidekick/commit/b080e4c09017c0b18aa05182797ab896e218c693))
+* redesign env switcher (wip) ([5e03bb2](https://github.com/adobe/helix-sidekick/commit/5e03bb2d937d6be6981b6f17485c80a3db3741c6))
+
 # [4.1.0](https://github.com/adobe/helix-sidekick/compare/v4.0.0...v4.1.0) (2022-01-27)
 
 
