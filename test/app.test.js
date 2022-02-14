@@ -371,10 +371,19 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok((await test.run()).checkPageResult, 'Did not detect production URL');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Pushes down page content by default', async () => {
+  it('Does not push down page content by default', async () => {
     const { checkPageResult } = await new SidekickTest({
       checkPage: (p) => p.evaluate(() => document.documentElement.style.marginTop),
     }).run();
+    assert.strictEqual(checkPageResult, '', 'Did push down content');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Pushes down page content if configured', async () => {
+    const test = new SidekickTest({
+      checkPage: (p) => p.evaluate(() => document.documentElement.style.marginTop),
+    });
+    test.sidekickConfig.pushDown = true;
+    const { checkPageResult } = await test.run();
     assert.strictEqual(checkPageResult, '49px', 'Did not push down content');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
