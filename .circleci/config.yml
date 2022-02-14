@@ -2,12 +2,12 @@ version: 2.1
 executors:
   node14:
     docker:
-    - image: circleci/node:14
+    - image: cimg/node-14.19.0-browsers
     environment:
       NPM_CONFIG_PREFIX: ~/.npm-global
 
 orbs:
-  puppeteer: threetreeslight/puppeteer@0.1.2
+  browser-tools: circleci/browser-tools@1.1.0
 
 commands:
   setup:
@@ -39,7 +39,7 @@ jobs:
     - run:
         name: Lint
         command: npm run lint
-    - puppeteer/install
+    - browser-tools/install-browser-tools
     - run:
         name: Test
         command: |
