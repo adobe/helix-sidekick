@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/adobe/helix-sidekick/compare/v4.2.0...v4.3.0) (2022-02-14)
+
+
+### Features
+
+* no content push down by default ([3ed9f27](https://github.com/adobe/helix-sidekick/commit/3ed9f27b41f83e6071bc64fcafe0298177623840))
+
 # [4.2.0](https://github.com/adobe/helix-sidekick/compare/v4.1.0...v4.2.0) (2022-02-14)
 
 
