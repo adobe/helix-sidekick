@@ -18,7 +18,7 @@ const fs = require('fs-extra');
 const puppeteer = require('puppeteer');
 
 // set debug to true to see browser window and debug output
-const DEBUG = false;
+const DEBUG = true;
 const IT_DEFAULT_TIMEOUT = 60000;
 
 const SETUPS = {
