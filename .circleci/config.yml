@@ -39,7 +39,7 @@ jobs:
     - run:
         name: Lint
         command: npm run lint
-    - browser-tools/install-browser-tools
+    - browser-tools/install-chrome
     - run:
         name: Test
         command: |
