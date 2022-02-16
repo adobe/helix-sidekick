@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/adobe/helix-sidekick/compare/v4.3.0...v4.3.1) (2022-02-16)
+
+
+### Bug Fixes
+
+* reduce border radius ([9c8e9dd](https://github.com/adobe/helix-sidekick/commit/9c8e9dd334eabb072d6a155d102d7a7ff479c873))
+
 # [4.3.0](https://github.com/adobe/helix-sidekick/compare/v4.2.0...v4.3.0) (2022-02-14)
 
 
