@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/adobe/helix-sidekick/compare/v4.3.1...v4.3.2) (2022-02-17)
+
+
+### Bug Fixes
+
+* dom exception on extension reload ([40a03f1](https://github.com/adobe/helix-sidekick/commit/40a03f187ad0740382282b48d1e071d6738263a7))
+
 ## [4.3.1](https://github.com/adobe/helix-sidekick/compare/v4.3.0...v4.3.1) (2022-02-16)
 
 
