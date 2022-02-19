@@ -71,28 +71,6 @@ describe('Test publish plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Publish plugin redirects to live instead of bring-your-own-CDN production host', async () => {
-    const test = new SidekickTest({
-      plugin: 'publish',
-    });
-    test.sidekickConfig.byocdn = true;
-    const { navigated } = await test.run();
-    assert.strictEqual(
-      navigated,
-      'https://main--blog--adobe.hlx.live/en/topics/bla',
-      'Redirect to live not sent',
-    );
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('No publish plugin on bring-your-own-CDN production host', async () => {
-    const test = new SidekickTest({
-      url: 'https://blog.adobe.com/en/topics/bla',
-    });
-    test.sidekickConfig.byocdn = true;
-    const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'publish'), 'Unexpected publish plugin found');
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
   it('No publish plugin without source document', async () => {
     const test = new SidekickTest({
       url: 'https://blog.adobe.com/en/topics/bla',
