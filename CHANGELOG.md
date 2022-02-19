@@ -1,3 +1,15 @@
+# [4.4.0](https://github.com/adobe/helix-sidekick/compare/v4.3.2...v4.4.0) (2022-02-19)
+
+
+### Bug Fixes
+
+* revert general border radius to 32 and only use smaller radius on help modals ([6825a47](https://github.com/adobe/helix-sidekick/commit/6825a472b2545cc1897c65010c773d1773968460))
+
+
+### Features
+
+* remove byocdn special handling ([ea5dedf](https://github.com/adobe/helix-sidekick/commit/ea5dedfecdca2935f08ec017245798d40b6eb43d))
+
 ## [4.3.2](https://github.com/adobe/helix-sidekick/compare/v4.3.1...v4.3.2) (2022-02-17)
 
 
