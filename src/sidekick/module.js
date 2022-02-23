@@ -468,9 +468,9 @@
   }
 
   /**
-   * Creates a dropdown.
+   * Creates a dropdown as a container for other plugins.
    * @private
-   * @param {elemConfig} config The dropdown configuration
+   * @param {pluginConfig} config The plugin configuration
    * @returns {HTMLElement} The dropdown
    */
   function createDropdown(config) {
