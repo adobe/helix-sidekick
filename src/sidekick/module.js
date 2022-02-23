@@ -1476,7 +1476,8 @@
         // find existing plugin
         let $plugin = this.get(plugin.id);
         let $pluginContainer = (plugin.container
-          && this.pluginContainer.querySelector(`.dropdown.${plugin.container} .dropdown-container`))
+          && this.pluginContainer
+            .querySelector(`.dropdown.${plugin.container} .dropdown-container`))
           || this.pluginContainer;
         if (ENVS[plugin.id]) {
           // find or create environment plugin container
