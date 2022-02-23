@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/adobe/helix-sidekick/compare/v4.4.0...v4.5.0) (2022-02-23)
+
+
+### Features
+
+* dropdowns for plugins ([4842aaf](https://github.com/adobe/helix-sidekick/commit/4842aaf0affa1c6fafe4fe1d70bf510dae670696))
+
 # [4.4.0](https://github.com/adobe/helix-sidekick/compare/v4.3.2...v4.4.0) (2022-02-19)
 
 
