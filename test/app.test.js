@@ -245,6 +245,29 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(plugins.find((p) => p.id === 'foo').text, 'Lorem ipsum', 'Did not add HTML element in plugin');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Adds dropdown as plugin container', async () => {
+    const { plugins } = await new SidekickTest({
+      post: (p) => p.evaluate(() => {
+        window.hlx.sidekick.add({
+          id: 'foo',
+          button: {
+            text: 'Lorem ipsum',
+            isDropdown: true,
+          },
+        });
+        window.hlx.sidekick.add({
+          id: 'bar',
+          container: 'foo',
+          button: {
+            text: 'Dolor sit amet',
+          },
+        });
+      }),
+    }).run();
+    assert.ok(plugins.find((p) => p.id === 'foo').classes.includes('dropdown'), 'Did not add dropdown');
+    assert.ok(plugins.find((p) => p.id === 'bar').container, 'foo', 'Plugin not added to dropdown');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Loads custom CSS', async () => {
     const { checkPageResult } = await new SidekickTest({
       post: (p) => p.evaluate(() => window.hlx.sidekick.loadCSS('custom.css')),
