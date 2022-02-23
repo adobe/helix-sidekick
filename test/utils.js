@@ -291,12 +291,13 @@ const toResp = (resp) => {
 };
 
 const getPlugins = async (p = getPage()) => p.evaluate(
-  () => Array.from(window.hlx.sidekick
-    .shadowRoot
-    .querySelectorAll('.hlx-sk > div.plugin-container > div, .hlx-sk > div.feature-container .env > .dropdown-container > div'))
+  () => window.hlx.sidekick.plugins
+    .map(({ id }) => window.hlx.sidekick.get(id))
+    .filter((plugin) => !!plugin)
     .map((plugin) => ({
-      id: plugin.className.split(' ')[0],
-      classes: plugin.className.split(' '),
+      id: plugin.classList.item(0),
+      classes: [...plugin.classList],
+      container: plugin.closest('.dropdown')?.classList.item(0),
       text: plugin.textContent,
       buttonPressed: plugin.querySelector(':scope > button')
         && plugin.querySelector(':scope > button').classList.contains('pressed'),
