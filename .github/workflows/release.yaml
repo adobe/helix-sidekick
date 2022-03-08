@@ -9,7 +9,7 @@ jobs:
     if: "${{ !contains(github.event.head_commit.message, '[skip ci]') }}"
     steps:
       - name: Checkout source repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ssh-key: ${{ secrets.SSH-KEY }}
     # - name: Pack chrome extension
@@ -20,7 +20,7 @@ jobs:
     #     # pack crx file
     #     npm run pack
       - name: Checkout target repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: adobe/helix-website
           ref: main
