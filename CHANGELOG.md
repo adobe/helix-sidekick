@@ -1,3 +1,15 @@
+# [4.6.0](https://github.com/adobe/helix-sidekick/compare/v4.5.1...v4.6.0) (2022-03-14)
+
+
+### Bug Fixes
+
+* regression in reload plugin condition ([e3e3992](https://github.com/adobe/helix-sidekick/commit/e3e3992898e27ded4df4259f3d2e5d27bbfb3797))
+
+
+### Features
+
+* add isEnabled to pluginButton ([45a5840](https://github.com/adobe/helix-sidekick/commit/45a58405c4e88dd517c419d611488c5cd88296d9))
+
 ## [4.5.1](https://github.com/adobe/helix-sidekick/compare/v4.5.0...v4.5.1) (2022-03-14)
 
 
