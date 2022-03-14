@@ -211,7 +211,7 @@ describe('Test sidekick bookmarklet', () => {
           id: 'edit',
           button: {
             text: 'ExtendEdit',
-            isPressed: true,
+            isPressed: () => true,
           },
         });
       }),
@@ -243,6 +243,21 @@ describe('Test sidekick bookmarklet', () => {
       }),
     }).run();
     assert.strictEqual(plugins.find((p) => p.id === 'foo').text, 'Lorem ipsum', 'Did not add HTML element in plugin');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Enables plugin button', async () => {
+    const { plugins } = await new SidekickTest({
+      post: (p) => p.evaluate(() => {
+        window.hlx.sidekick.add({
+          id: 'foo',
+          button: {
+            text: 'Lorem ipsum',
+            isEnabled: (sk) => sk.status.edit && sk.status.edit.lastModified,
+          },
+        });
+      }),
+    }).run();
+    assert.ok(plugins.find((p) => p.id === 'foo').buttonEnabled, 'Did not enable plugin button');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Adds dropdown as plugin container', async () => {

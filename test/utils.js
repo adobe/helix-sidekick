@@ -14,7 +14,6 @@
 'use strict';
 
 const assert = require('assert');
-const fs = require('fs-extra');
 const puppeteer = require('puppeteer');
 
 // set debug to true to see browser window and debug output
@@ -301,6 +300,8 @@ const getPlugins = async (p = getPage()) => p.evaluate(
       text: plugin.textContent,
       buttonPressed: plugin.querySelector(':scope > button')
         && plugin.querySelector(':scope > button').classList.contains('pressed'),
+      buttonEnabled: plugin.querySelector(':scope > button')
+        && !plugin.querySelector(':scope > button').getAttribute('disabled'),
     })),
 );
 
@@ -355,118 +356,6 @@ const clickButton = async (p, id) => p.evaluate((buttonId) => window.hlx.sidekic
 const getNotification = async (p = getPage()) => p.evaluate(() => window.hlx.sidekick
   .shadowRoot.querySelector('.hlx-sk-overlay .modal')?.textContent || '');
 
-const mockStandardResponses = async (p, opts = {}) => {
-  const {
-    pluginsJs = '',
-    configJs = '',
-    check = () => true,
-    mockResponses = [MOCKS.api.dummy],
-  } = opts;
-  await p.setRequestInterception(true);
-  p.on('request', async (req) => {
-    if (DEBUG) {
-      // eslint-disable-next-line no-console
-      console.log(req.method(), req.url());
-    }
-    if (req.url().endsWith('/tools/sidekick/plugins.js')
-      && check(req)) {
-      req.respond(toResp(pluginsJs));
-    } else if (req.url().endsWith('/tools/sidekick/config.js')
-      && check(req)) {
-      req.respond(toResp(configJs));
-    } else if (req.url().startsWith('https://admin.hlx.page/')) {
-      req.respond(toResp(mockResponses.shift()));
-    } else if (req.url() === 'https://www.hlx.live/tools/sidekick/module.js') {
-      try {
-        const data = await fs.readFile(`${__dirname}/../src/sidekick/module.js`, 'utf-8');
-        req.respond(toResp(data));
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
-      }
-    } else {
-      // console.log(req.url());
-      req.continue();
-    }
-  });
-};
-
-const testPageRequests = async ({
-  page,
-  url,
-  plugin,
-  events,
-  prep = () => {},
-  check = () => true,
-  browserCheck: popupCheck,
-  mockResponses = MOCKS.purge,
-  checkCondition = (req) => req.url().startsWith('https://'),
-  timeout = 0,
-  timeoutSuccess = true,
-}) => {
-  await page.setRequestInterception(true);
-  return new Promise((resolve, reject) => {
-    if (typeof popupCheck === 'function') {
-      page.browser().on('request', (req) => {
-        if (popupCheck(req)) {
-          resolve();
-        }
-      });
-    }
-    // watch for new browser window
-    page.on('request', async (req) => {
-      if (DEBUG) {
-        // eslint-disable-next-line no-console
-        console.log(req.method(), req.url());
-      }
-      if (req.url().endsWith('/tools/sidekick/plugins.js')
-        || req.url().endsWith('/tools/sidekick/config.js')) {
-        // send plugins response
-        return req.respond(toResp());
-      } else if (checkCondition(req)) {
-        try {
-          if (check(req)) {
-            // check successful
-            resolve();
-          }
-          if (req.url().startsWith('file://')) {
-            // let file:// requests through
-            // console.log(req.url());
-            req.continue();
-          } else {
-            // send mock response
-            // console.log(req.url());
-            const response = toResp(mockResponses.shift() || '');
-            return req.respond(response);
-          }
-        } catch (e) {
-          reject(e);
-        }
-      }
-      // let request continue
-      // console.log(req.url());
-      return req.continue();
-    });
-    // open url and optionally click plugin button
-    page
-      .goto(url, { waitUntil: 'load' })
-      .then(() => prep(page))
-      .then(() => waitForEvent(page, events))
-      .then(() => execPlugin(page, plugin))
-      .then(() => checkEventFired(page, events))
-      .catch((e) => reject(e));
-    if (timeout) {
-      setTimeout(() => {
-        if (timeoutSuccess) {
-          resolve();
-        } else {
-          reject(new Error('check timed out'));
-        }
-      }, parseInt(timeout, 10));
-    }
-  });
-};
-
 const sleep = async (delay = 1000) => new Promise((resolve) => {
   setTimeout(resolve, delay);
 });
@@ -474,7 +363,7 @@ const sleep = async (delay = 1000) => new Promise((resolve) => {
 async function startBrowser() {
   this.timeout(10000);
   globalBrowser = await puppeteer.launch({
-    devtools: DEBUG,
+    devtools: DEBUG || process.env.HLX_SK_TEST_DEBUG,
     args: [
       '--disable-popup-blocking',
       '--disable-web-security',
@@ -506,8 +395,6 @@ module.exports = {
   execPlugin,
   clickButton,
   getNotification,
-  mockStandardResponses,
-  testPageRequests,
   sleep,
   getPage,
   startBrowser,
