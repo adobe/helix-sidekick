@@ -65,11 +65,11 @@ describe('Test reload plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('No reload plugin without source document', async () => {
+  it('Reload plugin button disabled without source document', async () => {
     const test = new SidekickTest();
     test.apiResponses[0].edit = {}; // no source doc
     const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'reload'), 'Unexpected reload plugin found');
+    assert.ok(plugins.find((p) => p.id === 'reload' && !p.buttonEnabled), 'Reload plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Reload plugin shows update indicator if edit is newer than preview', async () => {

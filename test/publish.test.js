@@ -71,13 +71,13 @@ describe('Test publish plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('No publish plugin without source document', async () => {
+  it('Publish plugin button disabled without source document', async () => {
     const test = new SidekickTest({
       url: 'https://blog.adobe.com/en/topics/bla',
     });
     test.apiResponses[0].edit = {}; // no source doc
     const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'publish'), 'Unexpected publish plugin found');
+    assert.ok(plugins.find((p) => p.id === 'publish' && !p.buttonEnabled), 'Publish plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Publish plugin shows update indicator if edit is newer than preview', async () => {
