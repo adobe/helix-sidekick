@@ -81,10 +81,10 @@ describe('Test live plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('No live plugin if page not published', async () => {
+  it('Live plugin button disabled if page not published', async () => {
     const test = new SidekickTest();
     test.apiResponses[0].live = {};
     const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'live'), 'Unexpected live plugin found');
+    assert.ok(plugins.find((p) => p.id === 'live' && !p.buttonEnabled), 'Live plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

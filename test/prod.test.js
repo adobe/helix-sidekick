@@ -74,10 +74,10 @@ describe('Test production plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('No production plugin if page not published', async () => {
+  it('Production plugin button disabled if page not published', async () => {
     const test = new SidekickTest();
     test.apiResponses[0].live = {};
     const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'prod'), 'Unexpected production plugin found');
+    assert.ok(plugins.find((p) => p.id === 'prod' && !p.buttonEnabled), 'Production plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

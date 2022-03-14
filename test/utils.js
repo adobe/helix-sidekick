@@ -209,68 +209,6 @@ class Setup {
   }
 }
 
-const MOCKS = {
-  api: {
-    dummy: {
-      webPath: '/dummy',
-    },
-    blog: {
-      webPath: '/en/topics/bla.html',
-      preview: {
-        lastModified: 'Fri, 18 Jun 2021 09:57:01 GMT',
-      },
-      live: {
-        lastModified: 'Fri, 18 Jun 2021 09:57:02 GMT',
-      },
-      source: {
-        lastModified: 'Fri, 18 Jun 2021 09:57:00 GMT',
-      },
-      edit: {
-        lastModified: 'Fri, 18 Jun 2021 09:57:00 GMT',
-        url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
-      },
-    },
-    blogCode: {
-      resourcePath: '/scripts/bla.js',
-      webPath: '/scripts/bla.js',
-      live: {
-        url: 'https://master-theblog--adobe.hlx.live/scripts/bla.js',
-      },
-      code: {
-        codeBusId: 'helix-code-bus/adobe/theblog/master/scripts/bla.js',
-        contentType: 'application/javascript',
-        contentLength: '11239',
-        lastModified: 'Mon, 20 Sep 2021 18:44:07 GMT',
-      },
-      preview: {
-        url: 'https://master--theblog--adobe.hlx3.page/scripts/bla.js',
-      },
-      edit: {
-        url: 'https://github.com/adobe/theblog/edit/master/scripts/bla.js',
-      },
-      source: {
-        lastModified: null,
-        sourceLocation: 'https://raw.githubusercontent.com/adobe/theblog/master/scripts/bla.js',
-      },
-    },
-    pages: {
-      webPath: '/creativecloud/en/test',
-      preview: {
-        lastModified: 'Fri, 18 Jun 2021 09:57:42 GMT',
-      },
-      source: {
-        lastModified: 'Fri, 18 Jun 2021 09:55:03 GMT',
-      },
-      edit: {
-        url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
-      },
-    },
-  },
-  purge: [{ status: 'ok' }],
-  html: '<html></html>',
-  json: '{}',
-};
-
 // eslint-disable-next-line no-unused-vars
 let globalBrowser;
 let globalPage;
@@ -301,7 +239,7 @@ const getPlugins = async (p = getPage()) => p.evaluate(
       buttonPressed: plugin.querySelector(':scope > button')
         && plugin.querySelector(':scope > button').classList.contains('pressed'),
       buttonEnabled: plugin.querySelector(':scope > button')
-        && !plugin.querySelector(':scope > button').getAttribute('disabled'),
+        && !plugin.querySelector(':scope > button').hasAttribute('disabled'),
     })),
 );
 
@@ -384,7 +322,6 @@ const stopBrowser = async () => {
 
 module.exports = {
   IT_DEFAULT_TIMEOUT,
-  MOCKS,
   Setup,
   toResp,
   getPlugins,

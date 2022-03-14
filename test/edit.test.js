@@ -49,10 +49,10 @@ describe('Test edit plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('No edit plugin without source document', async () => {
+  it('Edit plugin button disabled without source document', async () => {
     const test = new SidekickTest();
     delete test.apiResponses[0].edit;
     const { plugins } = await test.run();
-    assert.ok(!plugins.find((p) => p.id === 'edit'), 'Unexpected edit plugin found');
+    assert.ok(plugins.find((p) => p.id === 'edit' && !p.buttonEnabled), 'Edit plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
