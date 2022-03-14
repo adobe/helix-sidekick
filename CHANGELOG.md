@@ -1,3 +1,10 @@
+## [4.5.1](https://github.com/adobe/helix-sidekick/compare/v4.5.0...v4.5.1) (2022-03-14)
+
+
+### Bug Fixes
+
+* doc ([1372f04](https://github.com/adobe/helix-sidekick/commit/1372f040fd186c2bae1a5e3a7f19dc450843b9ac))
+
 # [4.5.0](https://github.com/adobe/helix-sidekick/compare/v4.4.0...v4.5.0) (2022-02-23)
 
 
