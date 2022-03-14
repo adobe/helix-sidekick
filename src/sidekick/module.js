@@ -794,6 +794,7 @@
       button: {
         action: async (evt) => {
           const { status } = sk;
+          sk.showModal('Please wait …', true);
           // update preview
           const resp = await sk.update();
           if (!resp.ok && resp.status >= 400) {
