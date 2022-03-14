@@ -824,8 +824,7 @@
   function addReloadPlugin(sk) {
     sk.add({
       id: 'reload',
-      condition: (s) => s.config.innerHost && (s.isInner() || s.isDev())
-        && s.isContent(),
+      condition: (s) => s.config.innerHost && (s.isInner() || s.isDev()),
       button: {
         action: async (evt) => {
           const { location } = sk;
