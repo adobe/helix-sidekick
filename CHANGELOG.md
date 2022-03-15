@@ -1,3 +1,10 @@
+# [4.7.0](https://github.com/adobe/helix-sidekick/compare/v4.6.0...v4.7.0) (2022-03-15)
+
+
+### Features
+
+* improve user experience when preview fails ([735ec03](https://github.com/adobe/helix-sidekick/commit/735ec03adfb2359175cd31fdf4b8f04ad65d137c))
+
 # [4.6.0](https://github.com/adobe/helix-sidekick/compare/v4.5.1...v4.6.0) (2022-03-14)
 
 
