@@ -57,7 +57,7 @@ Every development branch in this repository will be mirrored in https://github.c
 
 1. Push changes to a branch `issue-77`
 2. Note the `sidekick-issue-77` branch in https://github.com/adobe/helix-website/branches
-3. Go to `https://sidekick-issue-77--helix-website--adobe.hlx3.page/tools/sidekick/` to install a development version of the bookmarklet for your project
+3. Go to `https://sidekick-issue-77--helix-website--adobe.hlx.page/tools/sidekick/` to install a development version of the bookmarklet for your project
 
 _Note: Mirrored development branches in https://github.com/adobe/helix-website/branches must be deleted manually when no longer needed._
 
@@ -85,5 +85,5 @@ The Sidekick module and bookmarklet gets staged automatically each time a pull r
 1. Click the _Sidekick Release Candidate_ PR
 1. Add a comment listing the `helix-sidekick` PR(s) included in this release
 1. Get a team member to review the Sidekick RC. The PR is based on a `sidekick-rc-*` branch (`*` being a random ID) so the RC can be tested at:
-   `https://sidekick-rc-*--helix-website--adobe.hlx3.page/tools/sidekick/`
+   `https://sidekick-rc-*--helix-website--adobe.hlx.page/tools/sidekick/`
 1. Once approved, merge the RC PR to deploy the changes into production
