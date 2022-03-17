@@ -34,7 +34,7 @@
   content: "Edition";
 }
 
-.hlx-sk .env button.toggle::before {
+.hlx-sk .env button.dropdown-toggle::before {
   content: "Avis";
 }
 
