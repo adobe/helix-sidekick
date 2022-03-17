@@ -236,6 +236,7 @@
   }
 
   /**
+   * Retrieves Helix project details from a host name.
    * @private
    * @param {string} host The host name
    * @returns {string[]} The project details
