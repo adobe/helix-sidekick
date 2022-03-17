@@ -1,3 +1,10 @@
+## [4.7.1](https://github.com/adobe/helix-sidekick/compare/v4.7.0...v4.7.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* missing french translation ([5dfbcb0](https://github.com/adobe/helix-sidekick/commit/5dfbcb05540209aded73b9c74c7b327af526da46))
+
 # [4.7.0](https://github.com/adobe/helix-sidekick/compare/v4.6.0...v4.7.0) (2022-03-15)
 
 
