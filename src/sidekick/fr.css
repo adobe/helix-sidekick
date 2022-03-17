@@ -35,7 +35,7 @@
 }
 
 .hlx-sk .env button.dropdown-toggle::before {
-  content: "Avis";
+  content: "Voir";
 }
 
 .hlx-sk .env.preview .dropdown-toggle::before,
