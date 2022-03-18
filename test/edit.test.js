@@ -29,7 +29,7 @@ describe('Test edit plugin', () => {
   it('Edit plugin opens editor from preview URL', async () => {
     const { popupOpened } = await new SidekickTest({
       plugin: 'edit',
-      pluginSleep: 2000,
+      pluginSleep: 3000,
     }).run();
     assert.ok(
       popupOpened && popupOpened.startsWith('https://login.microsoftonline.com/'),

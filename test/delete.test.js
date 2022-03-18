@@ -45,7 +45,7 @@ describe('Test delete plugin', () => {
       'Preview API not called',
     );
     assert.ok(
-      homeReq && homeReq.url === 'https://main--blog--adobe.hlx3.page/',
+      homeReq && homeReq.url === 'https://main--blog--adobe.hlx.page/',
       'Redirect to homepage not triggered',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -67,7 +67,7 @@ describe('Test delete plugin', () => {
     assert.ok(delPreviewReq, 'Preview API not called');
     assert.ok(delLiveReq, 'Live API not called');
     assert.ok(
-      homeReq && homeReq.url === 'https://main--blog--adobe.hlx3.page/',
+      homeReq && homeReq.url === 'https://main--blog--adobe.hlx.page/',
       'Redirect to homepage not triggered',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);

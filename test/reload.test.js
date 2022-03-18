@@ -60,7 +60,7 @@ describe('Test reload plugin', () => {
     }).run();
     const afterReload = requestsMade.slice(requestsMade.findIndex((r) => r.method === 'POST') + 1);
     assert.ok(
-      afterReload[0] && afterReload[0].url.startsWith('https://main--blog--adobe.hlx3.page/'),
+      afterReload[0] && afterReload[0].url.startsWith('https://main--blog--adobe.hlx.page/'),
       'Client cache not busted',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);

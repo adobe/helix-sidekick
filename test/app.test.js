@@ -40,7 +40,7 @@ describe('Test sidekick bookmarklet', () => {
     }).run();
     const { plugins, sidekick: { config: { innerHost, outerHost } } } = result;
     // check sidekick config
-    assert.strictEqual(innerHost, 'main--blog--adobe.hlx3.page', `Unexpected innerHost: ${innerHost}`);
+    assert.strictEqual(innerHost, 'main--blog--adobe.hlx.page', `Unexpected innerHost: ${innerHost}`);
     assert.strictEqual(outerHost, 'main--blog--adobe.hlx.live', `Unexpected outerHost: ${innerHost}`);
     // check plugins
     assert.strictEqual(plugins.length, 6, `Wrong number of plugins: ${plugins.length}`);
@@ -109,7 +109,7 @@ describe('Test sidekick bookmarklet', () => {
     }).run();
     // check sidekick config
     const { sidekick: { config: { innerHost, outerHost } } } = result;
-    assert.strictEqual(innerHost, 'main--blog--adobe.hlx3.page', `Unexpected innerHost: ${innerHost}`);
+    assert.strictEqual(innerHost, 'main--blog--adobe.hlx.page', `Unexpected innerHost: ${innerHost}`);
     assert.strictEqual(outerHost, 'main--blog--adobe.hlx.live', `Unexpected outerHost: ${innerHost}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -381,8 +381,13 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok((await test.run()).checkPageResult, 'Did not detect preview URL');
     // check again with different ref
     assert.ok(
-      (await test.run('https://test--blog--adobe.hlx3.page/')).checkPageResult,
+      (await test.run('https://test--blog--adobe.hlx.page/')).checkPageResult,
       'Did not detect preview URL with different ref',
+    );
+    // check again with hlx3.page
+    assert.ok(
+      (await test.run('https://main--blog--adobe.hlx3.page/')).checkPageResult,
+      'Did not detect preview URL with hlx3.page',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 

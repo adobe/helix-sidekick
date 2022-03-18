@@ -50,7 +50,7 @@ const SETUPS = {
             lastModified: 'Fri, 18 Jun 2021 09:57:50 GMT',
           },
           preview: {
-            url: 'https://main--pages--adobe.hlx3.page/creativecloud/en/test',
+            url: 'https://main--pages--adobe.hlx.page/creativecloud/en/test',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:42 GMT',
           },
@@ -65,7 +65,6 @@ const SETUPS = {
       html: '<html></html>',
     },
   },
-
   blog: {
     sidekickConfig: {
       owner: 'adobe',
@@ -85,7 +84,7 @@ const SETUPS = {
             lastModified: 'Fri, 18 Jun 2021 09:57:02 GMT',
           },
           preview: {
-            url: 'https://main--blog--adobe.hlx3.page/en/topics/bla',
+            url: 'https://main--blog--adobe.hlx.page/en/topics/bla',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:01 GMT',
           },
@@ -103,7 +102,7 @@ const SETUPS = {
             lastModified: 'Tue, 09 Nov 2021 14:17:35 GMT',
           },
           preview: {
-            url: 'https://main--blog--adobe.hlx3.page/en/bla.json',
+            url: 'https://main--blog--adobe.hlx.page/en/bla.json',
             status: 200,
             lastModified: 'Tue, 09 Nov 2021 14:17:27 GMT',
           },
@@ -121,7 +120,7 @@ const SETUPS = {
             lastModified: 'Tue, 09 Nov 2021 14:17:35 GMT',
           },
           preview: {
-            url: 'https://main--blog--adobe.hlx3.page/en/bla.xml',
+            url: 'https://main--blog--adobe.hlx.page/en/bla.xml',
             status: 200,
             lastModified: 'Tue, 09 Nov 2021 14:17:27 GMT',
           },

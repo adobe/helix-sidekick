@@ -34,7 +34,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       popupOpened,
-      'https://main--pages--adobe.hlx3.page/creativecloud/en/test',
+      'https://main--pages--adobe.hlx.page/creativecloud/en/test',
       'Preview URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -46,7 +46,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       popupOpened,
-      'https://main--blog--adobe.hlx3.page/en/topics/bla',
+      'https://main--blog--adobe.hlx.page/en/topics/bla',
       'Preview URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -58,7 +58,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       navigated,
-      'https://main--blog--adobe.hlx3.page/en/topics/bla',
+      'https://main--blog--adobe.hlx.page/en/topics/bla',
       'Preview URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -70,7 +70,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       navigated,
-      'https://main--blog--adobe.hlx3.page/en/topics/bla',
+      'https://main--blog--adobe.hlx.page/en/topics/bla',
       'Preview URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -82,7 +82,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       navigated,
-      'https://main--blog--adobe.hlx3.page/en/topics/bla?foo=bar',
+      'https://main--blog--adobe.hlx.page/en/topics/bla?foo=bar',
       'Query parameters not preserved',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -94,7 +94,7 @@ describe('Test preview plugin', () => {
     }).run();
     assert.strictEqual(
       popupOpened,
-      'https://main--blog--adobe.hlx3.page/en/topics/bla',
+      'https://main--blog--adobe.hlx.page/en/topics/bla',
       'Unexpected editor query parameters forwarded',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
@@ -113,7 +113,7 @@ describe('Test preview plugin', () => {
     );
     const afterUpdate = requestsMade.slice(requestsMade.indexOf(updateReq) + 1);
     assert.ok(
-      afterUpdate[0] && afterUpdate[0].url.startsWith('https://main--blog--adobe.hlx3.page/'),
+      afterUpdate[0] && afterUpdate[0].url.startsWith('https://main--blog--adobe.hlx.page/'),
       'Client cache not busted',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
