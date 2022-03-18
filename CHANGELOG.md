@@ -1,3 +1,10 @@
+# [4.8.0](https://github.com/adobe/helix-sidekick/compare/v4.7.1...v4.8.0) (2022-03-18)
+
+
+### Features
+
+* default to *.hlx.page ([770e735](https://github.com/adobe/helix-sidekick/commit/770e735fd56fbb9db61573fe5ad7e78f7037b447))
+
 ## [4.7.1](https://github.com/adobe/helix-sidekick/compare/v4.7.0...v4.7.1) (2022-03-17)
 
 
