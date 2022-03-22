@@ -83,7 +83,7 @@
 }
 
 .hlx-sk-overlay .modal.help .help-acknowledge::before {
-  content: "Got it!";
+  content: "J'ai compris!";
 }
 
 .hlx-sk-overlay .modal.help .help-close-dismiss::before {
