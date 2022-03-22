@@ -86,8 +86,16 @@
   content: "Got it!";
 }
 
-.hlx-sk-overlay .modal.help .help-dismiss::before {
-  content: "Not now";
+.hlx-sk-overlay .modal.help .help-close-dismiss::before {
+  content: "Show help topic again later";
+}
+
+.hlx-sk-overlay .modal.help .help-close-acknowledge::before {
+  content: "Don't show help topic again";
+}
+
+.hlx-sk-overlay .modal.help .help-close-opt-out::before {
+  content: "Never show any help topics";
 }
 
 .hlx-sk-overlay .modal.help .help-previous::before {
