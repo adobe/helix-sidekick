@@ -1,3 +1,10 @@
+# [4.9.0](https://github.com/adobe/helix-sidekick/compare/v4.8.0...v4.9.0) (2022-03-22)
+
+
+### Features
+
+* improve help UX ([ed6cb3e](https://github.com/adobe/helix-sidekick/commit/ed6cb3e4c10233571d5203c1c04f7c249853853c))
+
 # [4.8.0](https://github.com/adobe/helix-sidekick/compare/v4.7.1...v4.8.0) (2022-03-18)
 
 
