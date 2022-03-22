@@ -87,7 +87,7 @@
 }
 
 .hlx-sk-overlay .modal.help .help-close-dismiss::before {
-  content: "Show help topic again later";
+  content: "Revoir l'aide plus tard";
 }
 
 .hlx-sk-overlay .modal.help .help-close-acknowledge::before {
