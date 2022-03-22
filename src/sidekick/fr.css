@@ -95,7 +95,7 @@
 }
 
 .hlx-sk-overlay .modal.help .help-close-opt-out::before {
-  content: "Never show any help topics";
+  content: "Ne plus voir l'aide";
 }
 
 .hlx-sk-overlay .modal.help .help-previous::before {
