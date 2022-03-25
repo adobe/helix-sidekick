@@ -171,6 +171,31 @@
   border-color: transparent;
 }
 
+.hlx-sk .feature-container .user .dropdown-toggle {
+  background-color: orange;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle::after {
+  display: none;
+}
+
+.hlx-sk .feature-container .user .user-info {
+  background-color: var(--hlx-sk-bg);
+  padding: 8px 0;
+  cursor: text;
+  user-select: text;
+}
+
+.hlx-sk .feature-container .user .user-info > div {
+  padding: 2px 10px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.hlx-sk .feature-container .user .user-info .profile-name {
+  font-weight: 600; 
+}
+
 .hlx-sk .feature-container .share {
   padding-left: 5px;
 }
@@ -370,8 +395,9 @@
   box-shadow: var(--hlx-sk-shadow);
 }
 
-.hlx-sk-overlay .modal * {
+.hlx-sk-overlay .modal p {
   font-size: var(--hlx-sk-modal-font-size);
+  text-align: center;
 }
 
 .hlx-sk-overlay .modal a:any-link {
@@ -746,4 +772,77 @@
 
 .hlx-sk-overlay .modal.help .help-next::before {
   content: "Next tip";
+}
+
+.hlx-sk-overlay .modal.modal-login p:first-of-type::before {
+  content: "Please sign in to continue...";
+}
+
+.hlx-sk .feature-container .user-login button::before,
+.hlx-sk-overlay .modal.modal-login button::before {
+  content: "Sign in";
+}
+
+.hlx-sk .feature-container .user-logout button::before {
+  content: "Sign out";
+}
+
+.hlx-sk-overlay .modal.modal-wait::before {
+  content: "Please wait...";
+}
+
+.hlx-sk-overlay .modal.modal-share-success::before {
+  content: "Sharing URL copied to clipboard.";
+}
+
+.hlx-sk-overlay .modal.modal-config-success::before {
+  content: "Helix configuration successfully activated.";
+}
+
+.hlx-sk-overlay .modal.modal-preview-failure::before {
+  content: "Previewing failed. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-reload-failure::before {
+  content: "Reloading failed. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-publish-failure::before {
+  content: "Publication failed. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-delete-failure::before {
+  content: "Deletion failed. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-unpublish-failure::before {
+  content: "Unpublication failed. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-status-404-document::before {
+  content: "404 Not found: Check your Sidekick configuration and make sure Helix has access to this document.";
+}
+
+.hlx-sk-overlay .modal.modal-status-404-content::before {
+  content: "404 Not found: Check your Sidekick configuration or URL.";
+}
+
+.hlx-sk-overlay .modal.modal-status-500::before {
+  content: "500 Internal server error: Failed to fetch the page status. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-status-504::before {
+  content: "504 Gateway timeout: Failed to fetch the page status. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-status-invalid::before {
+  content: "Invalid server response. Check your Sidekick configuration or URL.";
+}
+
+.hlx-sk-overlay .modal.modal-profile-error::before {
+  content: "Unable to load user profile.";
+}
+
+.hlx-sk-overlay .modal.modal-logout-error::before {
+  content: "Unable to sign out user. Please try again later.";
 }

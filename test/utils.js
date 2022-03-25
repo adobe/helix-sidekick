@@ -290,8 +290,15 @@ const execPlugin = async (p, id) => {
 const clickButton = async (p, id) => p.evaluate((buttonId) => window.hlx.sidekick
   .shadowRoot.querySelector(`.hlx-sk button.${buttonId}`).click(), id);
 
-const getNotification = async (p = getPage()) => p.evaluate(() => window.hlx.sidekick
-  .shadowRoot.querySelector('.hlx-sk-overlay .modal')?.textContent || '');
+const getNotification = async (p = getPage()) => p.evaluate(() => {
+  const modal = window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk-overlay .modal');
+  const message = modal ? modal.textContent : null;
+  const className = modal ? modal.className : null;
+  return {
+    message,
+    className,
+  };
+});
 
 const sleep = async (delay = 1000) => new Promise((resolve) => {
   setTimeout(resolve, delay);

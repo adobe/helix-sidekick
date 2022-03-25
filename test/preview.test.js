@@ -127,6 +127,6 @@ describe('Test preview plugin', () => {
     test.apiResponses[0].webPath = '/.helix/config.json';
     const { popupOpened, notification } = await test.run();
     assert.ok(!popupOpened, 'Unexpected popup opened');
-    assert.strictEqual(notification, 'Helix configuration successfully activated', `Unexpected notification: ${notification}`);
+    assert.ok(notification.className.includes('modal-config-success'), `Unexpected notification classes: ${notification.className}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 });

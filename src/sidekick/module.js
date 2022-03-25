@@ -50,7 +50,7 @@
    * @prop {string}       id        The plugin ID (mandatory)
    * @prop {pluginButton} button    A button configuration object (optional)
    * @prop {string}       container The ID of a dropdown to add this plugin to (optional)
-   * @prop {boolean}      override=false True to replace an existing plugin (optional)
+   * @prop {boolean}      override=false Determines whether to replace an existing plugin
    * @prop {elemConfig[]} elements  An array of elements to add (optional)
    * @prop {Function}     condition Determines whether to show this plugin (optional).
    * This function is expected to return a boolean when called with the sidekick as argument.
@@ -328,11 +328,10 @@
       pushDown,
       pushDownSelector,
       specialViews,
+      scriptUrl = 'https://www.hlx.live/tools/sidekick/module.js',
     } = config;
     const innerPrefix = owner && repo ? `${ref}--${repo}--${owner}` : null;
     const publicHost = host && host.startsWith('http') ? new URL(host).host : host;
-    const scriptUrl = (window.hlx.sidekickScript && window.hlx.sidekickScript.src)
-      || 'https://www.hlx.live/tools/sidekick/module.js';
     let innerHost = 'hlx.page';
     if (!innerHost && scriptUrl) {
       // get hlx domain from script src (used for branch deployment testing)
@@ -511,10 +510,11 @@
   /**
    * Creates a dropdown as a container for other plugins.
    * @private
+   * @param {Sidekick} sk The sidekick
    * @param {pluginConfig} config The plugin configuration
    * @returns {HTMLElement} The dropdown
    */
-  function createDropdown(config) {
+  function createDropdown(sk, config) {
     const { id = '', button = {} } = config;
     const dropdown = createTag({
       tag: 'div',
@@ -522,7 +522,7 @@
         class: `${id} dropdown`,
       },
     });
-    appendTag(dropdown, {
+    const toggle = appendTag(dropdown, {
       tag: 'button',
       attrs: {
         class: 'dropdown-toggle',
@@ -539,6 +539,14 @@
             window.setTimeout(() => {
               document.addEventListener('click', collapseEnv);
             }, 100);
+          }
+          const {
+            lastElementChild: container,
+          } = dropdown;
+          const { left: cLeft, width: cWidth } = container.getBoundingClientRect();
+          if (cLeft + cWidth > window.innerWidth) {
+            const { width: tWidth } = toggle.getBoundingClientRect();
+            container.style.marginLeft = `-${cWidth - tWidth}px`;
           }
           evt.stopPropagation();
         },
@@ -637,7 +645,9 @@
       });
     } else {
       navigator.clipboard.writeText(shareUrl);
-      sk.notify('Sharing URL copied to clipboard');
+      sk.showModal({
+        css: 'modal-share-success',
+      });
     }
   }
 
@@ -676,6 +686,9 @@
    */
   async function checkLastModified(sidekick) {
     const { status } = sidekick;
+    if (status.edit && status.edit.status === 404) {
+      return;
+    }
     const editLastMod = (status.edit && status.edit.lastModified) || null;
     const previewLastMod = (status.preview && status.preview.lastModified) || null;
     const liveLastMod = (status.live && status.live.lastModified) || null;
@@ -709,7 +722,7 @@
    */
   function getAdminUrl({
     owner, repo, ref, adminVersion,
-  }, api, path) {
+  }, api, path = '') {
     const adminUrl = new URL([
       'https://admin.hlx.page/',
       api,
@@ -826,21 +839,23 @@
       button: {
         action: async (evt) => {
           const { status } = sk;
-          sk.showModal('Please wait …', true);
+          sk.showWait();
           // update preview
           const resp = await sk.update();
           if (!resp.ok) {
             console.error(resp);
-            sk.showModal(
-              `Failed to preview ${status.webPath}. Please try again later.`,
-              true,
-              0,
-            );
+            sk.showModal({
+              css: 'modal-preview-failure',
+              sticky: true,
+              level: 0,
+            });
             return;
           }
           // handle special case /.helix/config.json
           if (status.webPath === '/.helix/config.json') {
-            sk.notify('Helix configuration successfully activated');
+            sk.showModal({
+              css: 'modal-config-success',
+            });
             return;
           }
           sk.switchEnv('preview', newTab(evt));
@@ -861,7 +876,7 @@
       button: {
         action: async (evt) => {
           const { location } = sk;
-          sk.showModal('Please wait …', true);
+          sk.showWait();
           try {
             const resp = await sk.update();
             if (!resp.ok && resp.status >= 400) {
@@ -876,11 +891,11 @@
               window.location.reload();
             }
           } catch (e) {
-            sk.showModal(
-              `Failed to reload ${location.pathname}. Please try again later.`,
-              true,
-              0,
-            );
+            sk.showModal({
+              css: 'modal-reload-failure',
+              sticky: true,
+              level: 0,
+            });
           }
         },
         isEnabled: (s) => s.status.edit && s.status.edit.url, // enable only if edit url exists
@@ -922,11 +937,11 @@
               console.log(`redirecting to ${location.origin}/`);
               window.location.href = `${location.origin}/`;
             } catch (e) {
-              sk.showModal(
-                `Failed to delete ${status.webPath}. Please try again later.`,
-                true,
-                0,
-              );
+              sk.showModal({
+                css: 'modal-delete-failure',
+                sticky: true,
+                level: 0,
+              });
             }
           }
         },
@@ -948,7 +963,7 @@
         action: async (evt) => {
           const { config, location } = sk;
           const path = location.pathname;
-          sk.showModal(`Publishing ${path}`, true);
+          sk.showWait();
           let urls = [path];
           // purge dependencies
           if (Array.isArray(window.hlx.dependencies)) {
@@ -956,7 +971,6 @@
           }
           const results = await Promise.all(urls.map((url) => sk.publish(url)));
           if (results.every((res) => res && res.ok)) {
-            sk.showModal('Please wait …', true);
             // fetch and redirect to production
             const redirectHost = config.host || config.outerHost;
             const prodURL = `https://${redirectHost}${path}`;
@@ -970,7 +984,11 @@
             }
           } else {
             console.error(results);
-            sk.showModal(`Failed to publish ${path}. Please try again later.`, true, 0);
+            sk.showModal({
+              css: 'modal-publish-failure',
+              sticky: true,
+              level: 0,
+            });
           }
         },
         isEnabled: (sidekick) => sidekick.status.edit
@@ -1014,16 +1032,138 @@
                 window.location.href = newPath;
               }
             } catch (e) {
-              sk.showModal(
-                `Failed to unpublish ${path}. Please try again later.`,
-                true,
-                0,
-              );
+              sk.showModal({
+                css: 'modal-unpublish-failure',
+                sticky: true,
+                level: 0,
+              });
             }
           }
         },
       },
     });
+  }
+
+  /**
+   * Logs the user in.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function login(sk) {
+    const loginWindow = window.open(getAdminUrl(
+      sk.config,
+      'login',
+      sk.isEditor() ? '' : sk.location.pathname,
+    ));
+    loginWindow.addEventListener('unload', () => {
+      // re-fetch status
+      sk.showWait();
+      delete sk.status.status;
+      sk.addEventListener('statusfetched', sk.hideModal);
+      sk.fetchStatus();
+      // loginWindow.close();
+    });
+  }
+
+  /**
+   * Checks if the user needs to log in or updates the user menu.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function checkUserState(sk) {
+    fetch('https://admin.hlx.page/profile', {
+      cache: 'no-store',
+      credentials: 'include',
+    })
+      .then((resp) => resp.json())
+      .then((json) => json.profile)
+      .then((profile) => {
+        const { name, email } = profile;
+        sk.get('user').firstElementChild.title = name;
+        sk.add({
+          condition: (sidekick) => sidekick.isUserAllowed(),
+          container: 'user',
+          id: 'user-info',
+          elements: [{
+            tag: 'div',
+            text: name,
+            attrs: {
+              class: 'profile-name',
+            },
+            lstnrs: {
+              click: (e) => {
+                e.stopPropagation();
+              },
+            },
+          },
+          {
+            tag: 'div',
+            text: email,
+            attrs: {
+              class: 'profile-email',
+            },
+            lstnrs: {
+              click: (e) => {
+                e.stopPropagation();
+              },
+            },
+          }],
+        });
+        // logout
+        sk.add({
+          container: 'user',
+          id: 'user-logout',
+          condition: (sidekick) => sidekick.isUserAllowed(),
+          button: {
+            action: () => {
+              fetch('https://admin.hlx.page/logout', {
+                cache: 'no-store',
+                credentials: 'include',
+              })
+                .then(() => window.location.reload())
+                .catch(() => {
+                  sk.showModal({
+                    css: 'modal-logout-error',
+                    level: 0,
+                  });
+                });
+            },
+          },
+        });
+      })
+      .catch(() => {
+        if (sk.isUserAllowed()) {
+          // something went wrong
+          sk.showModal({
+            css: 'modal-profile-error',
+            level: 1,
+          });
+        } else {
+          // login
+          sk.add({
+            container: 'user',
+            id: 'user-login',
+            condition: (sidekick) => !sidekick.isUserAllowed(),
+            button: {
+              action: () => login(sk),
+            },
+          });
+          // encourage login
+          sk.showModal({
+            css: 'modal-login',
+            message: [
+              '',
+              createTag({
+                tag: 'button',
+                lstnrs: {
+                  click: () => login(sk),
+                },
+              }),
+            ],
+            sticky: true,
+          });
+        }
+      });
   }
 
   /**
@@ -1270,6 +1410,7 @@
             }
           },
           statusfetched: () => {
+            checkUserState(this);
             checkPlugins(this);
             checkLastModified(this);
           },
@@ -1297,6 +1438,13 @@
           class: 'feature-container',
         },
       });
+      // user button
+      this.userMenu = appendTag(
+        this.featureContainer,
+        createDropdown(this, {
+          id: 'user',
+        }),
+      );
       // share button
       const share = appendTag(this.featureContainer, {
         tag: 'button',
@@ -1345,24 +1493,28 @@
         apiUrl.searchParams.append('editUrl', this.isEditor() ? href : 'auto');
         this.status.apiUrl = apiUrl.toString();
       }
-      fetch(this.status.apiUrl, { cache: 'no-store' })
+      fetch(this.status.apiUrl, { cache: 'no-store', credentials: 'include' })
         .then((resp) => {
           // check for error status
           if (!resp.ok) {
-            let msg = '';
+            let css = '';
             switch (resp.status) {
               case 401:
-                msg = 'You are not authorized to access this page. Check your login or network status.';
-                break;
+                // unauthorized, ask user to log in
+                return {
+                  json: () => ({
+                    status: 401,
+                  }),
+                };
               case 404:
-                msg = this.isEditor()
-                  ? 'Page not found. Check your Sidekick configuration and make sure Helix has access to this document.'
-                  : 'Page not found. Check your Sidekick configuration or URL.';
+                css = this.isEditor()
+                  ? 'modal-status-404-document'
+                  : 'modal-status-404-content';
                 break;
               default:
-                msg = 'Failed to fetch the page status. Please try again later.';
+                css = `modal-status-${resp.status}`;
             }
-            throw new Error(`${resp.status}: ${msg}`);
+            throw new Error(css);
           }
           return resp;
         })
@@ -1370,22 +1522,33 @@
           try {
             return resp.json();
           } catch (e) {
-            throw new Error('Invalid server response. Check your Sidekick configuration or URL.');
+            throw new Error('modal-status-invalid');
           }
         })
         .then((json) => Object.assign(this.status, json))
         .then((json) => fireEvent(this, 'statusfetched', json))
         .catch((e) => {
           this.status.error = e.message;
-          this.showModal(e.message, true, 0, () => {
-            // this error is fatal, hide and delete sidekick
-            if (window.hlx.sidekick) {
-              window.hlx.sidekick.hide();
-              window.hlx.sidekick.replaceWith(''); // remove() doesn't work for custom element
-              delete window.hlx.sidekick;
-            }
-          });
-          console.error('failed to fetch status', e.message);
+          const modal = {
+            sticky: true,
+            level: 0,
+            callback: () => {
+              // this error is fatal, hide and delete sidekick
+              if (window.hlx.sidekick) {
+                window.hlx.sidekick.hide();
+                window.hlx.sidekick.replaceWith(''); // remove() doesn't work for custom element
+                delete window.hlx.sidekick;
+              }
+            },
+          };
+          if (!e.message.includes(' ')) {
+            // add error mesasage as css class
+            modal.css = e.message;
+          } else {
+            // add error mesasage as text
+            modal.message = e.message;
+          }
+          this.showModal(modal);
         });
       return this;
     }
@@ -1481,7 +1644,7 @@
         // find existing plugin
         let $plugin = this.get(plugin.id);
         let $pluginContainer = (plugin.container
-          && this.pluginContainer
+          && this.root
             .querySelector(`.dropdown.${plugin.container} .dropdown-container`))
           || this.pluginContainer;
         if (ENVS[plugin.id]) {
@@ -1490,7 +1653,7 @@
           if (!$pluginContainer) {
             const $envDropdown = appendTag(
               this.featureContainer,
-              createDropdown({
+              createDropdown(this, {
                 id: 'env',
               }),
               this.featureContainer.firstElementChild,
@@ -1537,7 +1700,7 @@
           // add new plugin
           if (plugin.button && plugin.button.isDropdown) {
             // add dropdown
-            return appendTag($pluginContainer, createDropdown(plugin));
+            return appendTag($pluginContainer, createDropdown(this, plugin));
           }
           $plugin = appendTag($pluginContainer, pluginCfg);
           // remove loading text
@@ -1564,6 +1727,7 @@
         }
         // add or update button
         if (plugin.button) {
+          plugin.button.action = plugin.button.action || (() => {});
           const buttonCfg = {
             tag: 'button',
             text: plugin.button.text,
@@ -1692,20 +1856,45 @@
     }
 
     /**
+     * Checks if the user is allowed to use the sidekick.
+     * @returns {boolean} <code>true</code> if user is allowed, else <code>false</code>
+     */
+    isUserAllowed() {
+      const { status } = this.status;
+      return status !== 401;
+    }
+
+    /**
      * Displays a non-sticky notification.
-     * @param {string|string[]} msg The message (lines) to display
+     * @deprecated Use <code>showModal(<Object>)</code> instead
+     * @param {string|string[]} message The message (lines) to display
      * @param {number}          level error (0), warning (1), of info (2)
      */
-    notify(msg, level = 2) {
-      this.showModal(msg, false, level);
+    notify(message, level = 2) {
+      this.showModal({
+        message,
+        level,
+      });
+    }
+
+    /**
+     * Displays a sticky notification asking the user to wait.
+     */
+    showWait() {
+      this.showModal({ css: 'modal-wait', sticky: true });
     }
 
     /**
      * Displays a modal notification.
-     * @param {string|string[]} msg The message (lines) to display
-     * @param {boolean}         sticky <code>true</code> if message should be sticky (optional)
-     * @param {number}          level error (0), warning (1), of info (2)
-     * @param {Function}        callback The function to call when the modal is hidden again
+     * @param {object|string|string[]} msg The message (object or lines)
+     * @param {string} msg.message The message
+     * @param {string} msg.css     The CSS class to add
+     * @param {boolean} msg.sticky <code>true</code> if message should be sticky (optional)
+     * @param {number}  msg.level error (0), warning (1), of info (2, default)
+     * @param {Function} msg.callback The function to call when the modal is hidden again
+     * @param {boolean} sticky <code>true</code> if message should be sticky (optional)
+     * @param {number} level error (0), warning (1), of info (2, default)
+     * @param {Function} callback The function to call when the modal is hidden again
      * @fires Sidekick#modalshown
      * @returns {Sidekick} The sidekick
      */
@@ -1724,32 +1913,57 @@
         });
         this._modal = appendTag($spinnerWrap, { tag: 'div' });
       } else {
+        this._modal.className = '';
         this._modal.parentNode.classList.remove('hlx-sk-hidden');
       }
       if (msg) {
+        if (msg instanceof Object && !Array.isArray(msg)) {
+          // object notation, use only props from first argument
+          const {
+            message,
+            css,
+            sticky: isSticky = false,
+            level: hasLevel = 2,
+            callback: hasCallback,
+          } = msg;
+          if (css) {
+            this._modal.classList.add(css.split(' ')[0]);
+          }
+          msg = message || '';
+          sticky = isSticky;
+          level = hasLevel;
+          this._modalCallback = hasCallback;
+        }
         if (Array.isArray(msg)) {
           this._modal.textContent = '';
           msg.forEach((line) => {
-            const isURL = line.startsWith('http');
-            const p = appendTag(this._modal, {
-              tag: 'p',
-              text: !isURL ? line : '',
-            });
-            if (isURL) {
-              appendTag(p, {
-                tag: 'a',
-                text: line,
-                attrs: {
-                  href: line,
-                  target: '_blank',
-                },
+            if (typeof line === 'string') {
+              const isURL = line.startsWith('http');
+              const p = appendTag(this._modal, {
+                tag: 'p',
+                text: !isURL ? line : '',
               });
+              if (isURL) {
+                appendTag(p, {
+                  tag: 'a',
+                  text: line,
+                  attrs: {
+                    href: line,
+                    target: '_blank',
+                  },
+                });
+              }
+            } else if (line instanceof HTMLElement) {
+              appendTag(appendTag(this._modal, { tag: 'p' }), line);
             }
           });
         } else {
           this._modal.textContent = msg;
         }
-        this._modal.className = `modal${level < 2 ? ` level-${level}` : ''}`;
+        this._modal.classList.add('modal');
+        if (level < 2) {
+          this._modal.classList.add(`level-${level}`);
+        }
       }
       if (!sticky) {
         const sk = this;
@@ -1785,8 +1999,12 @@
      * Displays a balloon with help content.
      * @param {helpTopic} topic The topic
      * @param {number} step The step number to display (starting with 0)
+     * @returns {Sidekick} The sidekick
      */
     showHelp(topic, step = 0) {
+      if (!this.isUserAllowed()) {
+        return this;
+      }
       const { id, steps } = topic;
       // contextualize and consolidate help steps
       const cSteps = steps.filter(({ selector }) => {
@@ -1795,9 +2013,12 @@
         return target && window.getComputedStyle(target).display !== 'none';
       });
       const numSteps = cSteps.length;
-      if (!numSteps) return;
+      if (!numSteps) return this;
       const { message, selector } = cSteps[step];
-      this.showModal([message], true);
+      this.showModal({
+        message: [message],
+        sticky: true,
+      });
 
       // add controls
       const controls = appendTag(this._modal, {
@@ -1848,7 +2069,7 @@
       }
       if (cSteps[step + 1]) {
         // more help steps to show
-        const close = appendTag(buttonControls, createDropdown({
+        const close = appendTag(buttonControls, createDropdown(this, {
           id: 'help-close',
           button: {
             attrs: {
@@ -1919,6 +2140,7 @@
 
       this._modal.classList.add('help');
       stickTo(this, '.modal.help', selector);
+      return this;
     }
 
     /**
@@ -1978,7 +2200,7 @@
         return this;
       }
       const { config, location: { href, search, hash }, status } = this;
-      this.showModal('Please wait …', true);
+      this.showWait();
       if (!status.webPath) {
         console.log('not ready yet, trying again in a second ...');
         window.setTimeout(() => this.switchEnv(targetEnv, open), 1000);
@@ -1987,14 +2209,6 @@
       let envUrl = `https://${config[hostType]}${status.webPath}`;
       if (!this.isEditor()) {
         envUrl += `${search}${hash}`;
-      }
-      if (targetEnv === 'preview' && this.isEditor()) {
-        await this.update();
-      }
-      // handle special case /.helix/config.json
-      if (status.webPath === '/.helix/config.json') {
-        this.notify('Helix configuration successfully activated');
-        return this;
       }
       fireEvent(this, 'envswitched', {
         sourceUrl: href,
@@ -2014,7 +2228,7 @@
     /**
      * Updates the preview or code of the current resource.
      * @fires Sidekick#updated
-     * @return {Response} The response object
+     * @returns {Response} The response object
      */
     async update() {
       const { config, status } = this;
@@ -2024,7 +2238,7 @@
         // update preview
         resp = await fetch(
           getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
-          { method: 'POST' },
+          { method: 'POST', credentials: 'include' },
         );
         if (this.isEditor() || this.isInner() || this.isDev()) {
           // bust client cache
@@ -2044,7 +2258,7 @@
     /**
      * Deletes the preview or code of the current resource.
      * @fires Sidekick#deleted
-     * @return {Response} The response object
+     * @returns {Response} The response object
      */
     async delete() {
       const { config, status } = this;
@@ -2054,7 +2268,7 @@
         // delete preview
         resp = await fetch(
           getAdminUrl(config, this.isContent() ? 'preview' : 'code', path),
-          { method: 'DELETE' },
+          { method: 'DELETE', credentials: 'include' },
         );
         // also unpublish if published
         if (status.live && status.live.lastModified) {
@@ -2075,7 +2289,7 @@
      * Publishes the page at the specified path if <pre>config.host</pre> is defined.
      * @param {string} path The path of the page to publish
      * @fires Sidekick#published
-     * @return {Response} The response object
+     * @returns {Response} The response object
      */
     async publish(path) {
       const { config, location } = this;
@@ -2089,7 +2303,10 @@
       console.log(`publishing ${purgeURL.pathname}`);
       let resp = {};
       try {
-        resp = await fetch(getAdminUrl(config, 'live', purgeURL.pathname), { method: 'POST' });
+        resp = await fetch(
+          getAdminUrl(config, 'live', purgeURL.pathname),
+          { method: 'POST', credentials: 'include' },
+        );
         // bust client cache for live and production
         if (config.outerHost) {
           await fetch(`https://${config.outerHost}${path}`, { cache: 'reload', mode: 'no-cors' });
@@ -2107,7 +2324,7 @@
     /**
      * Unpublishes the current page.
      * @fires Sidekick#unpublished
-     * @return {Response} The response object
+     * @returns {Response} The response object
      */
     async unpublish() {
       if (!this.isContent()) {
@@ -2118,7 +2335,10 @@
       let resp;
       try {
         // delete live
-        resp = await fetch(getAdminUrl(config, 'live', path), { method: 'DELETE' });
+        resp = await fetch(
+          getAdminUrl(config, 'live', path),
+          { method: 'DELETE', credentials: 'include' },
+        );
         fireEvent(this, 'unpublished', path);
       } catch (e) {
         console.error('failed to unpublish', path, e);

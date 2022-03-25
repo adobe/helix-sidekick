@@ -48,7 +48,6 @@ describe('Test sidekick bookmarklet', () => {
 
   it('Handles errors fetching status from admin API', async () => {
     const errors = [
-      { status: 401, body: 'Unauthorized' },
       { status: 404, body: 'Not found' },
       { status: 500, body: 'Server error' },
       { status: 504, body: 'Gateway timeout' },
@@ -58,19 +57,22 @@ describe('Test sidekick bookmarklet', () => {
       apiResponses: [...errors],
       checkPage: (p) => p.evaluate(() => {
         // click overlay and return sidekick reference
-        window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk-overlay').click();
-        return window.hlx.sidekick;
+        const modal = window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk-overlay .modal');
+        const { className } = modal;
+        modal.parentElement.click();
+        return [className, window.hlx.sidekick];
       }),
     });
     while (errors.length) {
       const error = errors.shift();
       // eslint-disable-next-line no-await-in-loop
-      const { checkPageResult, notification } = await test.run();
+      const { checkPageResult } = await test.run();
+      const [className, sidekick] = checkPageResult;
       assert.ok(
-        notification.startsWith(error.status),
-        `Expected ${error.status} message, but got ${notification}`,
+        className.includes(error.status),
+        `Expected ${error.status} in className, but got ${className}`,
       );
-      assert.strictEqual(checkPageResult, undefined, 'Did not delete sidekick');
+      assert.strictEqual(sidekick, null, 'Did not delete sidekick');
     }
   }).timeout(IT_DEFAULT_TIMEOUT);
 
@@ -294,46 +296,78 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(checkPageResult, 'rgb(255, 255, 0)', 'Did not load custom CSS');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Shows and hides notifications', async () => {
-    // shows notification
+  it('Shows notifications', async () => {
+    // shows modal
     let result = await new SidekickTest({
       allowNavigation: true,
-      post: (p) => p.evaluate(() => window.hlx.sidekick.notify('Lorem ipsum')),
+      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal({
+        message: 'Lorem ipsum',
+      })),
     }).run();
-    assert.strictEqual(result.notification, 'Lorem ipsum', 'Did show notification');
+    assert.strictEqual(result.notification.message, 'Lorem ipsum', 'Did not show modal');
 
     // shows sticky modal
     result = await new SidekickTest({
       allowNavigation: true,
-      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal('Sticky', true)),
+      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal({
+        message: 'Sticky',
+        sticky: true,
+      })),
     }).run();
-    assert.strictEqual(result.notification, 'Sticky', 'Did show sticky modal');
+    assert.strictEqual(result.notification.message, 'Sticky', 'Did not show sticky modal');
 
-    // hides sticky modal
+    // adds css class
     result = await new SidekickTest({
       allowNavigation: true,
+      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal({
+        css: 'test',
+      })),
+    }).run();
+    assert.ok(result.notification.className.includes('test'), 'Did not add CSS class');
+
+    // shows legacy notification
+    result = await new SidekickTest({
+      allowNavigation: true,
+      post: (p) => p.evaluate(() => window.hlx.sidekick.notify('Lorem ipsum')),
+    }).run();
+    assert.strictEqual(result.notification.message, 'Lorem ipsum', 'Did not show legacy notification');
+
+    // shows legacy modal
+    result = await new SidekickTest({
+      allowNavigation: true,
+      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal('Sticky', true)),
+    }).run();
+    assert.strictEqual(result.notification.message, 'Sticky', 'Did not show legacy modal');
+
+    // shows multi-line modal
+    result = await new SidekickTest({
+      allowNavigation: true,
+      post: (p) => p.evaluate(() => window.hlx.sidekick.showModal({
+        message: ['Lorem ipsum', 'sit amet'],
+      })),
+    }).run();
+    assert.strictEqual(result.notification.message, 'Lorem ipsumsit amet', 'Did not show multi-line notification');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Hides notifications', async () => {
+    // hides sticky modal
+    const { notification } = await new SidekickTest({
+      allowNavigation: true,
       post: (p) => p.evaluate(() => {
-        window.hlx.sidekick.showModal('Sticky', true);
+        window.hlx.sidekick.showModal({ message: 'Sticky', sticky: true });
         window.hlx.sidekick.hideModal();
       }),
     }).run();
-    assert.strictEqual(result.notification, '', 'Did not hide sticky modal');
-
-    // shows multi-line notification
-    result = await new SidekickTest({
-      allowNavigation: true,
-      post: (p) => p.evaluate(() => window.hlx.sidekick.notify(['Lorem ipsum', 'sit amet'])),
-    }).run();
-    assert.strictEqual(result.notification, 'Lorem ipsumsit amet', 'Did not show multi-line notification');
+    assert.strictEqual(notification.message, null, 'Did not hide sticky modal');
 
     // hides sticky modal on overlay click
     const { checkPageResult } = await new SidekickTest({
-      allowNavigation: true,
       checkPage: (p) => p.evaluate(() => {
-        window.hlx.sidekick.showModal('Sticky', true);
+        window.hlx.sidekick.showModal({ message: 'Sticky', sticky: true });
         const overlay = window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk-overlay');
         overlay.click();
-        return overlay.classList.contains('hlx-sk-hidden');
+        document.body.innerHTML += overlay.className;
+        return overlay.className.includes('hlx-sk-hidden');
       }),
     }).run();
     assert.ok(checkPageResult, 'Did not hide sticky modal on overlay click');
@@ -362,7 +396,7 @@ describe('Test sidekick bookmarklet', () => {
         .querySelector('.hlx-sk button.share')
         .click()),
     }).run();
-    assert.strictEqual(notification, 'Sharing URL copied to clipboard', 'Did not copy sharing URL to clipboard');
+    assert.ok(notification.className.includes('modal-share-success'), 'Did not copy sharing URL to clipboard');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Detects development environment correctly', async () => {
@@ -546,7 +580,7 @@ describe('Test sidekick bookmarklet', () => {
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Shows help content', async () => {
-    const { checkPageResult: helpClasses, notification } = await new SidekickTest({
+    const { notification } = await new SidekickTest({
       plugin: 'help',
       pluginSleep: 2000,
       configJs: `window.hlx.initSidekick({
@@ -573,8 +607,8 @@ describe('Test sidekick bookmarklet', () => {
       // eslint-disable-next-line no-underscore-dangle
       checkPage: (p) => p.evaluate(() => window.hlx.sidekick._modal.classList.toString()),
     }).run();
-    assert.strictEqual(notification, 'Lorem ipsum dolor sit amet', `Did not show the expected message: ${notification}`);
-    assert.strictEqual(helpClasses, 'modal help bottom-right', `Did not have the expected CSS classes: ${helpClasses}`);
+    assert.strictEqual(notification.message, 'Lorem ipsum dolor sit amet', `Did not show the expected message: ${notification.message}`);
+    assert.strictEqual(notification.className, 'modal help bottom-right', `Did not have the expected CSS classes: ${notification.className}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Calls admin API with a specific version', async () => {
@@ -588,4 +622,16 @@ describe('Test sidekick bookmarklet', () => {
       'Did not use specific admin version',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Handles 401 response from admin API', async () => {
+    const { checkPageResult } = await new SidekickTest({
+      apiResponses: [{
+        status: 401,
+      }],
+      checkPage: (p) => p.evaluate(() => window.hlx.sidekick.shadowRoot
+        .querySelector('.hlx-sk-overlay .modal')
+        .classList.contains('modal-login')),
+    }).run();
+    assert.ok(checkPageResult, 'Did not show login dialog on 401');
+  });
 });

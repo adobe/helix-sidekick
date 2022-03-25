@@ -109,3 +109,63 @@
 .hlx-sk-overlay .modal.help .help-next::before {
   content: "Nächster Tipp";
 }
+
+.hlx-sk-overlay .modal.modal-login p:first-of-type::before {
+  content: "Bitte melde dich an um fortzufahren...";
+}
+
+.hlx-sk-overlay .modal.modal-login button::before {
+  content: "Anmelden";
+}
+
+.hlx-sk-overlay .modal.modal-wait::before {
+  content: "Bitte warten...";
+}
+
+.hlx-sk-overlay .modal.modal-share-success::before {
+  content: "Teilen-URL in die Benutzerablage kopiert.";
+}
+
+.hlx-sk-overlay .modal.modal-config-success::before {
+  content: "Helix-Konnfiguration erfolgreich aktiviert.";
+}
+
+.hlx-sk-overlay .modal.modal-preview-failure::before {
+  content: "Vorschau-Generierung fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-reload-failure::before {
+  content: "Aktualisierung fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-publish-failure::before {
+  content: "Publizieren fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-delete-failure::before {
+  content: "Löschen fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-unpublish-failure::before {
+  content: "Depublizieren fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-status-404-document::before {
+  content: "404 Nicht gefunden: Prüfe deine Sidekick-Konfiguration und stelle sicher, dass Helix Zugriff auf dieses Dokument hat.";
+}
+
+.hlx-sk-overlay .modal.modal-status-404-content::before {
+  content: "404 Nicht gefunden: Prüfe deine Sidekick-Konfiguration oder URL.";
+}
+
+.hlx-sk-overlay .modal.modal-status-500::before {
+  content: "500 Interner Serverfehler: Statusabfrage fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-status-504::before {
+  content: "504 Gateway-Timeout: Statusabfrage fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
+.hlx-sk-overlay .modal.modal-status-invalid::before {
+  content: "Ungültige Serverantwort. Prüfe deine Sidekick-Konfiguration oder URL.";
+}
