@@ -1,3 +1,10 @@
+## [4.9.1](https://github.com/adobe/helix-sidekick/compare/v4.9.0...v4.9.1) (2022-03-26)
+
+
+### Bug Fixes
+
+* **regression:** direct host matching broken ([74c3b53](https://github.com/adobe/helix-sidekick/commit/74c3b5392abfe5379a526f6a71ee264714a6b691))
+
 # [4.9.0](https://github.com/adobe/helix-sidekick/compare/v4.8.0...v4.9.0) (2022-03-22)
 
 
