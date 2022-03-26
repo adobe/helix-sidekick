@@ -1103,7 +1103,7 @@
     if (sk.isAuthenticated && !sk.isAuthorized()) {
       // encourage user switch
       sk.showModal({
-        css: 'modal-logout',
+        css: 'modal-user-switch',
         message: [
           '',
           createTag({
@@ -1162,6 +1162,15 @@
           info.querySelector('profile-name').textContent = name;
           info.querySelector('profile-email').textContent = email;
         }
+        // logout
+        sk.add({
+          container: 'user',
+          id: 'user-switch',
+          condition: (sidekick) => sidekick.isAuthenticated(),
+          button: {
+            action: () => login(sk),
+          },
+        });
         // logout
         sk.add({
           container: 'user',

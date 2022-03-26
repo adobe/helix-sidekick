@@ -114,7 +114,7 @@
   content: "Bitte melde dich an um fortzufahren...";
 }
 
-.hlx-sk-overlay .modal.modal-logout p:first-of-type::before {
+.hlx-sk-overlay .modal.modal-user-switch p:first-of-type::before {
   content: "Zugriff verweigert. Bitte melde dich mit einem anderen Benutzer an...";
 }
 
@@ -123,8 +123,9 @@
   content: "Anmelden";
 }
 
-.hlx-sk-overlay .modal.modal-logout button::before {
-    content: "Switch user";
+.hlx-sk .feature-container .user-switch button::before,
+.hlx-sk-overlay .modal.modal-user-switch button::before {
+    content: "Benutzer wechseln";
 }
 
 .hlx-sk .feature-container .user-logout button::before {

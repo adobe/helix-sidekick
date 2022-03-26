@@ -819,7 +819,7 @@
   content: "Please sign in to continue...";
 }
 
-.hlx-sk-overlay .modal.modal-logout p:first-of-type::before {
+.hlx-sk-overlay .modal.modal-user-switch p:first-of-type::before {
   content: "Unauthorized. Please sign in as a different user...";
 }
 
@@ -828,7 +828,8 @@
   content: "Sign in";
 }
 
-.hlx-sk-overlay .modal.modal-logout button::before {
+.hlx-sk .feature-container .user-switch button::before,
+.hlx-sk-overlay .modal.modal-user-switch button::before {
     content: "Switch user";
 }
 
