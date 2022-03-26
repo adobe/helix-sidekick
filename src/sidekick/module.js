@@ -759,7 +759,8 @@
             `hlx-sk-edit--${config.owner}/${config.repo}/${config.ref}${status.webPath}`,
           );
         },
-        isEnabled: (sidekick) => sidekick.status.edit && sidekick.status.edit.url,
+        isEnabled: (sidekick) => sidekick.isAuthorized()
+          && sidekick.status.edit && sidekick.status.edit.url,
       },
     });
   }
@@ -864,6 +865,7 @@
           }
           sk.switchEnv('preview', newTab(evt));
         },
+        isEnabled: (sidekick) => sidekick.isAuthorized(),
       },
     });
   }
@@ -902,7 +904,8 @@
             });
           }
         },
-        isEnabled: (s) => s.status.edit && s.status.edit.url, // enable only if edit url exists
+        isEnabled: (s) => s.isAuthorized()
+          && s.status.edit && s.status.edit.url, // enable only if edit url exists
       },
     });
   }
@@ -915,7 +918,7 @@
   function addDeletePlugin(sk) {
     sk.add({
       id: 'delete',
-      condition: (sidekick) => sidekick.isHelix()
+      condition: (sidekick) => sidekick.isAuthorized() && sidekick.isHelix()
         && (!sidekick.status.edit || !sidekick.status.edit.url) // show only if no edit url and
         && (sidekick.status.preview && sidekick.status.preview.status !== 404), // preview exists
       button: {
@@ -961,8 +964,7 @@
   function addPublishPlugin(sk) {
     sk.add({
       id: 'publish',
-      condition: (sidekick) => sidekick.isHelix() && sidekick.config.outerHost
-        && sk.isContent(),
+      condition: (sidekick) => sidekick.isHelix() && sk.isContent(),
       button: {
         action: async (evt) => {
           const { config, location } = sk;
@@ -995,7 +997,7 @@
             });
           }
         },
-        isEnabled: (sidekick) => sidekick.status.edit
+        isEnabled: (sidekick) => sidekick.isAuthorized() && sidekick.status.edit
           && sidekick.status.edit.url, // enable only if edit url exists
       },
     });
@@ -1009,7 +1011,7 @@
   function addUnpublishPlugin(sk) {
     sk.add({
       id: 'unpublish',
-      condition: (sidekick) => sidekick.isHelix() && sidekick.config.outerHost
+      condition: (sidekick) => sidekick.isAuthorized() && sidekick.isHelix()
         && (!sidekick.status.edit || !sidekick.status.edit.url) // show only if no edit url and
         && sidekick.status.live && sidekick.status.live.lastModified // published
         && sk.isContent(),
@@ -1074,11 +1076,46 @@
   }
 
   /**
+   * Logs the user out.
+   * @private
+   * @param {Sidekick} sk The sidekick
+   */
+  function logout(sk) {
+    fetch('https://admin.hlx.page/logout', {
+      cache: 'no-store',
+      credentials: 'include',
+    })
+      .then(() => window.location.reload())
+      .catch(() => {
+        sk.showModal({
+          css: 'modal-logout-error',
+          level: 0,
+        });
+      });
+  }
+
+  /**
    * Checks if the user needs to log in or updates the user menu.
    * @private
    * @param {Sidekick} sk The sidekick
    */
   function checkUserState(sk) {
+    if (sk.isAuthenticated && !sk.isAuthorized()) {
+      // encourage user switch
+      sk.showModal({
+        css: 'modal-logout',
+        message: [
+          '',
+          createTag({
+            tag: 'button',
+            lstnrs: {
+              click: () => login(sk),
+            },
+          }),
+        ],
+        sticky: true,
+      });
+    }
     fetch('https://admin.hlx.page/profile', {
       cache: 'no-store',
       credentials: 'include',
@@ -1088,59 +1125,55 @@
       .then((profile) => {
         const { name, email } = profile;
         sk.get('user').firstElementChild.title = name;
-        sk.add({
-          condition: (sidekick) => sidekick.isUserAllowed(),
-          container: 'user',
-          id: 'user-info',
-          elements: [{
-            tag: 'div',
-            text: name,
-            attrs: {
-              class: 'profile-name',
-            },
-            lstnrs: {
-              click: (e) => {
-                e.stopPropagation();
+        const info = sk.get('user-info');
+        if (!info) {
+          sk.add({
+            // create user info box
+            condition: (sidekick) => sidekick.isAuthenticated(),
+            container: 'user',
+            id: 'user-info',
+            elements: [{
+              tag: 'div',
+              text: name,
+              attrs: {
+                class: 'profile-name',
+              },
+              lstnrs: {
+                click: (e) => {
+                  e.stopPropagation();
+                },
               },
             },
-          },
-          {
-            tag: 'div',
-            text: email,
-            attrs: {
-              class: 'profile-email',
-            },
-            lstnrs: {
-              click: (e) => {
-                e.stopPropagation();
+            {
+              tag: 'div',
+              text: email,
+              attrs: {
+                class: 'profile-email',
               },
-            },
-          }],
-        });
+              lstnrs: {
+                click: (e) => {
+                  e.stopPropagation();
+                },
+              },
+            }],
+          });
+        } else {
+          // update existing user info box
+          info.querySelector('profile-name').textContent = name;
+          info.querySelector('profile-email').textContent = email;
+        }
         // logout
         sk.add({
           container: 'user',
           id: 'user-logout',
-          condition: (sidekick) => sidekick.isUserAllowed(),
+          condition: (sidekick) => sidekick.isAuthenticated(),
           button: {
-            action: () => {
-              fetch('https://admin.hlx.page/logout', {
-                cache: 'no-store',
-                credentials: 'include',
-              })
-                .then(() => window.location.reload())
-                .catch(() => {
-                  sk.showModal({
-                    css: 'modal-logout-error',
-                    level: 0,
-                  });
-                });
-            },
+            action: () => logout(sk),
           },
         });
       })
       .catch(() => {
-        if (sk.isUserAllowed()) {
+        if (sk.isAuthenticated()) {
           // something went wrong
           sk.showModal({
             css: 'modal-profile-error',
@@ -1151,7 +1184,7 @@
           sk.add({
             container: 'user',
             id: 'user-login',
-            condition: (sidekick) => !sidekick.isUserAllowed(),
+            condition: (sidekick) => !sidekick.isAuthenticated(),
             button: {
               action: () => login(sk),
             },
@@ -1872,12 +1905,22 @@
     }
 
     /**
+     * Checks if the user is logged in.
+     * @returns {boolean} <code>true</code> if user is logged in (or does not need to be),
+     * else <code>false</code>
+     */
+    isAuthenticated() {
+      const { status } = this.status;
+      return status !== 401;
+    }
+
+    /**
      * Checks if the user is allowed to use the sidekick.
      * @returns {boolean} <code>true</code> if user is allowed, else <code>false</code>
      */
-    isUserAllowed() {
-      const { status } = this.status;
-      return status !== 401;
+    isAuthorized() {
+      const { edit } = this.status;
+      return this.isAuthenticated() && edit && edit.status !== 403;
     }
 
     /**
@@ -2018,7 +2061,7 @@
      * @returns {Sidekick} The sidekick
      */
     showHelp(topic, step = 0) {
-      if (!this.isUserAllowed()) {
+      if (!this.isAuthorized()) {
         return this;
       }
       const { id, steps } = topic;

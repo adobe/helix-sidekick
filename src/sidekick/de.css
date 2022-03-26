@@ -114,13 +114,21 @@
   content: "Bitte melde dich an um fortzufahren...";
 }
 
+.hlx-sk-overlay .modal.modal-logout p:first-of-type::before {
+  content: "Zugriff verweigert. Bitte melde dich mit einem anderen Benutzer an...";
+}
+
 .hlx-sk .feature-container .user-login button::before,
 .hlx-sk-overlay .modal.modal-login button::before {
   content: "Anmelden";
 }
 
+.hlx-sk-overlay .modal.modal-logout button::before {
+    content: "Switch user";
+}
+
 .hlx-sk .feature-container .user-logout button::before {
-  content: "Abmelden";
+    content: "Abmelden";
 }
 
 .hlx-sk .feature-container .user button.dropdown-toggle::before {

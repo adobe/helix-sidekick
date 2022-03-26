@@ -218,6 +218,8 @@
 }
 
 .hlx-sk .feature-container .user .user-info {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   background-color: var(--hlx-sk-bg);
   color: var(--hlx-sk-button-color);
   padding: 8px 0;
@@ -817,13 +819,21 @@
   content: "Please sign in to continue...";
 }
 
+.hlx-sk-overlay .modal.modal-logout p:first-of-type::before {
+  content: "Unauthorized. Please sign in as a different user...";
+}
+
 .hlx-sk .feature-container .user-login button::before,
 .hlx-sk-overlay .modal.modal-login button::before {
   content: "Sign in";
 }
 
+.hlx-sk-overlay .modal.modal-logout button::before {
+    content: "Switch user";
+}
+
 .hlx-sk .feature-container .user-logout button::before {
-  content: "Sign out";
+    content: "Sign out";
 }
 
 .hlx-sk .feature-container .user button.dropdown-toggle::before {
