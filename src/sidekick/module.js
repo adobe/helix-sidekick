@@ -523,6 +523,7 @@
       },
     });
     const toggle = appendTag(dropdown, {
+      ...button,
       tag: 'button',
       attrs: {
         class: 'dropdown-toggle',
@@ -551,8 +552,11 @@
           evt.stopPropagation();
         },
       },
-      ...button,
     });
+    if (Array.isArray(button.elements)) {
+      button.elements.forEach((elem) => appendTag(toggle, elem));
+    }
+
     appendTag(dropdown, {
       tag: 'div',
       attrs: {
@@ -1050,18 +1054,22 @@
    * @param {Sidekick} sk The sidekick
    */
   function login(sk) {
+    sk.showWait();
     const loginWindow = window.open(getAdminUrl(
       sk.config,
       'login',
       sk.isEditor() ? '' : sk.location.pathname,
     ));
     loginWindow.addEventListener('unload', () => {
-      // re-fetch status
-      sk.showWait();
-      delete sk.status.status;
-      sk.addEventListener('statusfetched', sk.hideModal);
-      sk.fetchStatus();
-      // loginWindow.close();
+      window.setTimeout(() => {
+        // re-fetch status
+        delete sk.status.status;
+        sk.addEventListener('statusfetched', () => {
+          sk.hideModal();
+        });
+        sk.fetchStatus();
+        loginWindow.close();
+      }, 1000);
     });
   }
 
@@ -1443,6 +1451,14 @@
         this.featureContainer,
         createDropdown(this, {
           id: 'user',
+          button: {
+            elements: [{
+              tag: 'div',
+              attrs: {
+                class: 'user-icon',
+              },
+            }],
+          },
         }),
       );
       // share button

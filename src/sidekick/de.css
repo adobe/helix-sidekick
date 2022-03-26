@@ -114,8 +114,17 @@
   content: "Bitte melde dich an um fortzufahren...";
 }
 
+.hlx-sk .feature-container .user-login button::before,
 .hlx-sk-overlay .modal.modal-login button::before {
   content: "Anmelden";
+}
+
+.hlx-sk .feature-container .user-logout button::before {
+  content: "Abmelden";
+}
+
+.hlx-sk .feature-container .user button.dropdown-toggle::before {
+  content: "Benutzer";
 }
 
 .hlx-sk-overlay .modal.modal-wait::before {
@@ -168,4 +177,12 @@
 
 .hlx-sk-overlay .modal.modal-status-invalid::before {
   content: "Ungültige Serverantwort. Prüfe deine Sidekick-Konfiguration oder URL.";
+}
+
+.hlx-sk-overlay .modal.modal-profile-error::before {
+  content: "Benutzerprofil konnte nicht geladen werden.";
+}
+
+.hlx-sk-overlay .modal.modal-logout-error::before {
+  content: "Abmeldung fehlgeschlagen. Bitte versuche es später noch einmal.";
 }

@@ -47,6 +47,7 @@
   --hlx-sk-modal-font-size: 1.5rem;
   --hlx-sk-special-view-button-color: rgba(0,0,0, 0.5);
   --hlx-sk-special-view-table-border: rgba(0,0,0, 0.5);
+  --hlx-sk-user-bg: #c0c0c0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -66,6 +67,7 @@
     --hlx-sk-modal-overlay-bg: rgba(127, 127, 127, 0.5);
     --hlx-sk-special-view-button-color: rgba(127, 127, 127, 0.8);
     --hlx-sk-special-view-table-border: rgba(127, 127, 127, 0.8);
+    --hlx-sk-user-bg: #909090;
   }
 }
 
@@ -172,7 +174,43 @@
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle {
-  background-color: orange;
+  background-color: var(--hlx-sk-user-bg);
+  font-size: 0;
+  position: relative;
+  top: -4px;
+  border: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-icon{
+  font-size: 4px;
+  height: 28px;
+  width: 28px;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-icon::before {
+  content: " ";
+  display: block;
+  height: 3em;
+  width: 3em;
+  background: currentColor;
+  position: relative;
+  left: 8px;
+  top: 4px;
+  border-radius: 2em;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-icon::after {
+  content: " ";
+  display: block;
+  height: 2.4em;
+  width: 5em;
+  background: currentColor;
+  position: relative;
+  left: 4px;
+  top: 6px;
+  border-radius: 2em 2em 0 0;
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle::after {
@@ -181,6 +219,7 @@
 
 .hlx-sk .feature-container .user .user-info {
   background-color: var(--hlx-sk-bg);
+  color: var(--hlx-sk-button-color);
   padding: 8px 0;
   cursor: text;
   user-select: text;
@@ -787,6 +826,10 @@
   content: "Sign out";
 }
 
+.hlx-sk .feature-container .user button.dropdown-toggle::before {
+  content: "User";
+}
+
 .hlx-sk-overlay .modal.modal-wait::before {
   content: "Please wait...";
 }
@@ -844,5 +887,5 @@
 }
 
 .hlx-sk-overlay .modal.modal-logout-error::before {
-  content: "Unable to sign out user. Please try again later.";
+  content: "Sign out failed. Please try again later.";
 }
