@@ -1064,17 +1064,31 @@
       'login',
       sk.isEditor() ? '' : sk.location.pathname,
     ));
-    loginWindow.addEventListener('unload', () => {
-      window.setTimeout(() => {
-        // re-fetch status
-        delete sk.status.status;
-        sk.addEventListener('statusfetched', () => {
-          sk.hideModal();
+    let seconds = 0;
+    const loginCheck = window.setInterval(async () => {
+      if (seconds < 59) {
+        seconds += 1;
+        if ((await fetch('https://admin.hlx.page/profile', {
+          cache: 'no-store',
+          credentials: 'include',
+        })).ok) {
+          // re-fetch status
+          delete sk.status.status;
+          sk.addEventListener('statusfetched', () => sk.hideModal());
+          sk.fetchStatus();
+          loginWindow.close();
+          window.clearInterval(loginCheck);
+        }
+      } else {
+        // give up after 1 minute
+        sk.showModal({
+          css: 'modal-login-timeout',
+          sticky: true,
+          level: 1,
         });
-        sk.fetchStatus();
-        loginWindow.close();
-      }, 2000);
-    });
+        window.clearInterval(loginCheck);
+      }
+    }, 1000);
   }
 
   /**

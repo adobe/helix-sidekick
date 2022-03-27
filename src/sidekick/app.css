@@ -898,8 +898,8 @@
   content: "Invalid server response. Check your Sidekick configuration or URL.";
 }
 
-.hlx-sk-overlay .modal.modal-profile-error::before {
-  content: "Unable to load user profile.";
+.hlx-sk-overlay .modal.modal-login-timeout::before {
+  content: "Sign in timed out. Please reload this browser tab or try again later.";
 }
 
 .hlx-sk-overlay .modal.modal-logout-error::before {

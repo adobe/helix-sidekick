@@ -189,10 +189,10 @@
   content: "Ungültige Serverantwort. Prüfe deine Sidekick-Konfiguration oder URL.";
 }
 
-.hlx-sk-overlay .modal.modal-profile-error::before {
-  content: "Benutzerprofil konnte nicht geladen werden.";
+.hlx-sk-overlay .modal.modal-login-timeout::before {
+  content: "Zeitüberschreitung bei der Anmeldung. Bitte versuche es später noch einmal.";
 }
 
 .hlx-sk-overlay .modal.modal-logout-error::before {
-  content: "Abmeldung fehlgeschlagen. Bitte versuche es später noch einmal.";
+  content: "Abmeldung fehlgeschlagen. Bitte lade diesen Browser-Tab erneut oder versuche es später noch einmal.";
 }
