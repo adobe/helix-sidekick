@@ -183,6 +183,10 @@
   overflow: hidden;
 }
 
+.hlx-sk .feature-container .user .dropdown-toggle:disabled {
+  opacity: 0.8;
+}
+
 .hlx-sk .feature-container .user .dropdown-toggle .user-icon{
   font-size: 4px;
   height: 28px;
@@ -204,7 +208,7 @@
 .hlx-sk .feature-container .user .dropdown-toggle .user-icon::after {
   content: " ";
   display: block;
-  height: 2.4em;
+  height: 2.45em;
   width: 5em;
   background: currentColor;
   position: relative;
@@ -289,6 +293,7 @@
 .hlx-sk .feature-container .close::after,
 .hlx-sk .feature-container .close::before {
   content: "";
+  font-size: 0;
   display: block;
   position: absolute;
   width: 16px;
@@ -726,7 +731,7 @@
   content: "Share your Sidekick";
 }
 
-.hlx-sk .close::before,
+.hlx-sk .feature-container .close::before,
 .hlx-sk-overlay .close::before {
     content: "Close";
 }
@@ -838,7 +843,7 @@
 }
 
 .hlx-sk .feature-container .user button.dropdown-toggle::before {
-  content: "User";
+  content: "Anonymous";
 }
 
 .hlx-sk-overlay .modal.modal-wait::before {

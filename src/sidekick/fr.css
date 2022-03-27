@@ -22,7 +22,8 @@
   content: "Partager le Sidekick";
 }
 
-.hlx-sk .close::before {
+.hlx-sk .feature-container .close::before,
+.hlx-sk-overlay .close::before {
   content: "Fermer";
 }
 

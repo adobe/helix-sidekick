@@ -22,7 +22,8 @@
   content: "Sidekick teilen";
 }
 
-.hlx-sk .close::before {
+.hlx-sk .feature-container .close::before,
+.hlx-sk-overlay .close::before {
   content: "Schließen";
 }
 
@@ -133,7 +134,7 @@
 }
 
 .hlx-sk .feature-container .user button.dropdown-toggle::before {
-  content: "Benutzer";
+  content: "Anonymer Benutzer";
 }
 
 .hlx-sk-overlay .modal.modal-wait::before {

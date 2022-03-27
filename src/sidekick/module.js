@@ -526,6 +526,7 @@
       ...button,
       tag: 'button',
       attrs: {
+        ...(button.attrs || {}),
         class: 'dropdown-toggle',
       },
       lstnrs: {
@@ -544,6 +545,7 @@
           const {
             lastElementChild: container,
           } = dropdown;
+          container.style.marginLeft = 'initial';
           const { left: cLeft, width: cWidth } = container.getBoundingClientRect();
           if (cLeft + cWidth > window.innerWidth) {
             const { width: tWidth } = toggle.getBoundingClientRect();
@@ -1071,7 +1073,7 @@
         });
         sk.fetchStatus();
         loginWindow.close();
-      }, 1000);
+      }, 2000);
     });
   }
 
@@ -1100,7 +1102,7 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkUserState(sk) {
-    if (sk.isAuthenticated && !sk.isAuthorized()) {
+    if (sk.isAuthenticated() && !sk.isAuthorized()) {
       // encourage user switch
       sk.showModal({
         css: 'modal-user-switch',
@@ -1116,104 +1118,94 @@
         sticky: true,
       });
     }
-    fetch('https://admin.hlx.page/profile', {
-      cache: 'no-store',
-      credentials: 'include',
-    })
-      .then((resp) => resp.json())
-      .then((json) => json.profile)
-      .then((profile) => {
-        const { name, email } = profile;
-        sk.get('user').firstElementChild.title = name;
-        const info = sk.get('user-info');
-        if (!info) {
-          sk.add({
-            // create user info box
-            condition: (sidekick) => sidekick.isAuthenticated(),
-            container: 'user',
-            id: 'user-info',
-            elements: [{
-              tag: 'div',
-              text: name,
-              attrs: {
-                class: 'profile-name',
-              },
-              lstnrs: {
-                click: (e) => {
-                  e.stopPropagation();
-                },
+    const toggle = sk.get('user').firstElementChild;
+    toggle.removeAttribute('disabled');
+    const { profile } = sk.status;
+    if (profile) {
+      const { name, email } = profile;
+      toggle.title = name;
+      const info = sk.get('user-info');
+      if (!info) {
+        sk.add({
+          // create user info box
+          condition: (sidekick) => sidekick.isAuthenticated(),
+          container: 'user',
+          id: 'user-info',
+          elements: [{
+            tag: 'div',
+            text: name,
+            attrs: {
+              class: 'profile-name',
+            },
+            lstnrs: {
+              click: (e) => {
+                e.stopPropagation();
               },
             },
-            {
-              tag: 'div',
-              text: email,
-              attrs: {
-                class: 'profile-email',
-              },
-              lstnrs: {
-                click: (e) => {
-                  e.stopPropagation();
-                },
-              },
-            }],
-          });
-        } else {
-          // update existing user info box
-          info.querySelector('profile-name').textContent = name;
-          info.querySelector('profile-email').textContent = email;
-        }
-        // logout
-        sk.add({
-          container: 'user',
-          id: 'user-switch',
-          condition: (sidekick) => sidekick.isAuthenticated(),
-          button: {
-            action: () => login(sk),
           },
-        });
-        // logout
-        sk.add({
-          container: 'user',
-          id: 'user-logout',
-          condition: (sidekick) => sidekick.isAuthenticated(),
-          button: {
-            action: () => logout(sk),
-          },
-        });
-      })
-      .catch(() => {
-        if (sk.isAuthenticated()) {
-          // something went wrong
-          sk.showModal({
-            css: 'modal-profile-error',
-            level: 1,
-          });
-        } else {
-          // login
-          sk.add({
-            container: 'user',
-            id: 'user-login',
-            condition: (sidekick) => !sidekick.isAuthenticated(),
-            button: {
-              action: () => login(sk),
+          {
+            tag: 'div',
+            text: email,
+            attrs: {
+              class: 'profile-email',
             },
-          });
-          // encourage login
-          sk.showModal({
-            css: 'modal-login',
-            message: [
-              '',
-              createTag({
-                tag: 'button',
-                lstnrs: {
-                  click: () => login(sk),
-                },
-              }),
-            ],
-            sticky: true,
-          });
-        }
+            lstnrs: {
+              click: (e) => {
+                e.stopPropagation();
+              },
+            },
+          }],
+        });
+      } else {
+        // update user info box
+        info.querySelector('.profile-name').textContent = name;
+        info.querySelector('.profile-email').textContent = email;
+      }
+      // logout
+      sk.add({
+        container: 'user',
+        id: 'user-switch',
+        condition: (sidekick) => !sidekick.isAuthorized(),
+        button: {
+          action: () => login(sk),
+        },
       });
+      // logout
+      sk.add({
+        container: 'user',
+        id: 'user-logout',
+        condition: (sidekick) => sidekick.isAuthenticated(),
+        button: {
+          action: () => logout(sk),
+        },
+      });
+    } else {
+      // login
+      sk.add({
+        container: 'user',
+        id: 'user-login',
+        condition: (sidekick) => !sidekick.status.profile || !sidekick.isAuthenticated(),
+        button: {
+          action: () => login(sk),
+        },
+      });
+      if (!sk.isAuthenticated()) {
+        // encourage login
+        sk.showModal({
+          css: 'modal-login',
+          message: [
+            '',
+            createTag({
+              tag: 'button',
+              lstnrs: {
+                click: () => login(sk),
+              },
+            }),
+          ],
+          sticky: true,
+        });
+      }
+    }
   }
 
   /**
@@ -1494,6 +1486,9 @@
         createDropdown(this, {
           id: 'user',
           button: {
+            attrs: {
+              disabled: '',
+            },
             elements: [{
               tag: 'div',
               attrs: {
