@@ -56,6 +56,7 @@ const SETUPS = {
           },
           edit: {
             url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
+            status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:55:03 GMT',
           },
         },
@@ -91,6 +92,13 @@ const SETUPS = {
           edit: {
             url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
             lastModified: 'Fri, 18 Jun 2021 09:57:00 GMT',
+          },
+          profile: {
+            email: 'jane@foo.bar',
+            name: 'Jane Smith',
+            roles: [
+              'publish',
+            ],
           },
         },
         json: {
