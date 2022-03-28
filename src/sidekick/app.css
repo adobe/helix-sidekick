@@ -743,8 +743,8 @@
 }
 
 .hlx-sk .feature-container .close::before,
-.hlx-sk-overlay .close::before {
-    content: "Close";
+.hlx-sk-overlay .help-close button::before {
+  content: "Close";
 }
 
 .hlx-sk-overlay div.modal.wait:empty::before {

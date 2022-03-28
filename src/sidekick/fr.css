@@ -23,7 +23,7 @@
 }
 
 .hlx-sk .feature-container .close::before,
-.hlx-sk-overlay .close::before {
+.hlx-sk-overlay .help-close button::before {
   content: "Fermer";
 }
 
