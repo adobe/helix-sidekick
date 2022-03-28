@@ -1136,8 +1136,22 @@
     toggle.removeAttribute('disabled');
     const { profile } = sk.status;
     if (profile) {
-      const { name, email } = profile;
+      const { name, email, picture } = profile;
       toggle.title = name;
+      // user picture
+      toggle.querySelectorAll('.user-picture').forEach((img) => img.remove());
+      if (picture) {
+        toggle.querySelector('.user-icon').classList.add('user-icon-hidden');
+        appendTag(toggle, {
+          tag: 'img',
+          attrs: {
+            class: 'user-picture',
+            src: picture,
+          },
+        });
+      } else {
+        toggle.querySelector('.user-icon').classList.remove('user-icon-hidden');
+      }
       const info = sk.get('user-info');
       if (!info) {
         sk.add({

@@ -174,12 +174,12 @@
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle {
-  background-color: var(--hlx-sk-user-bg);
   font-size: 0;
   position: relative;
   top: -4px;
   border: none;
   padding: 0;
+  margin-top: 0;
   overflow: hidden;
 }
 
@@ -187,7 +187,12 @@
   opacity: 0.8;
 }
 
-.hlx-sk .feature-container .user .dropdown-toggle .user-icon{
+.hlx-sk .feature-container .user .dropdown-toggle::after {
+  display: none;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-icon {
+  background-color: var(--hlx-sk-user-bg);
   font-size: 4px;
   height: 28px;
   width: 28px;
@@ -217,8 +222,14 @@
   border-radius: 2em 2em 0 0;
 }
 
-.hlx-sk .feature-container .user .dropdown-toggle::after {
-  display: none;
+.hlx-sk .feature-container .user .dropdown-toggle .user-icon-hidden {
+  height: 0;
+  opacity: 0;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-picture {
+  width: 28px;
+  height: 28px;
 }
 
 .hlx-sk .feature-container .user .user-info {
