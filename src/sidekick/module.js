@@ -761,7 +761,7 @@
             `hlx-sk-edit--${config.owner}/${config.repo}/${config.ref}${status.webPath}`,
           );
         },
-        isEnabled: (sidekick) => sidekick.isAuthorized()
+        isEnabled: (sidekick) => sidekick.isAuthorized('edit', 'read')
           && sidekick.status.edit && sidekick.status.edit.url,
       },
     });
@@ -858,8 +858,8 @@
             });
             return;
           }
-          // handle special case /.helix/config.json
-          if (status.webPath === '/.helix/config.json') {
+          // handle special case /.helix/*
+          if (status.webPath.startsWith('/.helix/')) {
             sk.showModal({
               css: 'modal-config-success',
             });
@@ -867,7 +867,7 @@
           }
           sk.switchEnv('preview', newTab(evt));
         },
-        isEnabled: (sidekick) => sidekick.isAuthorized(),
+        isEnabled: (sidekick) => sidekick.isAuthorized('preview', 'write'),
       },
     });
   }
@@ -906,7 +906,7 @@
             });
           }
         },
-        isEnabled: (s) => s.isAuthorized()
+        isEnabled: (s) => s.isAuthorized('preview', 'write')
           && s.status.edit && s.status.edit.url, // enable only if edit url exists
       },
     });
@@ -920,7 +920,7 @@
   function addDeletePlugin(sk) {
     sk.add({
       id: 'delete',
-      condition: (sidekick) => sidekick.isAuthorized() && sidekick.isHelix()
+      condition: (sidekick) => sidekick.isAuthorized('preview', 'delete') && sidekick.isHelix()
         && (!sidekick.status.edit || !sidekick.status.edit.url) // show only if no edit url and
         && (sidekick.status.preview && sidekick.status.preview.status !== 404), // preview exists
       button: {
@@ -999,7 +999,7 @@
             });
           }
         },
-        isEnabled: (sidekick) => sidekick.isAuthorized() && sidekick.status.edit
+        isEnabled: (sidekick) => sidekick.isAuthorized('live', 'write') && sidekick.status.edit
           && sidekick.status.edit.url, // enable only if edit url exists
       },
     });
@@ -1013,7 +1013,7 @@
   function addUnpublishPlugin(sk) {
     sk.add({
       id: 'unpublish',
-      condition: (sidekick) => sidekick.isAuthorized() && sidekick.isHelix()
+      condition: (sidekick) => sidekick.isAuthorized('live', 'delete') && sidekick.isHelix()
         && (!sidekick.status.edit || !sidekick.status.edit.url) // show only if no edit url and
         && sidekick.status.live && sidekick.status.live.lastModified // published
         && sk.isContent(),
@@ -1116,22 +1116,22 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkUserState(sk) {
-    if (sk.isAuthenticated() && !sk.isAuthorized()) {
-      // encourage user switch
-      sk.showModal({
-        css: 'modal-user-switch',
-        message: [
-          '',
-          createTag({
-            tag: 'button',
-            lstnrs: {
-              click: () => login(sk),
-            },
-          }),
-        ],
-        sticky: true,
-      });
-    }
+    // if (sk.isAuthenticated() && !sk.isAuthorized()) {
+    //   // encourage user switch
+    //   sk.showModal({
+    //     css: 'modal-user-switch',
+    //     message: [
+    //       '',
+    //       createTag({
+    //         tag: 'button',
+    //         lstnrs: {
+    //           click: () => login(sk),
+    //         },
+    //       }),
+    //     ],
+    //     sticky: true,
+    //   });
+    // }
     const toggle = sk.get('user').firstElementChild;
     toggle.removeAttribute('disabled');
     const { profile } = sk.status;
@@ -1193,7 +1193,7 @@
       sk.add({
         container: 'user',
         id: 'user-switch',
-        condition: (sidekick) => !sidekick.isAuthorized(),
+        condition: (sidekick) => sidekick.isAuthenticated(),
         button: {
           action: () => login(sk),
         },
@@ -1947,12 +1947,21 @@
     }
 
     /**
-     * Checks if the user is allowed to use the sidekick.
+     * Checks if the user is allowed to use a feature.
+     * @param {string} feature The feature to check
+     * @param {string} permission The permission to require
      * @returns {boolean} <code>true</code> if user is allowed, else <code>false</code>
      */
-    isAuthorized() {
-      const { edit } = this.status;
-      return this.isAuthenticated() && edit && edit.status !== 403;
+    isAuthorized(feature, permission) {
+      if (!this.status[feature]) {
+        // unknown feature
+        return false;
+      }
+      if (!this.status[feature].permissions) {
+        // feature doesn't require permissions
+        return true;
+      }
+      return this.status[feature].permissions.includes(permission);
     }
 
     /**
@@ -2093,7 +2102,7 @@
      * @returns {Sidekick} The sidekick
      */
     showHelp(topic, step = 0) {
-      if (!this.isAuthorized()) {
+      if (!this.isAuthenticated()) {
         return this;
       }
       const { id, steps } = topic;
