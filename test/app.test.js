@@ -34,7 +34,7 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(!sidekick, 'Did render with missing config');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Renders with config', async () => {
+  it.only('Renders with config', async () => {
     const result = await new SidekickTest({
       setup: 'blog',
     }).run();
@@ -43,7 +43,7 @@ describe('Test sidekick bookmarklet', () => {
     assert.strictEqual(innerHost, 'main--blog--adobe.hlx.page', `Unexpected innerHost: ${innerHost}`);
     assert.strictEqual(outerHost, 'main--blog--adobe.hlx.live', `Unexpected outerHost: ${innerHost}`);
     // check plugins
-    assert.strictEqual(plugins.length, 8, `Wrong number of plugins: ${plugins.length}`);
+    assert.strictEqual(plugins.length, 9, `Wrong number of plugins: ${plugins.length}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Handles errors fetching status from admin API', async () => {
