@@ -193,6 +193,18 @@
    */
 
   /**
+   * @event Sidekick#loggedin
+   * @type {Sidekick} The sidekick
+   * @description This event is fired when a user has logged in.
+   */
+
+  /**
+   * @event Sidekick#loggedout
+   * @type {Sidekick} The sidekick
+   * @description This event is fired when a user has logged out.
+   */
+
+  /**
    * @event Sidekick#helpnext
    * @type {string} The help topic
    * @description This event is fired when a user clicks next on a help dialog.
@@ -1055,14 +1067,20 @@
    * Logs the user in.
    * @private
    * @param {Sidekick} sk The sidekick
+   * @param {boolean} selectAccount <code>true</code> to allow user to select account (optional)
    */
-  function login(sk) {
+  function login(sk, selectAccount) {
     sk.showWait();
-    const loginWindow = window.open(getAdminUrl(
+    const loginUrl = getAdminUrl(
       sk.config,
       'login',
       sk.isEditor() ? '' : sk.location.pathname,
-    ));
+    );
+    loginUrl.searchParams.set('redirectUrl', 'https://www.hlx.live/tools/sidekick/login-success');
+    if (selectAccount) {
+      loginUrl.searchParams.set('selectAccount', true);
+    }
+    const loginWindow = window.open(loginUrl);
     let seconds = 0;
     const loginCheck = window.setInterval(async () => {
       if (seconds < 59) {
@@ -1072,11 +1090,14 @@
           credentials: 'include',
         })).ok) {
           // re-fetch status
+          window.clearInterval(loginCheck);
           delete sk.status.status;
           sk.addEventListener('statusfetched', () => sk.hideModal());
           sk.fetchStatus();
-          loginWindow.close();
-          window.clearInterval(loginCheck);
+          fireEvent(sk, 'loggedin');
+          window.setTimeout(() => {
+            loginWindow.close();
+          }, 500);
         }
       } else {
         // give up after 1 minute
@@ -1100,7 +1121,10 @@
       cache: 'no-store',
       credentials: 'include',
     })
-      .then(() => window.location.reload())
+      .then(() => {
+        fireEvent(sk, 'loggedout');
+        window.location.reload();
+      })
       .catch(() => {
         sk.showModal({
           css: 'modal-logout-error',
@@ -1115,22 +1139,6 @@
    * @param {Sidekick} sk The sidekick
    */
   function checkUserState(sk) {
-    // if (sk.isAuthenticated() && !sk.isAuthorized()) {
-    //   // encourage user switch
-    //   sk.showModal({
-    //     css: 'modal-user-switch',
-    //     message: [
-    //       '',
-    //       createTag({
-    //         tag: 'button',
-    //         lstnrs: {
-    //           click: () => login(sk),
-    //         },
-    //       }),
-    //     ],
-    //     sticky: true,
-    //   });
-    // }
     const toggle = sk.get('user').firstElementChild;
     toggle.removeAttribute('disabled');
     const { profile } = sk.status;
@@ -1194,7 +1202,7 @@
         id: 'user-switch',
         condition: (sidekick) => sidekick.isAuthenticated(),
         button: {
-          action: () => login(sk),
+          action: () => login(sk, true),
         },
       });
       // logout
