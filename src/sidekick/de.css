@@ -115,10 +115,6 @@
   content: "Bitte melde dich an um fortzufahren...";
 }
 
-.hlx-sk-overlay .modal.modal-user-switch p:first-of-type::before {
-  content: "Zugriff verweigert. Bitte melde dich mit einem anderen Benutzer an...";
-}
-
 .hlx-sk .feature-container .user-login button::before,
 .hlx-sk-overlay .modal.modal-login button::before {
   content: "Anmelden";

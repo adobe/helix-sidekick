@@ -835,10 +835,6 @@
   content: "Please sign in to continue...";
 }
 
-.hlx-sk-overlay .modal.modal-user-switch p:first-of-type::before {
-  content: "Unauthorized. Please sign in as a different user...";
-}
-
 .hlx-sk .feature-container .user-login button::before,
 .hlx-sk-overlay .modal.modal-login button::before {
   content: "Sign in";
@@ -910,7 +906,7 @@
 }
 
 .hlx-sk-overlay .modal.modal-login-timeout::before {
-  content: "Sign in timed out. Please reload this browser tab or try again later.";
+  content: "Sign in timed out. Please try again later.";
 }
 
 .hlx-sk-overlay .modal.modal-logout-error::before {
