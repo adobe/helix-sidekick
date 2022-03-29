@@ -761,8 +761,7 @@
             `hlx-sk-edit--${config.owner}/${config.repo}/${config.ref}${status.webPath}`,
           );
         },
-        isEnabled: (sidekick) => sidekick.isAuthorized('edit', 'read')
-          && sidekick.status.edit && sidekick.status.edit.url,
+        isEnabled: (sidekick) => sidekick.status.edit && sidekick.status.edit.url,
       },
     });
   }
