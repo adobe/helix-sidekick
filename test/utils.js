@@ -83,11 +83,21 @@ const SETUPS = {
             url: 'https://main--blog--adobe.hlx.live/en/topics/bla',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:02 GMT',
+            permisions: [
+              'read',
+              'write',
+              'delete',
+            ],
           },
           preview: {
             url: 'https://main--blog--adobe.hlx.page/en/topics/bla',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:01 GMT',
+            permisions: [
+              'read',
+              'write',
+              'delete',
+            ],
           },
           edit: {
             url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',

@@ -38,18 +38,6 @@ describe('Test user auth handling', () => {
     assert.ok(checkPageResult, 'Did not show login dialog on 401');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Handles 403 status from admin API', async () => {
-    const test = new SidekickTest({
-      checkPage: (p) => p.evaluate(() => window.hlx.sidekick.shadowRoot
-        .querySelector('.hlx-sk-overlay .modal')
-        .classList.contains('modal-user-switch')),
-    });
-    test.apiResponses[0].edit.status = 403;
-    const { plugins, checkPageResult } = await test.run();
-    assert.ok(checkPageResult, 'Did not show user switch dialog on 403');
-    assert.ok(plugins.find((p) => p.id === 'user-switch'), 'Did not show user switch option');
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
   it('Shows user info from profile', async () => {
     const { checkPageResult } = await new SidekickTest({
       checkPage: (p) => p.evaluate(() => [...window.hlx.sidekick.get('user')
@@ -69,8 +57,17 @@ describe('Test user auth handling', () => {
     assert.ok(plugins.find((p) => p.id === 'user-login'), 'Did not show login option');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Shows logout option in user menu if user logged in', async () => {
+  it('Shows switch user and logout option in user menu if user logged in', async () => {
     const { plugins } = await new SidekickTest().run();
+    assert.ok(plugins.find((p) => p.id === 'user-switch'), 'Did not show switch user option');
     assert.ok(plugins.find((p) => p.id === 'user-logout'), 'Did not show logout option');
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
+  it('Keeps plugin buttons disabled based on permissions', async () => {
+    const test = new SidekickTest();
+    // change live permissions to readonly
+    test.apiResponses[0].live.permissions = ['read'];
+    const { plugins } = await test.run();
+    assert.ok(plugins.find((p) => p.id === 'publish' && !p.buttonEnabled), 'Did not keep publish plugin disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
