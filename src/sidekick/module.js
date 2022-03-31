@@ -1076,12 +1076,13 @@
       'login',
       sk.isEditor() ? '' : sk.location.pathname,
     );
-    loginUrl.searchParams.set('redirectUrl', 'https://www.hlx.live/tools/sidekick/login-success');
+    loginUrl.searchParams.set('loginRedirect', 'https://www.hlx.live/tools/sidekick/login-success');
     if (selectAccount) {
       loginUrl.searchParams.set('selectAccount', true);
     }
-    const loginWindow = window.open(loginUrl);
+    const loginWindow = window.open(loginUrl.toString());
     let seconds = 0;
+    let loggedIn = false;
     const loginCheck = window.setInterval(async () => {
       if (seconds < 59) {
         seconds += 1;
@@ -1090,6 +1091,7 @@
           credentials: 'include',
         })).ok) {
           // re-fetch status
+          loggedIn = true;
           window.clearInterval(loginCheck);
           delete sk.status.status;
           sk.addEventListener('statusfetched', () => sk.hideModal());
@@ -1105,6 +1107,12 @@
           css: 'modal-login-timeout',
           sticky: true,
           level: 1,
+        });
+        window.clearInterval(loginCheck);
+      }
+      if (loginWindow.closed && !loggedIn) {
+        sk.showModal({
+          css: 'modal-login-aborted',
         });
         window.clearInterval(loginCheck);
       }
