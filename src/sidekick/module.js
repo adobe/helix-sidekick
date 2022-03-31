@@ -1142,7 +1142,7 @@
     const toggle = sk.get('user').firstElementChild;
     toggle.removeAttribute('disabled');
     const { profile } = sk.status;
-    if (profile && Object.keys(profile).length > 0) {
+    if (profile) {
       const { name, email, picture } = profile;
       toggle.title = name;
       // user picture
