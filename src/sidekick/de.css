@@ -189,6 +189,10 @@
   content: "Zeitüberschreitung bei der Anmeldung. Bitte versuche es später noch einmal.";
 }
 
+.hlx-sk-overlay .modal.modal-login-aborted::before {
+  content: "Anmeldungsvorgang abgebrochen.";
+}
+
 .hlx-sk-overlay .modal.modal-logout-error::before {
   content: "Abmeldung fehlgeschlagen. Bitte lade diesen Browser-Tab erneut oder versuche es später noch einmal.";
 }
