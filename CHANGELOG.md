@@ -1,3 +1,24 @@
+## [4.9.3](https://github.com/adobe/helix-sidekick/compare/v4.9.2...v4.9.3) (2022-03-31)
+
+
+### Bug Fixes
+
+* prevent preview update if webPath undefined ([157995a](https://github.com/adobe/helix-sidekick/commit/157995a698f28a6dceeabdebfdd06a4e3cd6f73e))
+
+## [4.9.2](https://github.com/adobe/helix-sidekick/compare/v4.9.1...v4.9.2) (2022-03-26)
+
+
+### Bug Fixes
+
+* **regression:** more robust host matching ([413870c](https://github.com/adobe/helix-sidekick/commit/413870cf43d3acb71de4b5af8b049b0a463bf4a1))
+
+## [4.9.1](https://github.com/adobe/helix-sidekick/compare/v4.9.0...v4.9.1) (2022-03-26)
+
+
+### Bug Fixes
+
+* **regression:** direct host matching broken ([74c3b53](https://github.com/adobe/helix-sidekick/commit/74c3b5392abfe5379a526f6a71ee264714a6b691))
+
 # [4.9.0](https://github.com/adobe/helix-sidekick/compare/v4.8.0...v4.9.0) (2022-03-22)
 
 

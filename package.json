@@ -1,6 +1,6 @@
 {
   "name": "@adobe/helix-sidekick",
-  "version": "4.9.0",
+  "version": "4.9.3",
   "description": "Helix Sidekick",
   "main": "src/index.js",
   "scripts": {
@@ -36,12 +36,12 @@
     "@semantic-release/git": "10.0.1",
     "@web/test-runner": "0.13.27",
     "@web/test-runner-commands": "0.6.1",
-    "ajv": "8.10.0",
+    "ajv": "8.11.0",
     "archiver": "5.3.0",
     "codecov": "3.8.3",
     "commitizen": "4.2.4",
     "cz-conventional-changelog": "3.3.0",
-    "eslint": "8.11.0",
+    "eslint": "8.12.0",
     "eslint-plugin-header": "3.1.1",
     "eslint-plugin-import": "2.25.4",
     "express": "4.17.3",

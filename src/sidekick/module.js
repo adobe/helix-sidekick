@@ -264,11 +264,12 @@
    * @private
    * @param {string} host The host name
    * @returns {string[]} The project details
+   * @throws {Error} if host is not a Helix host
    */
   function getHelixProjectDetails(host) {
     const details = host.split('.')[0].split('--');
     if (details.length < 2) {
-      return false;
+      throw new Error('not a helix host');
     }
     if (details.length === 3) {
       // lose ref
@@ -288,20 +289,25 @@
     if (!baseHost || !host) {
       return false;
     }
+    // direct match
+    if (baseHost === host) {
+      return true;
+    }
     // matching helix domains
     const helixDomains = ['page', 'hlx.live'];
     if (!helixDomains.find((domain) => baseHost.endsWith(domain)
       && host.endsWith(domain))) {
       return false;
     }
-    // direct match
-    if (baseHost === host) {
-      return true;
-    }
     // project details
-    const [baseHostRepo, baseHostOwner] = getHelixProjectDetails(baseHost);
-    const [hostRepo, hostOwner] = getHelixProjectDetails(host);
-    return baseHostOwner === hostOwner && baseHostRepo === hostRepo;
+    try {
+      const [baseHostRepo, baseHostOwner] = getHelixProjectDetails(baseHost);
+      const [hostRepo, hostOwner] = getHelixProjectDetails(host);
+      return baseHostOwner === hostOwner && baseHostRepo === hostRepo;
+    } catch (e) {
+      // ignore if no helix host
+    }
+    return false;
   }
 
   /**
@@ -878,7 +884,8 @@
           }
           sk.switchEnv('preview', newTab(evt));
         },
-        isEnabled: (sidekick) => sidekick.isAuthorized('preview', 'write'),
+        isEnabled: (sidekick) => sidekick.isAuthorized('preview', 'write')
+          && sidekick.status.webPath,
       },
     });
   }
