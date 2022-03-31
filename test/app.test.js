@@ -34,7 +34,7 @@ describe('Test sidekick bookmarklet', () => {
     assert.ok(!sidekick, 'Did render with missing config');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it.only('Renders with config', async () => {
+  it('Renders with config', async () => {
     const result = await new SidekickTest({
       setup: 'blog',
     }).run();
