@@ -1,3 +1,10 @@
+## [4.9.3](https://github.com/adobe/helix-sidekick/compare/v4.9.2...v4.9.3) (2022-03-31)
+
+
+### Bug Fixes
+
+* prevent preview update if webPath undefined ([157995a](https://github.com/adobe/helix-sidekick/commit/157995a698f28a6dceeabdebfdd06a4e3cd6f73e))
+
 ## [4.9.2](https://github.com/adobe/helix-sidekick/compare/v4.9.1...v4.9.2) (2022-03-26)
 
 
