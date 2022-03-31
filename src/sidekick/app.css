@@ -89,7 +89,7 @@
   width: 100vw;
   min-height: 49px;
   box-sizing: border-box;
-  padding: 0 10px 10px 42px;
+  padding: 10px 10px 10px 42px;
   font-family: var(--hlx-sk-font-family);
   font-size: var(--hlx-sk-font-size);
   box-shadow: var(--hlx-sk-shadow);
@@ -114,7 +114,7 @@
   min-width: 28px;
   min-height: 28px;
   max-height: 28px;
-  margin: 10px 8px 0 0;
+  margin: 0 8px 0 0;
 }
 
 .hlx-sk button:hover,
@@ -153,13 +153,12 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: start;
+  row-gap: 8px;
 }
 
 .hlx-sk .plugin-container.loading::before,
 .hlx-sk .plugin-container.empty::before {
-  margin-top: 10px;
-  height: 20px;
-  line-height: 2;
+  line-height: 28px;
 }
 
 .hlx-sk .feature-container {
@@ -174,13 +173,16 @@
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle {
-  font-size: 0;
   position: relative;
-  top: -5px;
   border: none;
   padding: 0;
   margin-top: 0;
   overflow: hidden;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle::before {
+  font-size: 0;
+  line-height: 0;
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle:disabled {
@@ -193,7 +195,9 @@
 
 .hlx-sk .feature-container .user .dropdown-toggle .user-icon {
   background-color: var(--hlx-sk-user-bg);
+  position: absolute;
   font-size: 4px;
+  top: 0;
   height: 28px;
   width: 28px;
 }
@@ -230,6 +234,12 @@
 .hlx-sk .feature-container .user .dropdown-toggle .user-picture {
   width: 28px;
   height: 28px;
+}
+
+.hlx-sk .feature-container .user .dropdown-toggle .user-picture:hover,
+.hlx-sk .feature-container .user .dropdown-toggle .user-picture:focus {
+  transform: scale(1.2);
+  transition: transform .3s ease;
 }
 
 .hlx-sk .feature-container .user .user-info {
@@ -324,7 +334,6 @@
  {
   min-height: 28px;
   max-height: 28px;
-  margin-top: 10px;
   position: relative;
 }
 
@@ -333,7 +342,7 @@
   display: none;
   position: absolute;
   min-width: 120px;
-  top: 40px;
+  top: 30px;
   background-color: var(--hlx-sk-dropdown-container-bg);
   border-radius: var(--hlx-sk-button-border-radius);
   box-shadow: var(--hlx-sk-shadow);
@@ -348,7 +357,7 @@
 .hlx-sk:not(.hlx-sk-loading) .dropdown,
 .hlx-sk-overlay .dropdown {
   display: block;
-  margin-top: 0;
+  /* margin-top: 0; */
 }
 
 .hlx-sk-overlay .dropdown {
@@ -907,6 +916,10 @@
 
 .hlx-sk-overlay .modal.modal-login-timeout::before {
   content: "Sign in timed out. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-login-aborted::before {
+  content: "Sign in aborted.";
 }
 
 .hlx-sk-overlay .modal.modal-logout-error::before {
