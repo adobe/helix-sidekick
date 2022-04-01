@@ -157,7 +157,7 @@
 }
 
 .hlx-sk .plugin-container.loading::before,
-.hlx-sk .plugin-container.empty::before {
+.hlx-sk .plugin-container:empty::before {
   line-height: 28px;
 }
 
@@ -739,7 +739,7 @@
 
 /* i18n */
 
-.hlx-sk .plugin-container.empty::before {
+.hlx-sk .plugin-container:empty::before {
   content: "No actions found for this page";
 }
 
