@@ -1806,8 +1806,9 @@
             return appendTag($pluginContainer, createDropdown(this, plugin));
           }
           $plugin = appendTag($pluginContainer, pluginCfg);
-          // remove loading text
-          if (this.pluginContainer.classList.contains('loading')) {
+          if ($pluginContainer === this.pluginContainer
+              && this.pluginContainer.classList.contains('loading')) {
+            // remove loading text
             this.pluginContainer.classList.remove('loading');
           }
         } else if ($plugin) {
