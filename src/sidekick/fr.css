@@ -177,6 +177,10 @@
   content: "500 Internal server error: Failed to fetch the page status. Please try again later.";
 }
 
+.hlx-sk-overlay .modal.modal-status-502::before {
+  content: "504 Bad gateway: Failed to fetch the page status. Please try again later.";
+}
+
 .hlx-sk-overlay .modal.modal-status-504::before {
   content: "504 Gateway timeout: Failed to fetch the page status. Please try again later.";
 }

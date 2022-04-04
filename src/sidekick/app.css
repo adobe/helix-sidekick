@@ -232,6 +232,7 @@
 }
 
 .hlx-sk .feature-container .user .dropdown-toggle .user-picture {
+  background-color: var(--hlx-sk-user-bg);
   width: 28px;
   height: 28px;
 }
@@ -904,6 +905,10 @@
 
 .hlx-sk-overlay .modal.modal-status-500::before {
   content: "500 Internal server error: Failed to fetch the page status. Please try again later.";
+}
+
+.hlx-sk-overlay .modal.modal-status-502::before {
+  content: "502 Bad gateway: Failed to fetch the page status. Please try again later.";
 }
 
 .hlx-sk-overlay .modal.modal-status-504::before {

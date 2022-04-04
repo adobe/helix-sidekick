@@ -177,6 +177,10 @@
   content: "500 Interner Serverfehler: Statusabfrage fehlgeschlagen. Bitte versuche es später noch einmal.";
 }
 
+.hlx-sk-overlay .modal.modal-status-502::before {
+  content: "502 Fehlerhaftes Gateway: Statusabfrage fehlgeschlagen. Bitte versuche es später noch einmal.";
+}
+
 .hlx-sk-overlay .modal.modal-status-504::before {
   content: "504 Gateway-Timeout: Statusabfrage fehlgeschlagen. Bitte versuche es später noch einmal.";
 }
