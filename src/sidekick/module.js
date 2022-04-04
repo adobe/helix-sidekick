@@ -1644,7 +1644,7 @@
               }
             },
           };
-          if (!e.message.startsWith('modal-status-')) {
+          if (e.message.startsWith('modal-status-')) {
             // add error mesasage as css class
             modal.css = e.message;
           } else {
