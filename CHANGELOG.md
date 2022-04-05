@@ -1,3 +1,15 @@
+# [4.10.0](https://github.com/adobe/helix-sidekick/compare/v4.9.3...v4.10.0) (2022-04-05)
+
+
+### Bug Fixes
+
+* missing close button text in help dialog ([9ba29f2](https://github.com/adobe/helix-sidekick/commit/9ba29f2802ce033182505476857d5a69b75fedb2))
+
+
+### Features
+
+* user login and profile ([72bab32](https://github.com/adobe/helix-sidekick/commit/72bab324b9bf3706707c68c510763160a272b008))
+
 ## [4.9.3](https://github.com/adobe/helix-sidekick/compare/v4.9.2...v4.9.3) (2022-03-31)
 
 
