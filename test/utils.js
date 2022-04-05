@@ -56,6 +56,7 @@ const SETUPS = {
           },
           edit: {
             url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
+            status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:55:03 GMT',
           },
         },
@@ -82,15 +83,33 @@ const SETUPS = {
             url: 'https://main--blog--adobe.hlx.live/en/topics/bla',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:02 GMT',
+            permisions: [
+              'read',
+              'write',
+              'delete',
+            ],
           },
           preview: {
             url: 'https://main--blog--adobe.hlx.page/en/topics/bla',
             status: 200,
             lastModified: 'Fri, 18 Jun 2021 09:57:01 GMT',
+            permisions: [
+              'read',
+              'write',
+              'delete',
+            ],
           },
           edit: {
             url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
             lastModified: 'Fri, 18 Jun 2021 09:57:00 GMT',
+          },
+          profile: {
+            email: 'jane@foo.bar',
+            name: 'Jane Smith',
+            picture: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 216 216'><defs><style>.cls-1{fill:%23f15a3a;}.cls-2{fill:%23c71f3d;}.cls-3{fill:%23ffc40c;}</style></defs><circle class='cls-1' cx='22.5' cy='108' r='22.5'/><circle class='cls-1' cx='193.5' cy='108' r='22.5'/><circle class='cls-2' cx='63' cy='27' r='27'/><circle class='cls-3' cx='162' cy='27' r='18'/><circle class='cls-2' cx='162' cy='189' r='27'/><circle class='cls-3' cx='63' cy='189' r='18'/></svg>",
+            roles: [
+              'publish',
+            ],
           },
         },
         json: {
@@ -290,8 +309,15 @@ const execPlugin = async (p, id) => {
 const clickButton = async (p, id) => p.evaluate((buttonId) => window.hlx.sidekick
   .shadowRoot.querySelector(`.hlx-sk button.${buttonId}`).click(), id);
 
-const getNotification = async (p = getPage()) => p.evaluate(() => window.hlx.sidekick
-  .shadowRoot.querySelector('.hlx-sk-overlay .modal')?.textContent || '');
+const getNotification = async (p = getPage()) => p.evaluate(() => {
+  const modal = window.hlx.sidekick.shadowRoot.querySelector('.hlx-sk-overlay .modal');
+  const message = modal ? modal.textContent : null;
+  const className = modal ? modal.className : null;
+  return {
+    message,
+    className,
+  };
+});
 
 const sleep = async (delay = 1000) => new Promise((resolve) => {
   setTimeout(resolve, delay);

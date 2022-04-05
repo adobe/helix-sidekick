@@ -315,6 +315,7 @@ class SidekickTest {
           const s = document.createElement('script');
           s.id = 'hlx-sk-app';
           s.src = '../../src/sidekick/app.js';
+          skCfg.scriptUrl = s.src;
           s.dataset.config = JSON.stringify(skCfg);
           if (document.head.querySelector('script#hlx-sk-app')) {
             document.head.querySelector('script#hlx-sk-app').replaceWith(s);
