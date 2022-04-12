@@ -1,3 +1,10 @@
+# [4.11.0](https://github.com/adobe/helix-sidekick/compare/v4.10.0...v4.11.0) (2022-04-12)
+
+
+### Features
+
+* advanced mode ([8ed58b0](https://github.com/adobe/helix-sidekick/commit/8ed58b022ea2231126b193323f060cab43b9ee7e))
+
 # [4.10.0](https://github.com/adobe/helix-sidekick/compare/v4.9.3...v4.10.0) (2022-04-05)
 
 
