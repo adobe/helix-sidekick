@@ -22,79 +22,65 @@ const {
 } = require('./utils.js');
 const { SidekickTest } = require('./SidekickTest.js');
 
-describe('Test live plugin', () => {
+describe('Test dev plugin', () => {
   beforeEach(startBrowser);
   afterEach(stopBrowser);
 
-  it('Live plugin without production host', async () => {
+  it('Dev plugin hidden by default', async () => {
     const { plugins } = await new SidekickTest().run();
-    assert.ok(plugins.find((p) => p.id === 'live'), 'Live plugin not found');
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Live plugin hidden with production host', async () => {
-    const test = new SidekickTest();
-    test.sidekickConfig.host = 'blog.adobe.com';
-    const { plugins } = await test.run();
     assert.ok(
-      plugins.find((p) => p.id === 'live' && p.classes.includes('hlx-sk-advanced-only')),
-      'Live plugin not hidden with production host',
+      plugins.find((p) => p.id === 'dev' && p.classes.includes('hlx-sk-advanced-only')),
+      'Dev plugin not hidden by default',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Live plugin switches to live from gdrive URL', async () => {
+  it('Dev plugin switches to dev from gdrive URL', async () => {
     const { popupOpened } = await new SidekickTest({
       setup: 'pages',
       url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
-      plugin: 'live',
+      plugin: 'dev',
       pluginSleep: 2000,
     }).run();
     assert.strictEqual(
       popupOpened,
-      'https://main--pages--adobe.hlx.live/creativecloud/en/test',
-      'Live URL not opened',
+      'http://localhost:3000/creativecloud/en/test',
+      'Dev URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Live plugin switches to live from onedrive URL', async () => {
+  it('Dev plugin switches to dev from onedrive URL', async () => {
     const { popupOpened } = await new SidekickTest({
       url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
-      plugin: 'live',
+      plugin: 'dev',
       pluginSleep: 2000,
     }).run();
     assert.strictEqual(
       popupOpened,
-      'https://main--blog--adobe.hlx.live/en/topics/bla',
-      'Live URL not opened',
+      'http://localhost:3000/en/topics/bla',
+      'Dev URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Live plugin switches to live from preview URL', async () => {
+  it('Dev plugin switches to dev from preview URL', async () => {
     const { requestsMade } = await new SidekickTest({
-      plugin: 'live',
+      plugin: 'dev',
     }).run();
     assert.strictEqual(
       requestsMade.pop().url,
-      'https://main--blog--adobe.hlx.live/en/topics/bla',
-      'Live URL not opened',
+      'http://localhost:3000/en/topics/bla',
+      'Dev URL not opened',
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Live plugin switches to live from production URL', async () => {
+  it('Dev plugin switches to dev from production URL', async () => {
     const { requestsMade } = await new SidekickTest({
       url: 'https://blog.adobe.com/en/topics/bla',
-      plugin: 'live',
+      plugin: 'dev',
     }).run();
     assert.strictEqual(
       requestsMade.pop().url,
-      'https://main--blog--adobe.hlx.live/en/topics/bla',
+      'http://localhost:3000/en/topics/bla',
       'Live URL not opened',
     );
-  }).timeout(IT_DEFAULT_TIMEOUT);
-
-  it('Live plugin button disabled if page not published', async () => {
-    const test = new SidekickTest();
-    test.apiResponses[0].live = {};
-    const { plugins } = await test.run();
-    assert.ok(plugins.find((p) => p.id === 'live' && !p.buttonEnabled), 'Live plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 });
