@@ -1700,7 +1700,6 @@
     loadContext(cfg) {
       this.location = getLocation();
       this.config = initConfig(cfg, this.location);
-      console.log(this.config);
       fireEvent(this, 'contextloaded', {
         config: this.config,
         location: this.location,
