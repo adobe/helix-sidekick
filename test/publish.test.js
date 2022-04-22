@@ -80,11 +80,11 @@ describe('Test publish plugin', () => {
     assert.ok(plugins.find((p) => p.id === 'publish' && !p.buttonEnabled), 'Publish plugin button not disabled');
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Publish plugin shows update indicator if edit is newer than preview', async () => {
+  it('Publish plugin shows update indicator if preview is newer than live', async () => {
     const test = new SidekickTest();
     const liveLastMod = test.apiResponses[0].live.lastModified;
     test.apiResponses[0].live.lastModified = new Date(new Date(liveLastMod)
-      .setFullYear(2020)).toUTCString();
+      .setFullYear(2019)).toUTCString();
     const { plugins } = await test.run();
     assert.ok(
       plugins.find((p) => p.id === 'publish')?.classes.includes('update'),
