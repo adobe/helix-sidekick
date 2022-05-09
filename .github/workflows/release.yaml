@@ -29,7 +29,7 @@ jobs:
         run: |
           cp -r src/sidekick/* _target/tools/sidekick/
       - name: Create branch commit and pull request in target repo
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4
         with:
           commit-message: "chore(sidekick): new release candidate [skip ci]"
           token: ${{ secrets.PAT }}
