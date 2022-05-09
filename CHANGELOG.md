@@ -1,3 +1,11 @@
+# [4.12.0](https://github.com/adobe/helix-sidekick/compare/v4.11.0...v4.12.0) (2022-05-09)
+
+
+### Features
+
+* show update indicator if no preview yet ([e25c710](https://github.com/adobe/helix-sidekick/commit/e25c7108a8e64143a22b0478a87d6961f133b806))
+* show update indicator on preview button ([1dc2d85](https://github.com/adobe/helix-sidekick/commit/1dc2d857797a36f4594994a36fa54ce7e0870044))
+
 # [4.11.0](https://github.com/adobe/helix-sidekick/compare/v4.10.0...v4.11.0) (2022-04-12)
 
 
