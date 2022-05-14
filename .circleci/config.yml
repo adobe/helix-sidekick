@@ -2,9 +2,7 @@ version: 2.1
 executors:
   node14:
     docker:
-    - image: cimg/node:14.19.1-browsers
-    environment:
-      NPM_CONFIG_PREFIX: ~/.npm-global
+    - image: cimg/node:14.19.2-browsers
 
 orbs:
   browser-tools: circleci/browser-tools@1.3.0
@@ -18,7 +16,7 @@ commands:
     #     - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
     - run:
         name: install latest npm
-        command: sudo npm -g install npm
+        command: npm -g install npm
     - run:
         name: Installing Dependencies
         command: npm ci
