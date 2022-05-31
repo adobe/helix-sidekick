@@ -891,15 +891,6 @@
           sk.showWait();
           // update preview
           const resp = await sk.update();
-          if (!resp.ok) {
-            console.error(resp);
-            sk.showModal({
-              css: 'modal-preview-failure',
-              sticky: true,
-              level: 0,
-            });
-            return;
-          }
           // handle special case /.helix/*
           if (status.webPath.startsWith('/.helix/')) {
             if (!resp.ok) {
@@ -913,6 +904,15 @@
                 css: 'modal-config-success',
               });
             }
+            return;
+          }
+          if (!resp.ok) {
+            console.error(resp);
+            sk.showModal({
+              css: 'modal-preview-failure',
+              sticky: true,
+              level: 0,
+            });
             return;
           }
           sk.switchEnv('preview', newTab(evt));
