@@ -894,7 +894,6 @@
           if (!resp.ok) {
             console.error(resp);
             sk.showModal({
-              message: resp.error,
               css: 'modal-preview-failure',
               sticky: true,
               level: 0,
@@ -903,9 +902,17 @@
           }
           // handle special case /.helix/*
           if (status.webPath.startsWith('/.helix/')) {
-            sk.showModal({
-              css: 'modal-config-success',
-            });
+            if (!resp.ok) {
+              sk.showModal({
+                message: resp.error,
+                sticky: true,
+                level: 0,
+              });
+            } else {
+              sk.showModal({
+                css: 'modal-config-success',
+              });
+            }
             return;
           }
           sk.switchEnv('preview', newTab(evt));
