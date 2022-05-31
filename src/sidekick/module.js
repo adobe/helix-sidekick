@@ -894,6 +894,7 @@
           if (!resp.ok) {
             console.error(resp);
             sk.showModal({
+              message: resp.error,
               css: 'modal-preview-failure',
               sticky: true,
               level: 0,
@@ -2417,6 +2418,7 @@
       return {
         ok: (resp && resp.ok) || false,
         status: (resp && resp.status) || 0,
+        error: (resp && resp.headers.get('x-error')) || '',
         path,
       };
     }
