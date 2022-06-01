@@ -130,7 +130,7 @@ describe('Test preview plugin', () => {
     assert.ok(notification.className.includes('modal-config-success'), `Unexpected notification classes: ${notification.className}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it.only('Edit-specific preview plugin shows /.helix/* error message from server', async () => {
+  it('Edit-specific preview plugin shows /.helix/* error message from server', async () => {
     const test = new SidekickTest({
       url: 'https://adobe.sharepoint.com/:x:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=test.xlsx&action=default&mobileredirect=true',
       type: 'json',
