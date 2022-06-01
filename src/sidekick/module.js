@@ -895,7 +895,7 @@
             if (status.webPath.startsWith('/.helix/') && resp.error) {
               // show detail message only in power-user mode
               sk.showModal({
-                message: `Previewing failed. ${resp.error}`,
+                message: `Unable to activate Helix configuration: ${resp.error}`,
                 sticky: true,
                 level: 0,
               });
