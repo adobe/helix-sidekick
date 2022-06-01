@@ -895,7 +895,7 @@
             if (status.webPath.startsWith('/.helix/') && resp.error) {
               // show detail message only in power-user mode
               sk.showModal({
-                message: resp.error,
+                message: `Previewing failed. ${resp.error}`,
                 sticky: true,
                 level: 0,
               });
