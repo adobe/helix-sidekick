@@ -130,6 +130,25 @@ describe('Test preview plugin', () => {
     assert.ok(notification.className.includes('modal-config-success'), `Unexpected notification classes: ${notification.className}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Edit-specific preview plugin handles /.helix/* error message from server', async () => {
+    const test = new SidekickTest({
+      url: 'https://adobe.sharepoint.com/:x:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=test.xlsx&action=default&mobileredirect=true',
+      type: 'json',
+      plugin: 'edit-preview',
+    });
+    test.apiResponses[0].webPath = '/.helix/test.json';
+    test.apiResponses[1] = {
+      status: 502,
+      body: 'Bad Gateway',
+      headers: {
+        'x-error': 'foo',
+      },
+    };
+    const { popupOpened, notification } = await test.run();
+    assert.ok(!popupOpened, 'Unexpected popup opened');
+    assert.strictEqual(notification.message, 'Previewing failed. foo', `Unexpected notification message: ${notification.message}`);
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Edit-specific preview plugin shows update indicator if edit is newer than preview', async () => {
     const test = new SidekickTest({
       url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
