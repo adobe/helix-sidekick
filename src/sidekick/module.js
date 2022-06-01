@@ -895,7 +895,8 @@
             if (status.webPath.startsWith('/.helix/') && resp.error) {
               // show detail message only in config update mode
               sk.showModal({
-                message: `Unable to activate Helix configuration: ${resp.error}`,
+                css: 'modal-config-failure',
+                message: resp.error,
                 sticky: true,
                 level: 0,
               });

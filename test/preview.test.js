@@ -101,7 +101,7 @@ describe('Test preview plugin', () => {
 
   it('Edit-specific preview plugin updates preview when switching from editor', async () => {
     const { requestsMade } = await new SidekickTest({
-      url: 'https://adobe.sharepoint.com/:w:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
+      url: 'https://adobe.sharepoint.com/:x:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
       plugin: 'edit-preview',
     }).run();
     const updateReq = requestsMade
@@ -130,7 +130,7 @@ describe('Test preview plugin', () => {
     assert.ok(notification.className.includes('modal-config-success'), `Unexpected notification classes: ${notification.className}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
-  it('Edit-specific preview plugin handles /.helix/* error message from server', async () => {
+  it.only('Edit-specific preview plugin shows /.helix/* error message from server', async () => {
     const test = new SidekickTest({
       url: 'https://adobe.sharepoint.com/:x:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=test.xlsx&action=default&mobileredirect=true',
       type: 'json',
@@ -146,7 +146,7 @@ describe('Test preview plugin', () => {
     };
     const { popupOpened, notification } = await test.run();
     assert.ok(!popupOpened, 'Unexpected popup opened');
-    assert.strictEqual(notification.message, 'Previewing failed. foo', `Unexpected notification message: ${notification.message}`);
+    assert.strictEqual(notification.message, 'foo', `Unexpected notification message: ${notification.message}`);
   }).timeout(IT_DEFAULT_TIMEOUT);
 
   it('Edit-specific preview plugin shows update indicator if edit is newer than preview', async () => {
