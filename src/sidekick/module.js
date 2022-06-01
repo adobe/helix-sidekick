@@ -891,27 +891,28 @@
           sk.showWait();
           // update preview
           const resp = await sk.update();
-          // handle special case /.helix/*
-          if (status.webPath.startsWith('/.helix/')) {
-            if (!resp.ok) {
+          if (!resp.ok) {
+            if (status.webPath.startsWith('/.helix/') && resp.error) {
+              // show detail message only in power-user mode
               sk.showModal({
                 message: resp.error,
                 sticky: true,
                 level: 0,
               });
             } else {
+              console.error(resp);
               sk.showModal({
-                css: 'modal-config-success',
+                css: 'modal-preview-failure',
+                sticky: true,
+                level: 0,
               });
             }
             return;
           }
-          if (!resp.ok) {
-            console.error(resp);
+          // handle special case /.helix/*
+          if (status.webPath.startsWith('/.helix/')) {
             sk.showModal({
-              css: 'modal-preview-failure',
-              sticky: true,
-              level: 0,
+              css: 'modal-config-success',
             });
             return;
           }
