@@ -893,7 +893,7 @@
           const resp = await sk.update();
           if (!resp.ok) {
             if (status.webPath.startsWith('/.helix/') && resp.error) {
-              // show detail message only in power-user mode
+              // show detail message only in config update mode
               sk.showModal({
                 message: `Unable to activate Helix configuration: ${resp.error}`,
                 sticky: true,
