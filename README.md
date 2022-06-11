@@ -20,13 +20,13 @@ Navigate to https://www.hlx.live/tools/sidekick/ and follow the instructions.
 
 ### Browser Extension
 
-See https://github.com/adobe/helix-sidekick#readme
+See https://github.com/adobe/helix-sidekick-extension#readme
 
 ## Configuration
 
 Helix Sidekick supports a number of (optional) configuration options developers can add to the project to maximize the Sidekick experience. 
 
-See the [API documentation](docs/API.md#sidekickConfig).
+See the [API documentation](https://github.com/adobe/helix-sidekick-extension/blob/main/docs/API.md#sidekickConfig).
 
 ## Usage
 Refer to the [Sidekick documentation](https://www.hlx.live/docs/sidekick) to learn more about its features.
@@ -51,7 +51,7 @@ $ npm test
 $ npm run lint
 ```
 
-### Testing a development version of the module or bookmarklet
+### Testing a development version of the bookmarklet
 
 Every development branch in this repository will be mirrored in https://github.com/adobe/helix-website with a `sidekick-` prefix to enable enable branch testing:
 
@@ -80,10 +80,10 @@ If you want to test a [config](#configuration) file before deploying it to your 
 
 ## Deployment
 
-The Sidekick module and bookmarklet gets staged automatically each time a pull request is merged into `main`.
+The Sidekick bookmarklet gets staged automatically each time a pull request is merged into `main`.
 1. Go to [`helix-website` pull requests](https://github.com/adobe/helix-website/pulls)
-1. Click the _Sidekick Release Candidate_ PR
+1. Click the _Sidekick Bookmarklet RC_ PR
 1. Add a comment listing the `helix-sidekick` PR(s) included in this release
-1. Get a team member to review the Sidekick RC. The PR is based on a `sidekick-rc-*` branch (`*` being a random ID) so the RC can be tested at:
+1. Get a team member to review the Sidekick release candidate. The PR is based on a `sidekick-rc-*` branch (`*` being a random ID) so the RC can be tested at:
    `https://sidekick-rc-*--helix-website--adobe.hlx.page/tools/sidekick/`
 1. Once approved, merge the RC PR to deploy the changes into production

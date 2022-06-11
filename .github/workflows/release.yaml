@@ -38,5 +38,5 @@ jobs:
           branch: sidekick-rc
           branch-suffix: short-commit-hash
           delete-branch: true
-          title: Sidekick Release Candidate
+          title: Sidekick Bookmarklet RC
           body: This PR has been auto-generated from https://github.com/adobe/helix-sidekick/.
