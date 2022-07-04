@@ -37,7 +37,6 @@
     "@semantic-release/git": "10.0.1",
     "@web/test-runner": "0.13.31",
     "@web/test-runner-commands": "0.6.3",
-    "codecov": "3.8.3",
     "commitizen": "4.2.4",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "8.18.0",
