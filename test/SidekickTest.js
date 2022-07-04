@@ -257,6 +257,7 @@ class SidekickTest {
         this.page.on('console', (msg) => {
           // eslint-disable-next-line no-console
           if (DEBUG_LOGS) {
+            // eslint-disable-next-line no-console
             console.log(`> [${msg.type()}] ${msg.text()}`);
           }
         });
@@ -264,6 +265,7 @@ class SidekickTest {
         this.page.setRequestInterception(true);
         this.page.on('request', async (req) => {
           if (DEBUG_LOGS) {
+            // eslint-disable-next-line no-console
             console.log('[pup] request', req.url());
           }
           if (req.isNavigationRequest()) {
@@ -310,6 +312,7 @@ class SidekickTest {
           } else if (req.url().startsWith('file://')) {
             // let file requests through
             if (DEBUG_LOGS) {
+              // eslint-disable-next-line no-console
               console.log('[pup] loading', req.url());
             }
             req.continue();
@@ -367,6 +370,7 @@ class SidekickTest {
           ].forEach((eventType) => {
             window.hlx.sidekick.addEventListener(eventType, (evt) => {
               window.hlx.sidekickEvents[eventType] = evt.detail;
+              // eslint-disable-next-line no-console
               console.log(`event fired: ${eventType}`, JSON.stringify(evt));
             });
           });
