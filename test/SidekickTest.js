@@ -17,15 +17,16 @@ const fs = require('fs-extra');
 
 const {
   Setup,
-  getPage,
-  checkPlugin,
+  assertPlugin,
   execPlugin,
   checkEventFired,
   sleep,
   toResp,
   getPlugins,
-  getNotification,
+  getNotification, waitFor,
 } = require('./utils.js');
+
+const DEBUG_LOGS = false;
 
 /**
  * @typedef {Object} Page
@@ -146,16 +147,19 @@ class SidekickTest {
    */
   constructor(o = {}) {
     // main options
-    this.page = o.page || getPage();
+    this.page = o.page;
     this.setup = o.setup instanceof Setup ? o.setup : new Setup(o.setup || 'blog');
     this.env = o.env || 'preview';
     this.type = o.type || 'html';
     this.fixture = o.fixture || 'generic.html';
-    this.sleep = o.sleep || 1000;
+    this.sleep = o.sleep ?? 0;
     this.plugin = o.plugin;
-    this.pluginSleep = o.pluginSleep || 2000;
+    this.pluginSleep = o.pluginSleep ?? 0;
     this.acceptDialogs = o.acceptDialogs || false;
     this.allowNavigation = o.allowNavigation || false;
+    this.waitPopup = o.waitPopup ?? 0;
+    this.waitNavigation = o.waitNavigation ? new Set([o.waitNavigation]) : new Set();
+    this.waitNavigationTime = 2000;
 
     // options derived from setup - or overrides
     this.url = o.url || this.setup.getUrl(this.env, this.type);
@@ -228,9 +232,14 @@ class SidekickTest {
           }, +(this.timeoutFailure || this.timeoutSuccess));
         }
         // instrument popups
-        this.page.browser().on('targetcreated', (req) => {
-          if (!req.url().startsWith('devtools://')) {
-            popupOpened = req.url();
+        this.page.browser().on('targetcreated', (target) => {
+          const targetUrl = target.url();
+          if (targetUrl !== 'about:blank' && !targetUrl.startsWith('devtools://')) {
+            popupOpened = targetUrl;
+            if (DEBUG_LOGS) {
+              // eslint-disable-next-line no-console
+              console.log('created new page', targetUrl);
+            }
           }
         });
         // instrument dialogs
@@ -245,10 +254,18 @@ class SidekickTest {
             await d.dismiss();
           }
         });
+        this.page.on('console', (msg) => {
+          // eslint-disable-next-line no-console
+          if (DEBUG_LOGS) {
+            console.log(`> [${msg.type()}] ${msg.text()}`);
+          }
+        });
         // instrument requests
         this.page.setRequestInterception(true);
         this.page.on('request', async (req) => {
-          // console.log(req.url());
+          if (DEBUG_LOGS) {
+            console.log('[pup] request', req.url());
+          }
           if (req.isNavigationRequest()) {
             if (!pageLoaded) {
               pageLoaded = true;
@@ -260,6 +277,7 @@ class SidekickTest {
             }
           }
           if (req.url().startsWith('http')) {
+            this.waitNavigation.delete(req.url());
             requestsMade.push({
               method: req.method(),
               url: req.url(),
@@ -291,6 +309,9 @@ class SidekickTest {
             }
           } else if (req.url().startsWith('file://')) {
             // let file requests through
+            if (DEBUG_LOGS) {
+              console.log('[pup] loading', req.url());
+            }
             req.continue();
           }
         });
@@ -300,7 +321,7 @@ class SidekickTest {
       this.page
         .goto(`file://${__dirname}/fixtures/${this.fixture}`, { waitUntil: 'load' })
         .then(() => this.pre(this.page))
-        .then(() => this.page.evaluate((testLocation, skCfg) => {
+        .then(() => this.page.evaluate(async (testLocation, skCfg) => {
           // set test location
           if (testLocation) {
             let input = document.getElementById('sidekick_test_location');
@@ -322,40 +343,55 @@ class SidekickTest {
           } else {
             document.head.append(s);
           }
-          // wait for sidekick object to instrument
-          window.hlx = window.hlx || {};
-          window.hlx.sidekickWait = window.setInterval(() => {
-            if (window.hlx.sidekick) {
-              window.clearInterval(window.hlx.sidekickWait);
-              delete window.hlx.sidekickWait;
-              // listen for all sidekick events
-              window.hlx.sidekickEvents = {};
-              [
-                'shown',
-                'hidden',
-                'contextloaded',
-                'statusfetched',
-                'pluginused',
-                'envswitched',
-                'updated',
-                'published',
-                'unpublished',
-                'deleted',
-              ].forEach((eventType) => {
-                window.hlx.sidekick.addEventListener(eventType, (evt) => {
-                  window.hlx.sidekickEvents[eventType] = evt.detail;
-                });
+          // wait for sidekick to initialize
+          await new Promise((res) => {
+            document.addEventListener('hlx-sidekick-initialized', res);
+          });
+
+          // listen for all sidekick events
+          window.hlx.sidekickEvents = {};
+          [
+            'shown',
+            'hidden',
+            'contextloaded',
+            'statusfetched',
+            'pluginused',
+            'envswitched',
+            'updated',
+            'published',
+            'unpublished',
+            'deleted',
+            'cssloaded',
+            'langloaded',
+            'pluginsloaded',
+          ].forEach((eventType) => {
+            window.hlx.sidekick.addEventListener(eventType, (evt) => {
+              window.hlx.sidekickEvents[eventType] = evt.detail;
+              console.log(`event fired: ${eventType}`, JSON.stringify(evt));
+            });
+          });
+          // wait for some events
+          await new Promise((res) => {
+            const events = new Set(['cssloaded']);
+            events.forEach((evt) => {
+              window.hlx.sidekick.addEventListener(evt, () => {
+                events.delete(evt);
+                if (events.size === 0) {
+                  res();
+                }
               });
-            }
-          }, 10);
+            });
+          });
         }, url || this.url, this.sidekickConfig))
         // wait until sidekick is fully loaded
         .then(() => sleep(+this.sleep))
         .then(() => this.post(this.page))
         // perform checks
-        .then(() => checkPlugin(this.page, this.checkPlugins))
+        .then(() => assertPlugin(this.page, this.checkPlugins))
         .then(() => execPlugin(this.page, this.plugin))
-        .then(() => sleep(this.plugin ? +this.pluginSleep : 0))
+        .then(() => sleep(this.pluginSleep))
+        .then(() => waitFor(() => popupOpened, this.waitPopup))
+        .then(() => waitFor(() => this.waitNavigation.size === 0, this.waitNavigationTime))
         .then(() => checkEventFired(this.page, this.checkEvents))
         .then(async () => {
           sidekick = await this.page.evaluate(() => window.hlx.sidekick);
