@@ -15,6 +15,7 @@
 
 const assert = require('assert');
 const puppeteer = require('puppeteer');
+const pti = require('puppeteer-to-istanbul');
 
 // set debug to true to see browser window and debug output
 const DEBUG = false;
@@ -431,7 +432,10 @@ async function startBrowser() {
  * @returns {Promise<Page>}
  */
 async function openPage() {
-  return globalBrowser.newPage();
+  const page = await globalBrowser.newPage();
+  await page.coverage.startJSCoverage();
+  await page.coverage.startCSSCoverage();
+  return page;
 }
 
 const stopBrowser = async () => {
@@ -443,7 +447,21 @@ const stopBrowser = async () => {
 
 async function closeAllPages() {
   if (globalBrowser) {
-    await Promise.all((await globalBrowser.pages()).map((page) => page.close()));
+    await Promise.all((await globalBrowser.pages()).map(async (page) => {
+      const url = page.url();
+      if (url.startsWith('file:///')) {
+        // only get coverage from file urls
+        const [jsCoverage, cssCoverage] = await Promise.all([
+          page.coverage.stopJSCoverage(),
+          page.coverage.stopCSSCoverage(),
+        ]);
+        pti.write([...jsCoverage, ...cssCoverage], {
+          includeHostname: true,
+          storagePath: './.nyc_output',
+        });
+      }
+      await page.close();
+    }));
   }
 }
 

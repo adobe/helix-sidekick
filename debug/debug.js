@@ -11,7 +11,6 @@
  */
 
 const express = require('express');
-const fs = require('fs-extra');
 const debugServer = express();
 const title = 'Helix Sidekick Debug Server';
 const port = 3001;
