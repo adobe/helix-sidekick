@@ -3,6 +3,7 @@
 .hlx
 .nyc_output/
 coverage
+coverage-wtr
 node_modules/
 junit
 logs
