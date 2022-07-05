@@ -1,3 +1,10 @@
+# [4.13.0](https://github.com/adobe/helix-sidekick/compare/v4.12.0...v4.13.0) (2022-07-05)
+
+
+### Features
+
+* use cookie-less auth ([ada8e5f](https://github.com/adobe/helix-sidekick/commit/ada8e5f7a0e773802dd0bf3989392122283d90d8))
+
 # [4.12.0](https://github.com/adobe/helix-sidekick/compare/v4.11.0...v4.12.0) (2022-05-09)
 
 
