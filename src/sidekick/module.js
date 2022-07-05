@@ -1648,6 +1648,9 @@
       this.fetchStatus();
       this.loadCSS();
       checkForIssues(this);
+
+      // announce to the document that the sidekick is ready
+      document.dispatchEvent(new CustomEvent('helix-sidekick-ready'));
     }
 
     /**
@@ -2615,7 +2618,6 @@
       window.hlx.sidekick = document.createElement('helix-sidekick');
       document.body.prepend(window.hlx.sidekick);
       window.hlx.sidekick.show();
-      document.dispatchEvent(new CustomEvent('hlx-sidekick-initialized'));
     } else {
       // toggle sidekick
       window.hlx.sidekick.toggle();
