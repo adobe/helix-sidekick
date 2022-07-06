@@ -16,11 +16,11 @@ module.exports = {
   env: {
     browser: true,
   },
-  parser: '@babel/eslint-parser',
   parserOptions: {
     allowImportExportEverywhere: true,
     sourceType: 'module',
     requireConfigFile: false,
+    ecmaVersion: 2022,
   },
   globals: {
     // required for extension
@@ -31,6 +31,7 @@ module.exports = {
   ignorePatterns: [
     '.vscode/*',
     'coverage/*',
+    'coverage-wtr/*',
     'debug/*',
     'dist/*',
     'src/extension/lib/*.js',
