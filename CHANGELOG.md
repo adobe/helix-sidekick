@@ -1,3 +1,10 @@
+## [4.13.1](https://github.com/adobe/helix-sidekick/compare/v4.13.0...v4.13.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* better login aborted handling ([2789bc4](https://github.com/adobe/helix-sidekick/commit/2789bc4b28fd1a24e9edd1d6868a61e2dd8c517e))
+
 # [4.13.0](https://github.com/adobe/helix-sidekick/compare/v4.12.0...v4.13.0) (2022-07-05)
 
 
