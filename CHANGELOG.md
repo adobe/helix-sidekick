@@ -1,3 +1,10 @@
+## [4.13.2](https://github.com/adobe/helix-sidekick/compare/v4.13.1...v4.13.2) (2022-07-08)
+
+
+### Bug Fixes
+
+* support custom sharepoint domain ([da96bbe](https://github.com/adobe/helix-sidekick/commit/da96bbe211032a67700d60edac85f44634122a36))
+
 ## [4.13.1](https://github.com/adobe/helix-sidekick/compare/v4.13.0...v4.13.1) (2022-07-07)
 
 
