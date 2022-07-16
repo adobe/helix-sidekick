@@ -224,7 +224,7 @@ class Setup {
    * @returns {string} The content response
    */
   contentResponse(type = 'html') {
-    return { ...this._setup.content[type] };
+    return this._setup.content[type];
   }
 }
 
