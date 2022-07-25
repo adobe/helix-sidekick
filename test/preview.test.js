@@ -143,6 +143,28 @@ describe('Test preview plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Edit-specific preview plugin refetches status and retries on error', async () => {
+    const test = new SidekickTest({
+      page,
+      url: 'https://adobe.sharepoint.com/:x:/r/sites/TheBlog/_layouts/15/Doc.aspx?sourcedoc=%7BE8EC80CB-24C3-4B95-B082-C51FD8BC8760%7D&file=bla.docx&action=default&mobileredirect=true',
+      plugin: 'edit-preview',
+    });
+    // send 404 on first post
+    test.apiResponses.push({
+      status: 404,
+      body: 'not found',
+    });
+    test.apiResponses.push({ ...test.apiResponses[0] }); // resend status
+    const { requestsMade } = await test.run();
+    const statusReqs = requestsMade
+      .filter((r) => r.method === 'GET' && r.url.startsWith('https://admin.hlx.page/status/'));
+    assert.strictEqual(
+      statusReqs.length,
+      2,
+      'Did not refetch status before updating preview URL',
+    );
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Edit-specific preview plugin handles /.helix/config.json special case', async () => {
     const test = new SidekickTest({
       page,
@@ -167,13 +189,16 @@ describe('Test preview plugin', () => {
       waitNavigation: 'https://main--blog--adobe.hlx.page/.helix/test.json',
     });
     test.apiResponses[0].webPath = '/.helix/test.json';
-    test.apiResponses[1] = {
+    // send error
+    test.apiResponses.push({
       status: 502,
       body: 'Bad Gateway',
       headers: {
         'x-error': 'foo',
       },
-    };
+    });
+    test.apiResponses.push({ ...test.apiResponses[0] }); // resend status
+    test.apiResponses.push({ ...test.apiResponses[1] }); // resend error
     const { popupOpened, notification } = await test.run();
     assert.ok(!popupOpened, 'Unexpected popup opened');
     assert.strictEqual(notification.message, 'foo', `Unexpected notification message: ${notification.message}`);
