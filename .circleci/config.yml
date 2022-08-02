@@ -1,8 +1,8 @@
 version: 2.1
 executors:
-  node14:
+  node16:
     docker:
-      - image: cimg/node:14.20.0-browsers
+      - image: cimg/node:16.16.0-browsers
 
 orbs:
   browser-tools: circleci/browser-tools@1.4.0
@@ -16,9 +16,6 @@ commands:
           keys:
             - v1-dependencies-{{ arch }}-{{ checksum "package-lock.json" }}
       - run:
-          name: install latest npm
-          command: npm -g install npm
-      - run:
           name: Installing Dependencies
           command: npm ci
       - save_cache:
@@ -31,7 +28,7 @@ commands:
 
 jobs:
   build:
-    executor: node14
+    executor: node16
     steps:
       - setup
       - run: mkdir junit
@@ -50,7 +47,7 @@ jobs:
       - store_artifacts:
           path: junit
   semantic-release:
-    executor: node14
+    executor: node16
     steps:
       - setup
       - run:
