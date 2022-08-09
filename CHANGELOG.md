@@ -1,3 +1,10 @@
+# [4.14.0](https://github.com/adobe/helix-sidekick/compare/v4.13.2...v4.14.0) (2022-08-09)
+
+
+### Features
+
+* pdf support ([47ce6dd](https://github.com/adobe/helix-sidekick/commit/47ce6dd66e9d05a72bfb68a3e3ba0e7dad971a7d))
+
 ## [4.13.2](https://github.com/adobe/helix-sidekick/compare/v4.13.1...v4.13.2) (2022-07-08)
 
 
