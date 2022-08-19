@@ -1,3 +1,10 @@
+## [4.14.1](https://github.com/adobe/helix-sidekick/compare/v4.14.0...v4.14.1) (2022-08-19)
+
+
+### Bug Fixes
+
+* edit-preview fails on renamed documents ([08e3290](https://github.com/adobe/helix-sidekick/commit/08e3290206947a269afe35bbcfe50d92cbe44cc3))
+
 # [4.14.0](https://github.com/adobe/helix-sidekick/compare/v4.13.2...v4.14.0) (2022-08-09)
 
 
