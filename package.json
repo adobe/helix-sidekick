@@ -45,7 +45,7 @@
     "lint-staged": "13.0.3",
     "mocha": "10.0.0",
     "nyc": "15.1.0",
-    "puppeteer": "16.2.0",
+    "puppeteer": "17.0.0",
     "puppeteer-to-istanbul": "1.4.0",
     "semantic-release": "19.0.5"
   },
