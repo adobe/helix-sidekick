@@ -117,7 +117,7 @@
 }
 
 .hlx-sk-overlay .modal.modal-login p:first-of-type::before {
-  content: "Veuillez vous connecter au Franklin Sidekick pour continuer...";
+  content: "Veuillez vous connecter au Sidekick pour continuer...";
 }
 
 .hlx-sk .feature-container .user-login button::before,
