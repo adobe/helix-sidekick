@@ -348,7 +348,7 @@ class SidekickTest {
           }
           // wait for sidekick to initialize
           await new Promise((res) => {
-            document.addEventListener('helix-sidekick-ready', res);
+            document.addEventListener('sidekick-ready', res);
           });
 
           // listen for all sidekick events

@@ -16,7 +16,7 @@
     "data": [
       {
         "foo": "https://www.adobe.com/",
-        "bar": "/helix/mysite",
+        "bar": "/franklin/mysite",
         "id": "09af1d19-63eb-48c1-9434-b591f0b3cfb4",
         "baz": "Lorem ipsum dolor sit amet."
       }

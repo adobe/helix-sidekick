@@ -1,6 +1,6 @@
-# Helix Sidekick
+# Franklin Sidekick
 
-> Browser-based helper for authoring Helix projects
+> Browser-based helper for authoring Franklin projects
 
 
 
@@ -24,7 +24,7 @@ See https://github.com/adobe/helix-sidekick#readme
 
 ## Configuration
 
-Helix Sidekick supports a number of (optional) configuration options developers can add to the project to maximize the Sidekick experience. 
+Franklin Sidekick supports a number of (optional) configuration options developers can add to the project to maximize the Sidekick experience. 
 
 See the [API documentation](docs/API.md#sidekickConfig).
 
@@ -63,7 +63,7 @@ _Note: Mirrored development branches in https://github.com/adobe/helix-website/b
 
 ### Local testing
 
-You can leverage Helix CLI for local testing. If you haven't already installed it, run: `npm i -g @adobe/helix-cli`
+You can leverage Franklin CLI for local testing. If you haven't already installed it, run: `npm i -g @adobe/helix-cli`
 
 #### Testing a local Sidekick version
 
