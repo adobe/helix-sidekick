@@ -896,6 +896,15 @@
         action: async (evt) => {
           const { status } = sk;
           const updatePreview = async (ranBefore) => {
+            if (status.edit.sourceLocation.startsWith('gdrive:')
+            && (status.edit.name.endsWith('.xlsx') || status.edit.name.endsWith('.xls') || status.edit.name.endsWith('.docx') || status.edit.name.endsWith('.doc'))) {
+              sk.showModal({
+                css: 'modal-preview-not-gdoc',
+                sticky: true,
+                level: 0,
+              });
+              return;
+            }
             const resp = await sk.update();
             if (!resp.ok) {
               if (!ranBefore) {
