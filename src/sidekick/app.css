@@ -916,7 +916,7 @@
 }
 
 .hlx-sk-overlay .modal.modal-preview-not-gdoc::before {
-  content: "Previewing failed. Must be Google document.";
+  content: "Previewing failed. Must be Google document or spreadsheet.";
 }
 
 .hlx-sk-overlay .modal.modal-reload-failure::before {

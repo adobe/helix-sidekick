@@ -159,7 +159,7 @@
 }
 
 .hlx-sk-overlay .modal.modal-preview-not-gdoc::before {
-  content: "La prévisualisation a échoué. Doit être un document Google.";
+  content: "La prévisualisation a échoué. Doit être un document Google ou une feuille de calcul.";
 }
 
 .hlx-sk-overlay .modal.modal-reload-failure::before {
