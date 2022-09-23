@@ -889,13 +889,10 @@
    * @param {String} contentType
    */
   function isSupportedGoogleType(contentType) {
-    const types = ['application/vnd.google-apps.document', 'application/vnd.google-apps.spreadsheet'];
-    for (const itype of types) {
-      if (itype === contentType) {
-        return true;
-      }
-    }
-    return false;
+    return contentType in {
+      'application/vnd.google-apps.document': true,
+      'application/vnd.google-apps.spreadsheet': true,
+    };
   }
 
   /**
