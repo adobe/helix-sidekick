@@ -159,7 +159,7 @@
 }
 
 .hlx-sk-overlay .modal.modal-preview-not-gdoc::before {
-  content: "Vorschau fehlgeschlagen. Muss ein Google-Dokument oder eine Tabelle sein.";
+  content: "Vorschau-Generierung fehlgeschlagen. Muss ein Google-Dokument oder eine Tabelle sein.";
 }
 
 .hlx-sk-overlay .modal.modal-reload-failure::before {
