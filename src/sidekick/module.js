@@ -908,7 +908,9 @@
         action: async (evt) => {
           const { status } = sk;
           const updatePreview = async (ranBefore) => {
-            if (status.edit.sourceLocation.startsWith('gdrive:') && !isSupportedGoogleType(status.edit.contentType)) {
+            if (status.edit.sourceLocation.startsWith('gdrive:')
+              && contentType !== 'application/vnd.google-apps.document'
+              && contentType !== 'application/vnd.google-apps.spreadsheet') {
               sk.showModal({
                 css: 'modal-preview-not-gdoc',
                 sticky: true,
