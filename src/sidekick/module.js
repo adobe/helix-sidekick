@@ -884,18 +884,6 @@
   }
 
   /**
-   * Check if current sidekick is on a supported Google Doc based on contentType.
-   * @private
-   * @param {String} contentType
-   */
-  function isSupportedGoogleType(contentType) {
-    return contentType in {
-      'application/vnd.google-apps.document': true,
-      'application/vnd.google-apps.spreadsheet': true,
-    };
-  }
-
-  /**
    * Adds the preview plugin to the sidekick.
    * @private
    * @param {Sidekick} sk The sidekick
@@ -909,8 +897,8 @@
           const { status } = sk;
           const updatePreview = async (ranBefore) => {
             if (status.edit.sourceLocation.startsWith('gdrive:')
-              && contentType !== 'application/vnd.google-apps.document'
-              && contentType !== 'application/vnd.google-apps.spreadsheet') {
+              && status.edit.contentType !== 'application/vnd.google-apps.document'
+              && status.edit.contentType !== 'application/vnd.google-apps.spreadsheet') {
               sk.showModal({
                 css: 'modal-preview-not-gdoc',
                 sticky: true,
