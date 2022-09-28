@@ -896,16 +896,6 @@
         action: async (evt) => {
           const { status } = sk;
           const updatePreview = async (ranBefore) => {
-            if (status.edit.sourceLocation.startsWith('gdrive:')
-              && status.edit.contentType !== 'application/vnd.google-apps.document'
-              && status.edit.contentType !== 'application/vnd.google-apps.spreadsheet') {
-              sk.showModal({
-                css: 'modal-preview-not-gdoc',
-                sticky: true,
-                level: 0,
-              });
-              return;
-            }
             const resp = await sk.update();
             if (!resp.ok) {
               if (!ranBefore) {
@@ -941,6 +931,17 @@
             }
             sk.switchEnv('preview', newTab(evt));
           };
+          if (typeof status.edit.sourceLocation !== 'undefined'
+              && status.edit.sourceLocation.startsWith('gdrive:')
+              && status.edit.contentType !== 'application/vnd.google-apps.document'
+              && status.edit.contentType !== 'application/vnd.google-apps.spreadsheet') {
+            sk.showModal({
+              css: 'modal-preview-not-gdoc',
+              sticky: true,
+              level: 0,
+            });
+            return;
+          }
           sk.showWait();
           updatePreview();
         },
