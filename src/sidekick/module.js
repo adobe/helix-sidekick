@@ -931,8 +931,7 @@
             }
             sk.switchEnv('preview', newTab(evt));
           };
-          if (typeof status.edit.sourceLocation !== 'undefined'
-              && status.edit.sourceLocation.startsWith('gdrive:')
+          if (status.edit.sourceLocation?.startsWith('gdrive:')
               && status.edit.contentType !== 'application/vnd.google-apps.document'
               && status.edit.contentType !== 'application/vnd.google-apps.spreadsheet') {
             sk.showModal({
