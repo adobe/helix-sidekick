@@ -1,3 +1,10 @@
+## [4.14.2](https://github.com/adobe/helix-sidekick/compare/v4.14.1...v4.14.2) (2022-10-01)
+
+
+### Bug Fixes
+
+*  Tell gdrive users to use google-native file formats ([6e4c9ab](https://github.com/adobe/helix-sidekick/commit/6e4c9ab31fb76dcbdbfb7d8127b4acf3e4112b07)), closes [#129](https://github.com/adobe/helix-sidekick/issues/129)
+
 ## [4.14.1](https://github.com/adobe/helix-sidekick/compare/v4.14.0...v4.14.1) (2022-08-19)
 
 
