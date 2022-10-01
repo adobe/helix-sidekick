@@ -122,6 +122,21 @@ describe('Test preview plugin', () => {
     );
   }).timeout(IT_DEFAULT_TIMEOUT);
 
+  it('Edit-specific preview plugin fails for office document from gdrive URL', async () => {
+    const test = new SidekickTest({
+      page,
+      setup: 'pages',
+      url: 'https://docs.google.com/document/d/2E1PNphAhTZAZrDjevM0BX7CZr7KjomuBO6xE1TUo9NU/edit',
+      plugin: 'edit-preview',
+      waitPopup: 2000,
+    });
+    test.apiResponses[0].edit.sourceLocation = 'gdrive:1mfBb_tpzM4yYGdxMhRgrKEnBqboxsr';
+    test.apiResponses[0].edit.contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    const { popupOpened, notification } = await test.run();
+    assert.ok(!popupOpened, 'Unexpected popup opened');
+    assert.ok(notification.className.includes('modal-preview-not-gdoc'), `Unexpected notification classes: ${notification.className}`);
+  }).timeout(IT_DEFAULT_TIMEOUT);
+
   it('Edit-specific preview plugin updates preview when switching from editor', async () => {
     const { requestsMade } = await new SidekickTest({
       page,
