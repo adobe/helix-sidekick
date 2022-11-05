@@ -1,3 +1,5 @@
+**This code has moved to [@adobe/helix-sidekick-extension](https://github.com/adobe/helix-sidekick-extension)**
+
 # Franklin Sidekick
 
 > Browser-based helper for authoring Franklin projects
